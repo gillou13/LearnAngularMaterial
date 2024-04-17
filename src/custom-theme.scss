@@ -36,5 +36,5 @@ $testMaterial-theme: mat.define-light-theme((
 @include mat.all-component-themes($testMaterial-theme);
 
 
-html, body { height: 100%; }
+html, body { height: 100%;  margin: 0px }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
