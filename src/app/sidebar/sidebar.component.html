@@ -1,0 +1,8 @@
+<mat-sidenav-container class="example-container" autosize>
+    <mat-sidenav mode="side" opened="true" [fixedInViewport]="true" [fixedTopGap]="60" class="list-whidth">
+        <mat-nav-list>
+            <mat-list-item *ngFor="let link of links" [routerLink]="link.routerLink">{{link.label}}</mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content><ng-content/></mat-sidenav-content>
+</mat-sidenav-container>
