@@ -15,5 +15,5 @@ export class SidebarComponent {
   public links = [
     { routerLink: "/test1", label: "test1"},
     { routerLink: "/tab1", label: "tab1"},
-  ]
+  ];
 }
