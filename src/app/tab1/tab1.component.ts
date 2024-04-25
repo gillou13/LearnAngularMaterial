@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table'
 import { NavigationService } from '../common/services/navigation/navigation.service';
-import { BaseComponent } from '../common/base/base/base.component';
+import { BaseComponent } from '../common/component/basecomponent/base.component';
 
 export interface PeriodicElement {
   name: string;

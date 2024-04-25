@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router, RouterEvent, RouterLink, RouterOutlet } from '@angular/router';
-import { HeadbarComponent } from './headbar/headbar.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
+import { HeadbarComponent } from './common/component/headbar/headbar.component';
+import { SidebarComponent } from './common/component/sidebar/sidebar.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { NavigationService } from './common/services/navigation/navigation.service';
