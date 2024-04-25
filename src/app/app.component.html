@@ -334,18 +334,9 @@
 <app-headbar/>
 <div class="RouterOutlet">
   <app-sidebar>
-    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-      <a 
-        *ngFor="let link of links"
-        mat-tab-link 
-        [active]="link.active"
-        [routerLink]="link.url">
-        {{ link.label }}
-      </a>
-    </nav>
-    <mat-tab-nav-panel #tabPanel>
+    <app-navtabs>
       <router-outlet #outlet="outlet"/>
-    </mat-tab-nav-panel>
+    </app-navtabs>
   </app-sidebar>
 </div>
 
