@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router, RouterEvent, RouterLink, RouterOutlet } from '@angular/router';
 import { HeadbarComponent } from './headbar/headbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
+import { NavigationService } from './common/services/navigation/navigation.service';
+import { Observable, Subscription } from 'rxjs';
+import { NavigationLink } from './common/services/navigation/navigation-link';
 
 class tabLink {
   public id: string;
@@ -24,22 +27,30 @@ class tabLink {
   templateUrl: './app.component.html',
   styleUrl: './app.component.sass'
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   /**
    * id du lien actuellement activé.
    */
-  public linkActive: string | undefined;
+  public linkActive: Observable<string> | string | undefined;
 
-  public links: tabLink[] = new Array<tabLink>();
+  // Liste les liens de navigation.
+  public links: NavigationLink[] = new Array<NavigationLink>();
 
-  constructor(private router: Router) {
-    // router.events.subscribe((event) => {
-    //   console.log(event);
-    // });
-    // router
-    this.links.push(new tabLink('1', 'test1', '/test1'));
-    this.links.push(new tabLink('2', 'tab1', '/tab1'));
-    this.linkActive = '1'; 
+  private subscriptions: Subscription[] = new Array<Subscription>();
+
+  constructor(public navigationService: NavigationService) {
+    
+    // this.links est MAJ par le service de navigation.
+    this.subscriptions.push(
+      this.navigationService.getLinks.subscribe((links) => {
+        this.links = links;
+      })
+    );
+
+  }
+
+  ngOnDestroy(): void {
+      this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
 }

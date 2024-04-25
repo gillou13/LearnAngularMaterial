@@ -334,20 +334,18 @@
 <app-headbar/>
 <div class="RouterOutlet">
   <app-sidebar>
-     <!-- <app-navtab>
-    </app-navtab> -->
     <nav mat-tab-nav-bar [tabPanel]="tabPanel">
       <a 
         *ngFor="let link of links"
         mat-tab-link 
-        [active]="link.id === linkActive"
-        (click)="linkActive = link.id"
+        [active]="link.active"
         [routerLink]="link.url">
         {{ link.label }}
       </a>
     </nav>
     <mat-tab-nav-panel #tabPanel>
       <router-outlet #outlet="outlet"/>
+{{links | json}}
     </mat-tab-nav-panel>
   </app-sidebar>
 </div>
