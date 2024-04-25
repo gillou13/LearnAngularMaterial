@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table'
+import { NavigationService } from '../common/services/navigation/navigation.service';
+import { BaseComponent } from '../common/base/base/base.component';
 
 export interface PeriodicElement {
   name: string;
@@ -28,7 +30,11 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './tab1.component.html',
   styleUrl: './tab1.component.sass'
 })
-export class Tab1Component {
+export class Tab1Component extends BaseComponent {
   public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   public dataSource = ELEMENT_DATA;
+
+  public constructor(private navService: NavigationService){
+    super();
+  }
 }
