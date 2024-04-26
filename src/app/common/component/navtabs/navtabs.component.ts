@@ -25,7 +25,7 @@ export class NavtabsComponent implements OnDestroy {
   private subscriptions: Subscription[] = new Array<Subscription>();
 
   constructor(public navigationService: NavigationService) {
-    // this.links est MAJ par le service de navigation.
+    // this.links est mise à jours par le service de navigation.
     this.subscriptions.push(
       this.navigationService.getLinks.subscribe((links) => {
         this.links = links;
@@ -34,6 +34,7 @@ export class NavtabsComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // Logiquement, il ne sera jamais appelé. mais autant prendre les bonnes pratiques tous de suite.
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }
