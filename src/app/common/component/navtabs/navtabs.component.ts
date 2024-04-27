@@ -5,11 +5,19 @@ import { RouterLink } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { NavigationLink } from '../../services/navigation/navigation-link';
 import { NavigationService } from '../../services/navigation/navigation.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-navtabs',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatTabsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatTabsModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './navtabs.component.html',
   styleUrl: './navtabs.component.sass',
 })
@@ -36,5 +44,13 @@ export class NavtabsComponent implements OnDestroy {
   ngOnDestroy(): void {
     // Logiquement, il ne sera jamais appelé. mais autant prendre les bonnes pratiques tous de suite.
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public onClose(link: NavigationLink): void {
+    this.navigationService.deleteLink(link);
+  }
+
+  public getSelectedTabIndex(): number {
+    return this.links.findIndex((l) => l.active);
   }
 }
