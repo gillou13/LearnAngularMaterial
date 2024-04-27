@@ -18,5 +18,5 @@ export abstract class BaseComponent {
     protected navigationService: NavigationService
   ) {}
 
-  // TODO GBE : ajouter une fonction pour init par défaut le lien.
+  // TODO GBE : ajouter une fonction pour init par défaut le lien ?
 }
