@@ -40,15 +40,7 @@ export class Tab1Component extends BaseComponent implements OnInit {
     super(router, navigationService);
   }
 
-  ngOnInit(): void {
-    // TODO GBE : ajouter une fonction pour init par défaut le lien.
-    this.currentLink = new NavigationLink(
-      this.router.url,
-      'tab1',
-      true,
-      'etat',
-      'icon'
-    );
-    this.navigationService.addLink(this.currentLink);
+  protected override createLink(): NavigationLink {
+    return new NavigationLink(this.router.url, 'tab1', true, 'etat', 'icon');
   }
 }

@@ -13,19 +13,8 @@ import { NavigationLink } from '../common/services/navigation/navigation-link';
   styleUrl: './test1.component.sass',
 })
 export class Test1Component extends BaseComponent implements OnInit {
-  public constructor(router: Router, navigationService: NavigationService) {
-    super(router, navigationService);
-  }
-
-  ngOnInit(): void {
-    this.currentLink = new NavigationLink(
-      this.router.url,
-      'test1',
-      true,
-      'etat',
-      'icon'
-    );
-    this.navigationService.addLink(this.currentLink);
+  protected override createLink(): NavigationLink {
+    return new NavigationLink(this.router.url, 'test1', true, 'etat', 'icon');
   }
 
   public toggleOnChange(event: any): void {

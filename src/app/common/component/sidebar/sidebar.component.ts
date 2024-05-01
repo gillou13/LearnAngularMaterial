@@ -16,5 +16,6 @@ export class SidebarComponent {
     { routerLink: '/test1', label: 'test1' },
     { routerLink: '/tab1', label: 'tab1' },
     { routerLink: '/table/basic', label: 'tableau basic' },
+    { routerLink: '/table/basic2', label: 'tableau basic V2' },
   ];
 }
