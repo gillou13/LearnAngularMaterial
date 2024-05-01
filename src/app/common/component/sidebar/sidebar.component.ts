@@ -15,8 +15,8 @@ export class SidebarComponent {
   public links = [
     { routerLink: '/test1', label: 'test1' },
     { routerLink: '/tab1', label: 'tab1' },
-    { routerLink: '/table/basic', label: 'tableau basic' },
-    { routerLink: '/table/basic2', label: 'tableau basic V2' },
-    { routerLink: '/table/expandable1', label: 'tableau expandable V1' },
+    { routerLink: '/table/basic', label: 'tab basic' },
+    { routerLink: '/table/basic2', label: 'tab basic V2' },
+    { routerLink: '/table/expandable1', label: 'tab exp V1' },
   ];
 }
