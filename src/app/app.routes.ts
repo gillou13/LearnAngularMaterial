@@ -3,6 +3,7 @@ import { Test1Component } from './test1/test1.component';
 import { Tab1Component } from './tab1/tab1.component';
 import { BasicComponent } from './tables/basic/basic.component';
 import { Basic2Component } from './tables/basic2/basic2.component';
+import { Expandable1Component } from './tables/expandable1/expandable1.component';
 
 export const routes: Routes = [
   { path: 'test1', component: Test1Component },
@@ -12,6 +13,7 @@ export const routes: Routes = [
     children: [
       { path: 'basic', component: BasicComponent },
       { path: 'basic2', component: Basic2Component },
+      { path: 'expandable1', component: Expandable1Component },
     ],
   },
   { path: '', redirectTo: '/test1', pathMatch: 'full' },
