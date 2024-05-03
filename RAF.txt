@@ -1,0 +1,14 @@
+Liste des choses a faire : 
+    - DialogService : service de boite de dialoge.
+        - OpenDiagYesNo
+        - OpenDiagYesNoCancel
+    - StateTabService : gestion de l'état des composants liés au tabs.
+        - enregisement de l'état (formChange, recherche, encrage)
+    - Tableaux :    
+        ! Lister les fonctionnalités à implémenter
+    - formulaire
+        - tester les inputs 'classique'
+        - tester les mat-form-field.
+    - theming
+        - global
+        - composant
