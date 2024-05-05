@@ -19,6 +19,6 @@ export class Test1Component extends BaseComponent implements OnInit {
 
   public toggleOnChange(event: any): void {
     this.currentLink!.label = `test 1 ${event.checked ? ' vivant' : ' mort'}`;
-    this.navigationService.updateLink(this.currentLink!);
+    // this.navigationService.updateLink(this.currentLink!);
   }
 }

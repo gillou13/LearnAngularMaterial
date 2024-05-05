@@ -80,25 +80,64 @@ export class NavigationService {
     }
   }
 
-  public deleteLink(deletedLink: NavigationLink): void {
-    let linkIndex = this.links.findIndex(
-      (link) => link.url === deletedLink.url
-    );
+  /**
+   * Méthode 'soft' pour la suppresssion.
+   * Peu déléguer au composant liée la gestion de la suppression.
+   * @param deletedLink Le lien à supprimer.
+   */
+  public onDeleteLink(deletedLink: NavigationLink): void {
+    let linkIndex = this.getLinkIndex(deletedLink);
 
     // si on ne le trouve pas, il y a un problème...
     // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
     if (linkIndex != -1) {
-      // TODO GBE : pec la suppression du lien courrant. et avec gestion par le composant de la fermeture.
-      // pour le moment on prend le dernier éléments de la liste
-      const isActive = deletedLink.active;
-
-      this.links.splice(linkIndex, 1);
-
-      this.linksSubject.next(this.links);
-
-      if (isActive) {
-        this.router.navigateByUrl(this.getLastLink().url);
+      // si l'eventDelete est suivie et que l'on ne force pas le delete.
+      if (this.links[linkIndex].deleteSubject.observed) {
+        this.links[linkIndex].deleteSubject.next();
       }
+      // sinon suppression normale.
+      else {
+        this.deleteLink(linkIndex);
+      }
+    }
+  }
+
+  /**
+   * Méthode 'bute' pour la suppression.
+   * Utilisé par les composants pour supprimer le lien.
+   * @param deletedLink le lien à supprimer.
+   */
+  public forceDeleteLink(deletedLink: NavigationLink): void {
+    const linkIndex = this.getLinkIndex(deletedLink);
+    this.deleteLink(linkIndex);
+  }
+
+  /**
+   *
+   * @param link lien recherché.
+   * @returns l'index du lien. -1 si non trouvé.
+   */
+  private getLinkIndex(link: NavigationLink): number {
+    // TODO GBE : trouver la solution la plus performante.
+    // let linkIndex = this.links.findIndex(
+    //   (link) => link.url === deletedLink.url
+    // );
+    const linkIndex = this.links.indexOf(link);
+    return linkIndex;
+  }
+
+  /**
+   * Suppression interne du lien.
+   */
+  private deleteLink(linkIndex: number): void {
+    const isActive = this.links[linkIndex].active;
+
+    this.links.splice(linkIndex, 1);
+
+    this.linksSubject.next(this.links);
+
+    if (isActive) {
+      this.router.navigateByUrl(this.getLastLink().url);
     }
   }
 

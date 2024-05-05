@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class SidebarComponent {
   public links = [
     { routerLink: '/test1', label: 'test1' },
+    { routerLink: '/DiagOnClose', label: 'diag on close' },
     { routerLink: '/tab1', label: 'tab1' },
     { routerLink: '/table/basic', label: 'tab basic' },
     { routerLink: '/table/basic2', label: 'tab basic V2' },
