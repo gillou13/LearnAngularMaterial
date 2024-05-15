@@ -10,6 +10,10 @@ Liste des choses a faire :
         - remplacer la fonction createLink d
     - Tableaux :    
         ! Lister les fonctionnalités à implémenter
+ EC       - trie
+        - filtre
+        - pagination front 
+        - pagination back
     - formulaire
         - tester les inputs 'classique'
         - tester les mat-form-field.
