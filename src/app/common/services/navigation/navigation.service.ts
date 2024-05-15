@@ -41,6 +41,16 @@ export class NavigationService {
   }
 
   /**
+   * Permet de trouver le lien en fonction de l'url.
+   * @param url Url utilisée pour la recheche d'un lien existant.
+   * @returns le lien lié à l'url. si l'url n'existe pas dans la liste : undefined.
+   */
+  public getLinkByUrl(url: string): NavigationLink | undefined {
+    const linkIndex = this.links.findIndex((l) => l.url === url);
+    return linkIndex === -1 ? undefined : this.links[linkIndex];
+  }
+
+  /**
    * Permet d'ajouter/modifier un lien de navigation
    * @param link description du nouveau lien.
    */

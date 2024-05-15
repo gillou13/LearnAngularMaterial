@@ -18,6 +18,7 @@ export class SidebarComponent {
     { routerLink: '/tab1', label: 'tab1' },
     { routerLink: '/table/basic', label: 'tab basic' },
     { routerLink: '/table/basic2', label: 'tab basic V2' },
-    { routerLink: '/table/expandable1', label: 'tab exp V1' },
+    { routerLink: '/table/expandable1', label: 'tab exp' },
+    { routerLink: '/table/expandable2', label: 'exp form' },
   ];
 }

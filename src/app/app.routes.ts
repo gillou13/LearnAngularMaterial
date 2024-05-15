@@ -17,6 +17,7 @@ export const routes: Routes = [
       { path: 'basic', component: BasicComponent },
       { path: 'basic2', component: Basic2Component },
       { path: 'expandable1', component: Expandable1Component },
+      { path: 'expandable2', component: ExpandableWithFormComponent },
     ],
   },
   { path: '', redirectTo: '/test1', pathMatch: 'full' },

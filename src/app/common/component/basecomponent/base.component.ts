@@ -20,12 +20,14 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
     protected router: Router,
     protected navigationService: NavigationService
   ) {
-    this.currentLink = this.createLink();
+    this.currentLink =
+      this.navigationService.getLinkByUrl(this.router.url) || this.createLink();
+
+    this.navigationService.addLink(this.currentLink);
   }
 
   ngOnInit(): void {
     // Gestion de la navigation :
-    this.navigationService.addLink(this.currentLink);
   }
 
   ngOnDestroy(): void {
