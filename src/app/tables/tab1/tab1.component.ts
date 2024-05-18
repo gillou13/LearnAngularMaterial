@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { NavigationService } from '../common/services/navigation/navigation.service';
-import { BaseComponent } from '../common/component/basecomponent/base.component';
+import { NavigationService } from '../../common/services/navigation/navigation.service';
+import { BaseComponent } from '../../common/component/basecomponent/base.component';
 import { Router } from '@angular/router';
-import { NavigationLink } from '../common/services/navigation/navigation-link';
+import { NavigationLink } from '../../common/services/navigation/navigation-link';
 
 export interface PeriodicElement {
   name: string;

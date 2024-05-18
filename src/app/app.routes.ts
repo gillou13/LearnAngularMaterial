@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { Test1Component } from './test1/test1.component';
-import { Tab1Component } from './tab1/tab1.component';
+import { Tab1Component } from './tables/tab1/tab1.component';
 import { BasicComponent } from './tables/basic/basic.component';
 import { Basic2Component } from './tables/basic2/basic2.component';
 import { Expandable1Component } from './tables/expandable1/expandable1.component';
@@ -12,10 +12,10 @@ import { TableFilterV1Component } from './tables/table-filter-v1/table-filter-v1
 export const routes: Routes = [
   { path: 'test1', component: Test1Component },
   { path: 'DiagOnClose', component: TestDiagOnCloseComponent },
-  { path: 'tab1', component: Tab1Component },
   {
     path: 'table',
     children: [
+      { path: 'tab1', component: Tab1Component },
       { path: 'basic', component: BasicComponent },
       { path: 'basic2', component: Basic2Component },
       { path: 'expandable1', component: Expandable1Component },
