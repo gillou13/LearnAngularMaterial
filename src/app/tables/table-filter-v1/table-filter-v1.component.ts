@@ -1,14 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BaseComponent } from '../../common/component/basecomponent/base.component';
-import { Router } from '@angular/router';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
-import { NavigationService } from '../../common/services/navigation/navigation.service';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { Subscription } from 'rxjs';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { MatPaginator } from '@angular/material/paginator';
 
@@ -39,9 +36,6 @@ export class TableFilterV1Component extends BaseComponent implements OnInit {
       this.periodicElementService.getStandardData()
     );
     this.dataSource.filterPredicate = this.filterPredicateCustom;
-    // this.dataSource.filterPredicate = (record, filter) => {
-    //   return true;
-    // };
 
     // init du formulaire de filtre :
     this.fgFilter = new FormGroup({});
