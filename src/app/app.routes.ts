@@ -7,6 +7,7 @@ import { Expandable1Component } from './tables/expandable1/expandable1.component
 import { ExpandableWithFormComponent } from './tables/expandable-with-form/expandable-with-form.component';
 import { TestDiagOnCloseComponent } from './test-diag-on-close/test-diag-on-close.component';
 import { TableWithSortingComponent } from './tables/table-with-sorting/table-with-sorting.component';
+import { TableFilterV1Component } from './tables/table-filter-v1/table-filter-v1.component';
 
 export const routes: Routes = [
   { path: 'test1', component: Test1Component },
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: 'expandable1', component: Expandable1Component },
       { path: 'expandable2', component: ExpandableWithFormComponent },
       { path: 'sorting', component: TableWithSortingComponent },
+      { path: 'filter1', component: TableFilterV1Component },
     ],
   },
   { path: '', redirectTo: '/test1', pathMatch: 'full' },
