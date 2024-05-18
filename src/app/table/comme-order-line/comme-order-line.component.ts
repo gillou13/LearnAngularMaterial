@@ -7,7 +7,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { CommonModule } from '@angular/common';
-import { take } from 'rxjs';
+
+// TODO GBE : ajouter:
+// sous-formulaire.
+// selection.
+// colonne fixé de selection et d'action.
+// popine de selection des colonnes.
+// changement d'ordre des colonnes via drag and drop.
+// Filtre avancé.
 
 @Component({
   selector: 'app-comme-order-line',
@@ -70,7 +77,7 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   /**
    * Application du filtre dans le tableau.
    * Attention est executé à l'exterieur du composant.
-   * Ne peu pas contenir des éléments interne (this.xxx).
+   * Ne peut pas contenir des éléments interne (this.xxx).
    * @param record
    * @param filter
    * @returns
@@ -94,14 +101,10 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     let result = true;
 
     // Selon le nom:
-    if (formFilterValue.name) {
-      result &&= stringContains(formFilterValue.name, record.name);
-    }
+    result &&= stringContains(formFilterValue.name, record.name);
 
     // Selon le Symbole:
-    if (formFilterValue.symbol) {
-      result &&= stringContains(formFilterValue.symbol, record.symbol);
-    }
+    result &&= stringContains(formFilterValue.symbol, record.symbol);
 
     // Selon le numéro:
     if (formFilterValue.position) {
@@ -116,7 +119,7 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
      * @param target string testé.
      */
     function stringContains(template: string, target: string): boolean {
-      return new RegExp(template, 'i').test(target);
+      return template === '' || new RegExp(template, 'i').test(target);
     }
   }
 }
