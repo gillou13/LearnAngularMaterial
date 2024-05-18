@@ -23,5 +23,6 @@ export class SidebarComponent {
     { routerLink: '/table/expandable2', label: 'exp form' },
     { routerLink: '/table/sorting', label: 'sorting' },
     { routerLink: '/table/filter1', label: 'Filter V1' },
+    { routerLink: '/table/OrderLine', label: 'OrderLine' },
   ];
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PeriodicElement } from './periodic-element';
+import { Observable, of } from 'rxjs';
 
 const ELEMENT_DATA: PeriodicElement[] = [
   {
@@ -100,5 +101,10 @@ export class PeriodicElementService {
 
   public getStandardData(): PeriodicElement[] {
     return ELEMENT_DATA;
+  }
+
+  /** Pour simuler le renvoi d'un endPoint d'api... */
+  public observableStandarData(): Observable<PeriodicElement[]> {
+    return of(ELEMENT_DATA);
   }
 }
