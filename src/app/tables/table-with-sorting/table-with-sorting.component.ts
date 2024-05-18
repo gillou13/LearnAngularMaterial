@@ -26,13 +26,10 @@ export class TableWithSortingComponent
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  public constructor(
-    router: Router,
-    navigationService: NavigationService,
-    public periodicElementService: PeriodicElementService
-  ) {
-    super(router, navigationService);
+  public constructor(public periodicElementService: PeriodicElementService) {
+    super();
   }
+
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
   }

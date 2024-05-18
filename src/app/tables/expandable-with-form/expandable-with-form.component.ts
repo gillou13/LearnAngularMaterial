@@ -92,13 +92,11 @@ export class ExpandableWithFormComponent
    * @param personneService
    */
   constructor(
-    router: Router,
-    navigationService: NavigationService,
     protected personneService: PersonnesService,
     private formBuilder: FormBuilder
   ) {
-    super(router, navigationService);
-    // this.form = new FormGroup([]);
+    super();
+
     this.form = this.formBuilder.group({
       array: this.formBuilder.array([]),
     });

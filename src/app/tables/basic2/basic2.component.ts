@@ -18,12 +18,8 @@ export class Basic2Component extends BaseComponent implements OnInit {
   public data: PeriodicElement[] = new Array<PeriodicElement>();
   public displayColumns: string[] = ['position', 'name', 'weight', 'symbol'];
 
-  public constructor(
-    router: Router,
-    navigationService: NavigationService,
-    public periodicElementService: PeriodicElementService
-  ) {
-    super(router, navigationService);
+  public constructor(public periodicElementService: PeriodicElementService) {
+    super();
   }
 
   override ngOnInit(): void {

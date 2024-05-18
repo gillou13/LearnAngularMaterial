@@ -57,12 +57,8 @@ export class Expandable1Component extends BaseComponent implements OnInit {
     return this.displayColumnsWithExpand.map((c) => c.columnName);
   }
 
-  public constructor(
-    router: Router,
-    navigationService: NavigationService,
-    public periodicElementService: PeriodicElementService
-  ) {
-    super(router, navigationService);
+  public constructor(public periodicElementService: PeriodicElementService) {
+    super();
   }
 
   override ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { NavigationLink } from '../../services/navigation/navigation-link';
 import { Router } from '@angular/router';
@@ -13,13 +13,14 @@ import { Subscription } from 'rxjs';
 })
 export abstract class BaseComponent implements OnInit, OnDestroy {
   public currentLink: NavigationLink;
-
+  protected router: Router;
+  protected navigationService: NavigationService;
   protected subscriptions: Subscription[] = new Array<Subscription>();
 
-  constructor(
-    protected router: Router,
-    protected navigationService: NavigationService
-  ) {
+  constructor() {
+    this.router = inject(Router);
+    this.navigationService = inject(NavigationService);
+
     this.currentLink =
       this.navigationService.getLinkByUrl(this.router.url) || this.createLink();
 

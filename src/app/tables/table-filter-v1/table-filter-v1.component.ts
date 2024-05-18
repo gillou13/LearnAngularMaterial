@@ -31,12 +31,8 @@ export class TableFilterV1Component extends BaseComponent implements OnInit {
   //   this.periodicElementService.getStandardData()
   // );
 
-  public constructor(
-    router: Router,
-    navigationService: NavigationService,
-    public periodicElementService: PeriodicElementService
-  ) {
-    super(router, navigationService);
+  public constructor(public periodicElementService: PeriodicElementService) {
+    super();
 
     // init de la source de données.
     this.dataSource = new MatTableDataSource(

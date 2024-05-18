@@ -36,10 +36,6 @@ export class Tab1Component extends BaseComponent implements OnInit {
   public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   public dataSource = ELEMENT_DATA;
 
-  public constructor(router: Router, navigationService: NavigationService) {
-    super(router, navigationService);
-  }
-
   protected override createLink(): NavigationLink {
     return new NavigationLink(this.router.url, 'tab1', true, 'etat', 'icon');
   }
