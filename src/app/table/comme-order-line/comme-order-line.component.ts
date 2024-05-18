@@ -2,14 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../common/component/basecomponent/base.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { CommonModule } from '@angular/common';
+import { map, switchMap, tap } from 'rxjs';
+import { FormatInputPathObject } from 'path';
 
 // TODO GBE : ajouter:
 // sous-formulaire.
+//  - reactiv form OK
 // selection.
 // colonne fixé de selection et d'action.
 // popine de selection des colonnes.
@@ -40,11 +50,30 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   /** Formulaire de filtre. */
   public fgFilter!: FormGroup;
 
-  /** Source de donné du tableau. */
-  public dataSource!: MatTableDataSource<PeriodicElement, MatPaginator>;
+  /** formulaire parent */
+  public form: FormGroup;
+  public formArray: FormArray;
 
-  constructor(public periodicElementService: PeriodicElementService) {
+  /** Source de donné du tableau. */
+  public dataSource!: MatTableDataSource<AbstractControl, MatPaginator>;
+
+  constructor(
+    public periodicElementService: PeriodicElementService,
+    private formBuilder: FormBuilder
+  ) {
     super();
+
+    // init du formulaire parent et du formArray contenant.
+    this.form = this.formBuilder.group({
+      array: this.formBuilder.array([]),
+    });
+    this.formArray = this.form.get('array') as FormArray;
+
+    // init du dataSource.
+    this.dataSource = new MatTableDataSource(this.formArray.controls);
+
+    // fonction pour le filtre.
+    this.dataSource.filterPredicate = this.filterPredicateCustom;
   }
 
   override ngOnInit(): void {
@@ -52,11 +81,22 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     this.subscriptions.push(
       this.periodicElementService
         .observableStandarData()
-        .subscribe((data: PeriodicElement[]) => {
-          console.log('orderLine ngOnInit init data');
-          this.dataSource = new MatTableDataSource(data);
-          // fonction pour le filtre.
-          this.dataSource.filterPredicate = this.filterPredicateCustom;
+        // GBE : juste pour le test...
+        // .pipe(
+        //   // transformer le tableau de donnée en FormGroup.
+        //   map<PeriodicElement[], FormGroup[]>((periodicElements) => {
+        //     const result = new Array<FormGroup>();
+        //     periodicElements.forEach((periodicElement) =>
+        //       result.push(this.formGroupToPeriodicElement(periodicElement))
+        //     )
+        //     return result;
+        //   }),
+        // )
+        .subscribe((periodicElements: PeriodicElement[]) => {
+          // on ajouter les lignes au formArray
+          periodicElements.forEach((pe) =>
+            this.formArray.push(this.createFgPeriodicElement(pe))
+          );
         })
     );
 
@@ -75,6 +115,23 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   }
 
   /**
+   * Permet de créer un FromGroup pour le tableau selon l'élement indiqué en paramètre.
+   * @param periodicElement l'élément à ajouter dans le formGroup.
+   * @returns un FormGroup.
+   */
+  createFgPeriodicElement(periodicElement: PeriodicElement): FormGroup {
+    // un id pour les différencier
+    // expand pour la gestion du sous-formulaire
+    const fg = this.formBuilder.group({
+      ...periodicElement,
+      expand: false,
+      id: crypto.randomUUID(),
+    });
+    // TODO GBE: pour les validators on vera plus tard...
+    return fg;
+  }
+
+  /**
    * Application du filtre dans le tableau.
    * Attention est executé à l'exterieur du composant.
    * Ne peut pas contenir des éléments interne (this.xxx).
@@ -83,9 +140,10 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
    * @returns
    */
   private filterPredicateCustom(
-    record: PeriodicElement,
+    fgRecord: AbstractControl<any, any>,
     filter: string
   ): boolean {
+    const record = fgRecord.value as PeriodicElement;
     const formFilterValue = JSON.parse(filter) as PeriodicElement;
     // console.log('filterPredicateCustom', formFilterValue);
     // Tous les props sont vide : on voit tous.
