@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../common/component/basecomponent/base.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
-import { NavigationService } from '../../common/services/navigation/navigation.service';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
-import { Router } from '@angular/router';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { MatTableModule } from '@angular/material/table';
 
@@ -22,18 +20,11 @@ export class Basic2Component extends BaseComponent implements OnInit {
     super();
   }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     this.data = this.periodicElementService.getStandardData();
-    super.ngOnInit();
   }
 
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(
-      this.router.url,
-      'tableau basique V2',
-      true,
-      'etat',
-      'icon'
-    );
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'tableau basique V2', true, 'etat', 'icon');
   }
 }

@@ -12,9 +12,9 @@ import { NavigationLink } from '../common/services/navigation/navigation-link';
   templateUrl: './test1.component.html',
   styleUrl: './test1.component.sass',
 })
-export class Test1Component extends BaseComponent implements OnInit {
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(this.router.url, 'test1', true, 'etat', 'icon');
+export class Test1Component extends BaseComponent {
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'test1', true, 'etat', 'icon');
   }
 
   public toggleOnChange(event: any): void {

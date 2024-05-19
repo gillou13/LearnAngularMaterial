@@ -4,8 +4,6 @@ import { NavigationLink } from '../../common/services/navigation/navigation-link
 import { MatTableModule } from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
-import { NavigationService } from '../../common/services/navigation/navigation.service';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
@@ -61,24 +59,14 @@ export class Expandable1Component extends BaseComponent implements OnInit {
     super();
   }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     this.datas = this.periodicElementService
       .getStandardData()
       .map((x) => Object.assign(x, { expanded: false }));
-    // this.tabExpanded = this.datas.map((x) => {
-    //   return { position: x.position, expanded: false};
-    // });
-    super.ngOnInit();
   }
 
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(
-      this.router.url,
-      'tab expandable V1',
-      true,
-      'etat',
-      'icon'
-    );
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'tab expandable V1', true, 'etat', 'icon');
   }
 
   public toggleExpand(element: any): void {

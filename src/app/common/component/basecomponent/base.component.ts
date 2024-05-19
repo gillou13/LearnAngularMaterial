@@ -1,7 +1,6 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { NavigationLink } from '../../services/navigation/navigation-link';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,28 +10,28 @@ import { Subscription } from 'rxjs';
   templateUrl: './base.component.html',
   styleUrl: './base.component.sass',
 })
-export abstract class BaseComponent implements OnInit, OnDestroy {
+export abstract class BaseComponent implements OnDestroy {
+  /** le lien courrant est soit récupéré via le service de navigation, soit crée par le composant.
+   *
+   * Il est possible de la modifier par la suite.
+   */
   public currentLink: NavigationLink;
-  protected router: Router;
+
+  /** Service de navigation */
   protected navigationService: NavigationService;
+
+  /** Tableau de subscriptions pour la gestion des observables dans les composants. */
   protected subscriptions: Subscription[] = new Array<Subscription>();
 
   constructor() {
-    this.router = inject(Router);
+    // injection du service de navigation.
     this.navigationService = inject(NavigationService);
 
-    this.currentLink =
-      this.navigationService.getLinkByUrl(this.router.url) || this.createLink();
-
-    this.navigationService.addLink(this.currentLink);
-  }
-
-  ngOnInit(): void {
-    // Gestion de la navigation :
+    // Init du lien courrant.
+    this.currentLink = this.navigationService.setNewLink(this.createLink);
   }
 
   ngOnDestroy(): void {
-    console.log('destroy');
     this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
@@ -40,5 +39,5 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
    * Fonction de création du lien de navigation pour le composant.
    * A implémenter à chaque composant.
    */
-  protected abstract createLink(): NavigationLink;
+  protected abstract createLink(url: string): NavigationLink;
 }

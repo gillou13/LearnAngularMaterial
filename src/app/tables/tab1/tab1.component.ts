@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { NavigationService } from '../../common/services/navigation/navigation.service';
 import { BaseComponent } from '../../common/component/basecomponent/base.component';
-import { Router } from '@angular/router';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 
 export interface PeriodicElement {
@@ -32,11 +30,11 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './tab1.component.html',
   styleUrl: './tab1.component.sass',
 })
-export class Tab1Component extends BaseComponent implements OnInit {
+export class Tab1Component extends BaseComponent {
   public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   public dataSource = ELEMENT_DATA;
 
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(this.router.url, 'tab1', true, 'etat', 'icon');
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'tab1', true, 'etat', 'icon');
   }
 }

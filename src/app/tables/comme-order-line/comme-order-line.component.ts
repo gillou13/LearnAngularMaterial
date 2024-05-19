@@ -62,14 +62,8 @@ import { DisplayColumn } from '../../common/class/display-column';
   ],
 })
 export class CommeOrderLineComponent extends BaseComponent implements OnInit {
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(
-      this.router.url,
-      'OrderLine',
-      true,
-      'etat',
-      'icon'
-    );
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'OrderLine', true, 'etat', 'icon');
   }
 
   /** Colonnes affichées */
@@ -119,7 +113,7 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     this.dataSource.filterPredicate = this.filterPredicateCustom;
   }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     // init de la source de données.
     this.subscriptions.push(
       this.periodicElementService

@@ -28,14 +28,9 @@ export class TestDiagOnCloseComponent
   //   super(router, navigationService);
   // }
 
-  protected override createLink(): NavigationLink {
-    const link = new NavigationLink(
-      this.router.url,
-      'diag on close',
-      true,
-      'etat',
-      'icon'
-    );
+  protected override createLink(url: string): NavigationLink {
+    const link = new NavigationLink(url, 'diag on close', true, 'etat', 'icon');
+
     // dans le cas d'une vérification lors de la suppression.
     this.subscriptions.push(link.deleteSubject.subscribe(() => this.close()));
     return link;

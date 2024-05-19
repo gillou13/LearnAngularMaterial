@@ -104,9 +104,7 @@ export class ExpandableWithFormComponent
     );
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-
+  ngOnInit(): void {
     // Récupération des données :
     this.subscriptions.push(
       this.personneService
@@ -123,14 +121,8 @@ export class ExpandableWithFormComponent
     );
   }
 
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(
-      this.router.url,
-      'tab exp form',
-      true,
-      'etat',
-      'icon'
-    );
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'tab exp form', true, 'etat', 'icon');
   }
 
   private createFromGroupPersonne(personne: Personne): FormGroup {

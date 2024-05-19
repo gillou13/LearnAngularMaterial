@@ -44,9 +44,7 @@ export class TableFilterV1Component extends BaseComponent implements OnInit {
     });
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-
+  ngOnInit(): void {
     // pour chaque changement dans le formulaire on applique le filtre :
     this.subscriptions.push(
       this.fgFilter.valueChanges.subscribe((values) => {
@@ -56,14 +54,8 @@ export class TableFilterV1Component extends BaseComponent implements OnInit {
     );
   }
 
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(
-      this.router.url,
-      'tableau filtré 1',
-      true,
-      'etat',
-      'icon'
-    );
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'tableau filtré 1', true, 'etat', 'icon');
   }
 
   /**

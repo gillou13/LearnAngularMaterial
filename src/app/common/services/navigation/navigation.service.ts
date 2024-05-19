@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  NavigationEnd,
-  NavigationSkipped,
-  NavigationStart,
-  Router,
-} from '@angular/router';
+import { Router } from '@angular/router';
 import { NavigationLink } from './navigation-link';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -29,65 +24,36 @@ export class NavigationService {
   public getLinks: Observable<NavigationLink[]> =
     this.linksSubject.asObservable();
 
-  public constructor(private router: Router) {
-    // router.events.subscribe(($event) => {
-    //   if (
-    //     $event instanceof NavigationStart ||
-    //     $event instanceof NavigationSkipped
-    //   ) {
-    //     console.log('router', $event);
-    //   }
-    // });
-  }
+  public constructor(private router: Router) {}
 
   /**
-   * Permet de trouver le lien en fonction de l'url.
-   * @param url Url utilisée pour la recheche d'un lien existant.
-   * @returns le lien lié à l'url. si l'url n'existe pas dans la liste : undefined.
+   * Permet de générer ou trouver le lien correspondant au composant appelant.
+   * @param fnCreatLink fonction de création d'un nouveau lien.
+   * Délégé au composant appelant.
+   * @returns un lien pour le currentLink du BaseComponent.
    */
-  public getLinkByUrl(url: string): NavigationLink | undefined {
-    const linkIndex = this.links.findIndex((l) => l.url === url);
-    return linkIndex === -1 ? undefined : this.links[linkIndex];
-  }
+  public setNewLink(
+    fnCreatLink: (url: string) => NavigationLink
+  ): NavigationLink {
+    const currentUrl = this.router.url;
+    // recherche de l'url actuel.
+    let linkIndex = this.links.findIndex((l) => l.url === currentUrl);
 
-  /**
-   * Permet d'ajouter/modifier un lien de navigation
-   * @param link description du nouveau lien.
-   */
-  public addLink(newLink: NavigationLink): void {
-    let linkIndex = this.links.findIndex((link) => link.url === newLink.url);
-
+    // Si l'url n'est pas trouvé on ajoute le lien
     if (linkIndex === -1) {
-      // Si l'url n'est pas trouvé on ajoute le lien
-      linkIndex = this.links.push(newLink) - 1;
+      linkIndex = this.links.push(fnCreatLink(currentUrl)) - 1;
     }
 
-    // On active le lien existant.
+    // On active le lien existant. (et on désactive les autres...)
     this.links.forEach(
       (link, currentIndex) => (link.active = currentIndex === linkIndex)
     );
 
-    // Dans tous les cas on renvoi links.
+    // publication de links.
     this.linksSubject.next(this.links);
-  }
 
-  /**
-   * Permet de mettre à jour un liens existant. (ex: état, label, autre...)
-   * @param updatedLink nouvelle description du lien.
-   */
-  public updateLink(updatedLink: NavigationLink): void {
-    let linkIndex = this.links.findIndex(
-      (link) => link.url === updatedLink.url
-    );
-
-    // si on ne le trouve pas, il y a un problème...
-    // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
-    if (linkIndex != -1) {
-      NavigationLink.copy(this.links[linkIndex], updatedLink);
-
-      // Dans tous les cas on renvoi links.
-      this.linksSubject.next(this.links);
-    }
+    // on renvoi le lien.
+    return this.links[linkIndex];
   }
 
   /**

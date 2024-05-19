@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BaseComponent } from '../../common/component/basecomponent/base.component';
-import { Router } from '@angular/router';
-import { NavigationService } from '../../common/services/navigation/navigation.service';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 
@@ -16,7 +14,7 @@ import { NavigationLink } from '../../common/services/navigation/navigation-link
 })
 export class TableWithSortingComponent
   extends BaseComponent
-  implements OnInit, AfterViewInit
+  implements AfterViewInit
 {
   public displayColumns: string[] = ['position', 'name', 'weight', 'symbol'];
 
@@ -34,17 +32,7 @@ export class TableWithSortingComponent
     this.dataSource.sort = this.sort;
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected override createLink(): NavigationLink {
-    return new NavigationLink(
-      this.router.url,
-      'tableau sorting',
-      true,
-      'etat',
-      'icon'
-    );
+  protected override createLink(url: string): NavigationLink {
+    return new NavigationLink(url, 'tableau sorting', true, 'etat', 'icon');
   }
 }
