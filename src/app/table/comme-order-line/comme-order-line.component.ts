@@ -14,11 +14,21 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { CommonModule } from '@angular/common';
-import { map, switchMap, tap } from 'rxjs';
-import { FormatInputPathObject } from 'path';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { DisplayColumn } from '../../common/class/display-column';
 
 // TODO GBE : ajouter:
-// sous-formulaire.
+// sous-formulaire. OK
 //  - reactiv form OK
 // selection.
 // colonne fixé de selection et d'action.
@@ -29,9 +39,27 @@ import { FormatInputPathObject } from 'path';
 @Component({
   selector: 'app-comme-order-line',
   standalone: true,
-  imports: [MatTableModule, CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
+  ],
   templateUrl: './comme-order-line.component.html',
   styleUrl: './comme-order-line.component.sass',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
+    ]),
+  ],
 })
 export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   protected override createLink(): NavigationLink {
@@ -45,7 +73,8 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   }
 
   /** Colonnes affichées */
-  public displayColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  public dataColumns: DisplayColumn[];
+  public displayColumns: string[];
 
   /** Formulaire de filtre. */
   public fgFilter!: FormGroup;
@@ -68,6 +97,20 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
       array: this.formBuilder.array([]),
     });
     this.formArray = this.form.get('array') as FormArray;
+
+    // init des displayColumns.
+    this.dataColumns = [
+      new DisplayColumn('position', 'No.'),
+      new DisplayColumn('name', 'Nom'),
+      new DisplayColumn('weight', 'Poid'),
+      new DisplayColumn('symbol', 'Symbole'),
+    ];
+
+    // TODO GBE : colonne d'action a ajouter par la suite.
+    this.displayColumns = [
+      'expand',
+      ...this.dataColumns.map((x) => x.propName),
+    ];
 
     // init du dataSource.
     this.dataSource = new MatTableDataSource(this.formArray.controls);
@@ -102,8 +145,8 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
 
     // init du formulaire de filtre :
     this.fgFilter = new FormGroup({});
-    this.displayColumns.forEach((columnName) => {
-      this.fgFilter.addControl(columnName, new FormControl(''));
+    this.dataColumns.forEach((dc) => {
+      this.fgFilter.addControl(dc.propName, new FormControl(''));
     });
 
     // pour chaque changement dans le formulaire on applique le filtre :
@@ -166,7 +209,7 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
 
     // Selon le numéro:
     if (formFilterValue.position) {
-      result &&= formFilterValue.position === record.position;
+      result &&= formFilterValue.position == record.position;
     }
 
     return result;
@@ -179,5 +222,16 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     function stringContains(template: string, target: string): boolean {
       return template === '' || new RegExp(template, 'i').test(target);
     }
+  }
+
+  // Fonctions pour la gestion du sous-formulaire
+
+  /**
+   * Permet d'ouvrir/fermer le sous-formulaire
+   * @param fgElement fromFroup de l'élément.
+   */
+  toggleExpand(fgElement: FormGroup): void {
+    const fgExpand = fgElement.get('expand') as FormControl;
+    fgExpand.setValue(!fgExpand.value, { onlySelf: true });
   }
 }
