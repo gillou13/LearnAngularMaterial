@@ -31,13 +31,16 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { map, of } from 'rxjs';
 
 // TODO GBE : ajouter:
-// sous-formulaire. OK
+// -sous-formulaire. OK
 //  - reactiv form OK
-// selection.
-// colonne fixé de selection et d'action.
-// popine de selection des colonnes.
-// changement d'ordre des colonnes via drag and drop.
-// Filtre avancé.
+// -selection OK
+// -trie EC
+// -colonne fixé de selection et d'action.
+// -popine de selection des colonnes.
+// -changement d'ordre des colonnes via drag and drop.
+// -Filtre
+//  - simple OK
+//  - avancé
 
 @Component({
   selector: 'app-comme-order-line',
