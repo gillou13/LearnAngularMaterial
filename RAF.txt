@@ -9,13 +9,10 @@ Liste des choses a faire :
         ? enregistrer la navigation en sessionStorage (F5 sans perdre la navigation) ?
         - remplacer la fonction createLink d
     - Tableaux :    
-        ! Lister les fonctionnalités à implémenter
- EC       - trie
-        - filtre
-        - pagination front 
-        - pagination back
+EC        - comme order line.
     - formulaire
         - tester les inputs 'classique'
+OK        - trouver solution pour le input number.
         - tester les mat-form-field.
     - theming
         - global

@@ -1,0 +1,21 @@
+<p>form-with-control-value-accessor works!</p>
+<div class="formContainer" [formGroup]="form">
+    <div class="formItem">
+        <label>number1</label>
+        <input type="text" formControlName="number1"/>
+    </div>
+    <div class="formItem">
+        <label>number2</label>
+        <!-- <input type="text" formControlName="number2"/> -->
+        <app-input-number formControlName="number2"></app-input-number>
+    </div>
+    <div class="formItem">
+        <label>number1</label>
+        {{ form.get('number1')?.value }}
+    </div>
+    <div class="formItem">
+        <label>number2</label>
+        {{ form.get('number2')?.value }}
+    </div>
+</div>
+{{form.value | json}}

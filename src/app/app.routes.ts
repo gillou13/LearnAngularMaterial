@@ -8,6 +8,7 @@ import { ExpandableWithFormComponent } from './tables/expandable-with-form/expan
 import { TestDiagOnCloseComponent } from './test-diag-on-close/test-diag-on-close.component';
 import { TableWithSortingComponent } from './tables/table-with-sorting/table-with-sorting.component';
 import { TableFilterV1Component } from './tables/table-filter-v1/table-filter-v1.component';
+import { FormWithControlValueAccessorComponent } from './form/form-with-control-value-accessor/form-with-control-value-accessor.component';
 import { CommeOrderLineComponent } from './tables/comme-order-line/comme-order-line.component';
 
 export const routes: Routes = [
@@ -24,6 +25,15 @@ export const routes: Routes = [
       { path: 'sorting', component: TableWithSortingComponent },
       { path: 'filter1', component: TableFilterV1Component },
       { path: 'OrderLine', component: CommeOrderLineComponent },
+    ],
+  },
+  {
+    path: 'form',
+    children: [
+      {
+        path: 'customNumber',
+        component: FormWithControlValueAccessorComponent,
+      },
     ],
   },
   { path: '', redirectTo: '/test1', pathMatch: 'full' },
