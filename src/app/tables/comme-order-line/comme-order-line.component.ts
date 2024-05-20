@@ -87,6 +87,9 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   /** Gestion de la selection */
   public selection = new SelectionModel<FormGroup>(true, []);
 
+  /** Gestion de l'ouverture du sous-formulaire. */
+  public openedSsf = new SelectionModel<FormGroup>(true, []);
+
   constructor(
     public periodicElementService: PeriodicElementService,
     private formBuilder: FormBuilder
@@ -221,13 +224,7 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
    * @returns un FormGroup.
    */
   createFgPeriodicElement(periodicElement: PeriodicElement): FormGroup {
-    // un id pour les différencier
-    // expand pour la gestion du sous-formulaire
-    const fg = this.formBuilder.group({
-      ...periodicElement,
-      expand: false,
-      id: crypto.randomUUID(),
-    });
+    const fg = this.formBuilder.group(periodicElement);
     // TODO GBE: pour les validators on vera plus tard...
     return fg;
   }
@@ -237,8 +234,9 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
    * @param fgElement fromFroup de l'élément.
    */
   toggleExpand(fgElement: FormGroup): void {
-    const fgExpand = fgElement.get('expand') as FormControl;
-    fgExpand.setValue(!fgExpand.value, { onlySelf: true });
+    this.openedSsf.isSelected(fgElement)
+      ? this.openedSsf.deselect(fgElement)
+      : this.openedSsf.select(fgElement);
   }
 
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

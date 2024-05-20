@@ -22,7 +22,7 @@
         <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
         <td mat-cell *matCellDef="let fgElement">
             <button mat-icon-button (click)="toggleExpand(fgElement)">
-                <mat-icon>{{fgElement.value.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
+                <mat-icon>{{openedSsf.isSelected(fgElement) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
             </button>
         </td>
     </ng-container>
@@ -40,7 +40,7 @@
     <!-- définition du sous-formulaire. -->
     <ng-container matColumnDef="expandedDetail">
         <td mat-cell *matCellDef="let element" [attr.colspan]="displayColumns.length">
-            <div class="element-detail" [@detailExpand]="element.get('expand').value ? 'expanded' : 'collapsed'">
+            <div class="element-detail" [@detailExpand]="openedSsf.isSelected(element) ? 'expanded' : 'collapsed'">
                 <div  [formGroup]="element" class="detail-description">
                     <mat-form-field appearance="outline" class="flexItem">
                         <mat-label>No.</mat-label>
