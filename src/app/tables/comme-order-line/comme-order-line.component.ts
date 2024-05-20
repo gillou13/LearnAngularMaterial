@@ -25,7 +25,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DisplayColumn } from '../../common/class/display-column';
+import { SelectionModel } from '@angular/cdk/collections';
+import { map, of } from 'rxjs';
 
 // TODO GBE : ajouter:
 // sous-formulaire. OK
@@ -47,6 +50,7 @@ import { DisplayColumn } from '../../common/class/display-column';
     MatIconModule,
     MatButtonModule,
     MatInputModule,
+    MatCheckboxModule,
   ],
   templateUrl: './comme-order-line.component.html',
   styleUrl: './comme-order-line.component.sass',
@@ -78,7 +82,10 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   public formArray: FormArray;
 
   /** Source de donné du tableau. */
-  public dataSource!: MatTableDataSource<AbstractControl, MatPaginator>;
+  public dataSource!: MatTableDataSource<FormGroup, MatPaginator>;
+
+  /** Gestion de la selection */
+  public selection = new SelectionModel<FormGroup>(true, []);
 
   constructor(
     public periodicElementService: PeriodicElementService,
@@ -102,12 +109,15 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
 
     // TODO GBE : colonne d'action a ajouter par la suite.
     this.displayColumns = [
+      'select',
       'expand',
       ...this.dataColumns.map((x) => x.propName),
     ];
 
     // init du dataSource.
-    this.dataSource = new MatTableDataSource(this.formArray.controls);
+    this.dataSource = new MatTableDataSource(
+      this.formArray.controls as FormGroup[]
+    );
 
     // fonction pour le filtre.
     this.dataSource.filterPredicate = this.filterPredicateCustom;
@@ -118,22 +128,21 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     this.subscriptions.push(
       this.periodicElementService
         .observableStandarData()
-        // GBE : juste pour le test...
-        // .pipe(
-        //   // transformer le tableau de donnée en FormGroup.
-        //   map<PeriodicElement[], FormGroup[]>((periodicElements) => {
-        //     const result = new Array<FormGroup>();
-        //     periodicElements.forEach((periodicElement) =>
-        //       result.push(this.formGroupToPeriodicElement(periodicElement))
-        //     )
-        //     return result;
-        //   }),
-        // )
-        .subscribe((periodicElements: PeriodicElement[]) => {
+        .pipe(
+          // transformer le tableau de donnée en FormGroup.
+          map<PeriodicElement[], FormGroup[]>(
+            (periodicElements: PeriodicElement[]) => {
+              const result = new Array<FormGroup>();
+              periodicElements.forEach((periodicElement) =>
+                result.push(this.createFgPeriodicElement(periodicElement))
+              );
+              return result;
+            }
+          )
+        )
+        .subscribe((fgElements: FormGroup[]) => {
           // on ajouter les lignes au formArray
-          periodicElements.forEach((pe) =>
-            this.formArray.push(this.createFgPeriodicElement(pe))
-          );
+          fgElements.forEach((e) => this.formArray.push(e));
         })
     );
 
@@ -151,22 +160,9 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     );
   }
 
-  /**
-   * Permet de créer un FromGroup pour le tableau selon l'élement indiqué en paramètre.
-   * @param periodicElement l'élément à ajouter dans le formGroup.
-   * @returns un FormGroup.
-   */
-  createFgPeriodicElement(periodicElement: PeriodicElement): FormGroup {
-    // un id pour les différencier
-    // expand pour la gestion du sous-formulaire
-    const fg = this.formBuilder.group({
-      ...periodicElement,
-      expand: false,
-      id: crypto.randomUUID(),
-    });
-    // TODO GBE: pour les validators on vera plus tard...
-    return fg;
-  }
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+  /* Fonctions pour la gestion du filtre                                           */
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
   /**
    * Application du filtre dans le tableau.
@@ -176,10 +172,7 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
    * @param filter
    * @returns
    */
-  private filterPredicateCustom(
-    fgRecord: AbstractControl<any, any>,
-    filter: string
-  ): boolean {
+  private filterPredicateCustom(fgRecord: FormGroup, filter: string): boolean {
     const record = fgRecord.value as PeriodicElement;
     const formFilterValue = JSON.parse(filter) as PeriodicElement;
     // console.log('filterPredicateCustom', formFilterValue);
@@ -218,7 +211,26 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     }
   }
 
-  // Fonctions pour la gestion du sous-formulaire
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+  /* Fonctions pour la gestion du sous-formulaire                                  */
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  /**
+   * Permet de créer un FromGroup pour le tableau selon l'élement indiqué en paramètre.
+   * @param periodicElement l'élément à ajouter dans le formGroup.
+   * @returns un FormGroup.
+   */
+  createFgPeriodicElement(periodicElement: PeriodicElement): FormGroup {
+    // un id pour les différencier
+    // expand pour la gestion du sous-formulaire
+    const fg = this.formBuilder.group({
+      ...periodicElement,
+      expand: false,
+      id: crypto.randomUUID(),
+    });
+    // TODO GBE: pour les validators on vera plus tard...
+    return fg;
+  }
 
   /**
    * Permet d'ouvrir/fermer le sous-formulaire
@@ -227,5 +239,25 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
   toggleExpand(fgElement: FormGroup): void {
     const fgExpand = fgElement.get('expand') as FormControl;
     fgExpand.setValue(!fgExpand.value, { onlySelf: true });
+  }
+
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+  /* Fonctions pour la gestion de la selection                                     */
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  /**
+   * Permet le basculement de la selection de tous les éléments.
+   */
+  toggleAllRows(): void {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.selection.select(...this.dataSource.data);
+  }
+
+  /**
+   * indique si tous les éléments sont selectionnés.
+   */
+  isAllSelected(): boolean {
+    return this.selection.selected.length === this.dataSource.data.length;
   }
 }
