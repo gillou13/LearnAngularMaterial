@@ -35,7 +35,7 @@ import { _isNumberValue } from '@angular/cdk/coercion';
 // -sous-formulaire. OK
 //  - reactiv form OK
 // -selection OK
-// -trie EC
+// -trie OK
 // -colonne fixé de selection et d'action.
 // -popine de selection des colonnes.
 // -changement d'ordre des colonnes via drag and drop.
