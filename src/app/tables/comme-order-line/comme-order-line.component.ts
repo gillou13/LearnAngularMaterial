@@ -36,7 +36,8 @@ import { _isNumberValue } from '@angular/cdk/coercion';
 //  - reactiv form OK
 // -selection OK
 // -trie OK
-// -colonne fixé de selection et d'action.
+// -pagination OK
+// -colonnes fixé des selection et d'action. OK
 // -popine de selection des colonnes.
 // -changement d'ordre des colonnes via drag and drop.
 // -Filtre
@@ -125,12 +126,16 @@ export class CommeOrderLineComponent
       new DisplayColumn('symbol', 'Symbole'),
     ];
 
-    // TODO GBE : colonne d'action a ajouter par la suite.
+    // liste des colonnes du tableau.
     this.displayColumns = [
       'select',
       'expand',
       ...this.dataColumns.map((x) => x.propName),
+      'action',
     ];
+
+    // Liste des colonnes de filtre du tableau.
+    // this.filterColumns = this.displayColumns.map(())
 
     // init du dataSource.
     this.dataSource = new MatTableDataSource(

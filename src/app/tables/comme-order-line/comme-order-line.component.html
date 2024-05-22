@@ -1,7 +1,7 @@
 <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort>
 
     <!-- définition de la colonne de selection -->
-    <ng-container matColumnDef="select">
+    <ng-container matColumnDef="select" [sticky]="true">
         <th mat-header-cell *matHeaderCellDef>
             <mat-checkbox
                 (change)="$event ? toggleAllRows() : null"
@@ -42,6 +42,15 @@
             <td mat-cell *matCellDef="let fgElement"> {{fgElement.value[col.propName]}} </td>
         </ng-container>    
     }
+
+    <ng-container [matColumnDef]="'action'" [stickyEnd]="true">
+        <th mat-header-cell *matHeaderCellDef>
+            <ng-container *ngTemplateOutlet="headerTemplate; context: {title: 'Action'}"></ng-container>
+            
+        </th>
+        <td mat-cell *matCellDef="let fgElement">TODO GBE</td>
+    </ng-container>
+    
 
     <!-- définition du sous-formulaire. -->
     <ng-container matColumnDef="expandedDetail">
@@ -86,8 +95,9 @@
 <ng-template #headerTemplate let-title="title" let-inputName="inputName">
     <div class="headerContainer">
         <div class="headerElement">{{title}}</div>
-        <div class="headerElement" [formGroup]="fgFilter">
+        <div class="headerElement" [formGroup]="fgFilter" *ngIf="inputName">
             <input matInput type="text" [formControlName]="inputName">
         </div>
+        <div class="headerElement" *ngIf="!inputName">&nbsp;</div>
     </div>
 </ng-template>
