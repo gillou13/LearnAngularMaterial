@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../common/component/basecomponent/base.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
@@ -28,7 +27,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DisplayColumn } from '../../common/class/display-column';
 import { SelectionModel } from '@angular/cdk/collections';
-import { map, of } from 'rxjs';
+import { map } from 'rxjs';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { _isNumberValue } from '@angular/cdk/coercion';
 
 // TODO GBE : ajouter:
 // -sous-formulaire. OK
@@ -49,6 +50,7 @@ import { map, of } from 'rxjs';
     CommonModule,
     ReactiveFormsModule,
     MatTableModule,
+    MatSortModule,
     MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
@@ -68,7 +70,10 @@ import { map, of } from 'rxjs';
     ]),
   ],
 })
-export class CommeOrderLineComponent extends BaseComponent implements OnInit {
+export class CommeOrderLineComponent
+  extends BaseComponent
+  implements OnInit, AfterViewInit
+{
   protected override createLink(url: string): NavigationLink {
     return new NavigationLink(url, 'OrderLine', true, 'etat', 'icon');
   }
@@ -92,6 +97,9 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
 
   /** Gestion de l'ouverture du sous-formulaire. */
   public openedSsf = new SelectionModel<FormGroup>(true, []);
+
+  /** Gestion du trie par colonne. */
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     public periodicElementService: PeriodicElementService,
@@ -166,6 +174,11 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
     );
   }
 
+  ngAfterViewInit(): void {
+    // init du sort et de la fonction d'acces pour le trie du dataSource.
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
+  }
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   /* Fonctions pour la gestion du filtre                                           */
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -260,5 +273,27 @@ export class CommeOrderLineComponent extends BaseComponent implements OnInit {
    */
   isAllSelected(): boolean {
     return this.selection.selected.length === this.dataSource.data.length;
+  }
+
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+  /* Fonctions pour la gestion du trie                                             */
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  /**
+   * Fonction pour le trie des valeurs de dataSource.
+   * Attention est executé à l'exterieur du composant.
+   * Ne peut pas contenir des éléments interne (this.xxx).
+   * @param data
+   * @param sortHeaderId
+   * @returns
+   */
+  private sortingDataAccessor(
+    fgElement: FormGroup<any>,
+    sortHeaderId: string
+  ): string | number {
+    // TODO GBE : prendre en compte le '.' en cas de valeur dans un obj.
+    const value = fgElement.value[sortHeaderId];
+
+    return _isNumberValue(value) ? Number(value) : value;
   }
 }

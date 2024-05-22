@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+<table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort>
 
     <!-- définition de la colonne de selection -->
     <ng-container matColumnDef="select">
@@ -30,7 +30,7 @@
     <!-- définition des colonnes de données. -->
     @for(col of dataColumns; track col){
         <ng-container [matColumnDef]="col.propName">
-            <th mat-header-cell *matHeaderCellDef>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
                 <ng-container *ngTemplateOutlet="headerTemplate;context: {title: col.header, inputName: col.propName }" ></ng-container>
             </th>
             <td mat-cell *matCellDef="let fgElement"> {{fgElement.value[col.propName]}} </td>
@@ -59,6 +59,11 @@
     <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayColumns;" class="element-row"></tr>
     <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+
+    <!-- définition quand aucune ligne n'est trouvée. -->
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayColumns.length">Pas de donnée trouvé.</td>
+    </tr>
 </table>
 <div class="headerContainer">
     <div>
