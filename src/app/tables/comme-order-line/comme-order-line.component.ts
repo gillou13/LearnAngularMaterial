@@ -9,7 +9,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { CommonModule } from '@angular/common';
@@ -56,6 +56,7 @@ import { _isNumberValue } from '@angular/cdk/coercion';
     MatButtonModule,
     MatInputModule,
     MatCheckboxModule,
+    MatPaginatorModule,
   ],
   templateUrl: './comme-order-line.component.html',
   styleUrl: './comme-order-line.component.sass',
@@ -100,6 +101,9 @@ export class CommeOrderLineComponent
 
   /** Gestion du trie par colonne. */
   @ViewChild(MatSort) sort!: MatSort;
+
+  /** Gestion de la pagination du tableau */
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     public periodicElementService: PeriodicElementService,
@@ -166,7 +170,7 @@ export class CommeOrderLineComponent
       this.fgFilter.addControl(dc.propName, new FormControl(''));
     });
 
-    // pour chaque changement dans le formulaire on applique le filtre :
+    // pour chaque changement dans le formulaire on applique le filtre au dataSource :
     this.subscriptions.push(
       this.fgFilter.valueChanges.subscribe((values) => {
         this.dataSource.filter = JSON.stringify(values);
@@ -175,9 +179,12 @@ export class CommeOrderLineComponent
   }
 
   ngAfterViewInit(): void {
-    // init du sort et de la fonction d'acces pour le trie du dataSource.
+    // init du sort et de la fonction de trie pour le trie du dataSource.
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
+
+    // init de la pagination du tableau.
+    this.dataSource.paginator = this.paginator;
   }
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   /* Fonctions pour la gestion du filtre                                           */
@@ -255,6 +262,13 @@ export class CommeOrderLineComponent
       : this.openedSsf.select(fgElement);
   }
 
+  /**
+   * Permet de fermer tous les sous-formulaire.
+   */
+  closeAllExpand(): void {
+    this.openedSsf.clear();
+  }
+
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   /* Fonctions pour la gestion de la selection                                     */
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -282,10 +296,10 @@ export class CommeOrderLineComponent
   /**
    * Fonction pour le trie des valeurs de dataSource.
    * Attention est executé à l'exterieur du composant.
-   * Ne peut pas contenir des éléments interne (this.xxx).
+   * Ne peut pas contenir des éléments internes (this.xxx).
    * @param data
    * @param sortHeaderId
-   * @returns
+   * @returns un string ou un numérique.
    */
   private sortingDataAccessor(
     fgElement: FormGroup<any>,
