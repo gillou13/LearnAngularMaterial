@@ -7,6 +7,7 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -23,6 +24,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DisplayColumn } from '../../common/class/display-column';
@@ -38,7 +40,7 @@ import { _isNumberValue } from '@angular/cdk/coercion';
 // -trie OK
 // -pagination OK
 // -colonnes fixé des selection et d'action. OK
-// -popine de selection des colonnes.
+// -popine de selection des colonnes. EC
 // -changement d'ordre des colonnes via drag and drop.
 // -Filtre
 //  - simple OK
@@ -49,6 +51,7 @@ import { _isNumberValue } from '@angular/cdk/coercion';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     MatTableModule,
     MatSortModule,
@@ -58,6 +61,7 @@ import { _isNumberValue } from '@angular/cdk/coercion';
     MatInputModule,
     MatCheckboxModule,
     MatPaginatorModule,
+    MatMenuModule,
   ],
   templateUrl: './comme-order-line.component.html',
   styleUrl: './comme-order-line.component.sass',
@@ -81,8 +85,9 @@ export class CommeOrderLineComponent
   }
 
   /** Colonnes affichées */
-  public dataColumns: DisplayColumn[];
-  public displayColumns: string[];
+  public preDataColumns: DisplayColumn[];
+  public dataColumns!: DisplayColumn[];
+  public displayColumns!: string[];
 
   /** Formulaire de filtre. */
   public fgFilter!: FormGroup;
@@ -118,24 +123,15 @@ export class CommeOrderLineComponent
     });
     this.formArray = this.form.get('array') as FormArray;
 
-    // init des displayColumns.
-    this.dataColumns = [
+    // Init des tableau des colonnes du tableau.
+    this.preDataColumns = [
       new DisplayColumn('position', 'No.'),
       new DisplayColumn('name', 'Nom'),
       new DisplayColumn('weight', 'Poid'),
       new DisplayColumn('symbol', 'Symbole'),
     ];
-
-    // liste des colonnes du tableau.
-    this.displayColumns = [
-      'select',
-      'expand',
-      ...this.dataColumns.map((x) => x.propName),
-      'action',
-    ];
-
-    // Liste des colonnes de filtre du tableau.
-    // this.filterColumns = this.displayColumns.map(())
+    this.setDataColumns();
+    this.setDisplayColumns();
 
     // init du dataSource.
     this.dataSource = new MatTableDataSource(
@@ -190,6 +186,39 @@ export class CommeOrderLineComponent
 
     // init de la pagination du tableau.
     this.dataSource.paginator = this.paginator;
+  }
+
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+  /* Fonctions pour la gestion des colonnes                                        */
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  /**
+   * event sur le changement de selection de colonne.
+   */
+  public onSelectColumnChange(): void {
+    this.setDataColumns();
+    this.setDisplayColumns();
+  }
+
+  /**
+   * Calcule le dataColumns.
+   */
+  private setDataColumns(): void {
+    this.dataColumns = this.preDataColumns
+      .filter((x) => x.selected)
+      .map((x) => x);
+  }
+
+  /**
+   * Calcule le displayColumns.
+   */
+  private setDisplayColumns(): void {
+    this.displayColumns = [
+      'select',
+      'expand',
+      ...this.dataColumns.map((x) => x.propName),
+      'action',
+    ];
   }
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   /* Fonctions pour la gestion du filtre                                           */

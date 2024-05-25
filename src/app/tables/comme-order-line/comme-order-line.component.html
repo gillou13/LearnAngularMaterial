@@ -1,3 +1,19 @@
+<div class="bodyContainer">
+<div class="selectColumnButton">
+    <button mat-mini-fab [mat-menu-trigger-for]="menuColumn"><mat-icon>more-horiz</mat-icon></button>
+    <mat-menu #menuColumn="matMenu">
+        <div class="menu-content">
+            <mat-checkbox 
+                *ngFor="let colonne of preDataColumns mat-menu-item" 
+                [(ngModel)]="colonne.selected" 
+                (change)="onSelectColumnChange()" 
+                (click)="$event.stopPropagation()">
+                {{ colonne.header }}
+            </mat-checkbox>
+        </div>
+    </mat-menu>
+</div>
+
 <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort>
 
     <!-- définition de la colonne de selection -->
@@ -101,3 +117,4 @@
         <div class="headerElement" *ngIf="!inputName">&nbsp;</div>
     </div>
 </ng-template>
+</div>
