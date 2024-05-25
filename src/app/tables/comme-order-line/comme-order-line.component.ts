@@ -11,7 +11,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import {
+  MatTable,
+  MatTableDataSource,
+  MatTableModule,
+} from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { CommonModule } from '@angular/common';
 import {
@@ -98,6 +102,7 @@ export class CommeOrderLineComponent
   public preDataColumns: DisplayColumn[];
   public dataColumns!: DisplayColumn[];
   public displayColumns!: string[];
+  public filterColumns!: string[];
 
   /** Formulaire de filtre. */
   public fgFilter!: FormGroup;
@@ -121,6 +126,8 @@ export class CommeOrderLineComponent
   /** Gestion de la pagination du tableau */
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  // @ViewChild(MatTable) table!: MatTable<any>;
+
   constructor(
     public periodicElementService: PeriodicElementService,
     private formBuilder: FormBuilder
@@ -140,8 +147,7 @@ export class CommeOrderLineComponent
       new DisplayColumn('weight', 'Poid'),
       new DisplayColumn('symbol', 'Symbole'),
     ];
-    this.setDataColumns();
-    this.setDisplayColumns();
+    this.setTableColumns();
 
     // init du dataSource.
     this.dataSource = new MatTableDataSource(
@@ -177,7 +183,7 @@ export class CommeOrderLineComponent
 
     // init du formulaire de filtre :
     this.fgFilter = new FormGroup({});
-    this.dataColumns.forEach((dc) => {
+    this.preDataColumns.forEach((dc) => {
       this.fgFilter.addControl(dc.propName, new FormControl(''));
     });
 
@@ -185,6 +191,7 @@ export class CommeOrderLineComponent
     this.subscriptions.push(
       this.fgFilter.valueChanges.subscribe((values) => {
         this.dataSource.filter = JSON.stringify(values);
+        // this.table.renderRows();
       })
     );
   }
@@ -206,9 +213,10 @@ export class CommeOrderLineComponent
    * event sur le changement de selection de colonne.
    */
   public onSelectColumnChange(): void {
-    this.setDataColumns();
-    this.setDisplayColumns();
+    this.setTableColumns();
   }
+
+  public previewIndex: number = 0;
 
   /**
    * Gestion du changement d'ordre de colonne via de drag and drop dans le menu de selection.
@@ -222,33 +230,50 @@ export class CommeOrderLineComponent
       event.previousIndex,
       event.currentIndex
     );
-    this.setDataColumns();
-    this.setDisplayColumns();
+    this.setTableColumns();
+  }
+
+  public tableColumnStarted(event: any): void {
+    console.log('tableColumnStarted', event);
+  }
+
+  public tableColumnDropped(event: any): void {
+    console.log('tableColumnDropped', event);
   }
 
   /**
-   * Calcule le dataColumns.
+   * Calcul des tableaux de colonnes.
    */
-  private setDataColumns(): void {
+  private setTableColumns(): void {
+    // les données
     this.dataColumns = this.preDataColumns
       .filter((x) => x.selected)
       .map((x) => x);
-  }
 
-  /**
-   * Calcule le displayColumns.
-   */
-  private setDisplayColumns(): void {
+    // les displays:
     this.displayColumns = [
       'select',
       'expand',
       ...this.dataColumns.map((x) => x.propName),
       'action',
     ];
+
+    // // les filtres
+    this.filterColumns = this.dataColumns.map((x) => x.propName + '_filter');
   }
+
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   /* Fonctions pour la gestion du filtre                                           */
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  /**
+   * Renvoi le libellé du control de fgFilter selon le nom de la colonne indiqué en paramètre.
+   * @param colName le nom de la colonne de filtre
+   * @returns le nom du control de fgFiltre
+   */
+  public getFilterControlName(colName: string): string {
+    return colName.replace('_filter', '');
+  }
 
   /**
    * Application du filtre dans le tableau.
