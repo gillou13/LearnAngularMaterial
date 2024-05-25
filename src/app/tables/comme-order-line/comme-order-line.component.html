@@ -2,14 +2,21 @@
 <div class="selectColumnButton">
     <button mat-mini-fab [mat-menu-trigger-for]="menuColumn"><mat-icon>more-horiz</mat-icon></button>
     <mat-menu #menuColumn="matMenu">
-        <div class="menu-content">
-            <mat-checkbox 
+        <div 
+            class="menu-content" 
+            cdkDropList
+            (cdkDropListDropped)="selectColumnDrop($event)" >
+            <div 
                 *ngFor="let colonne of preDataColumns mat-menu-item" 
-                [(ngModel)]="colonne.selected" 
-                (change)="onSelectColumnChange()" 
-                (click)="$event.stopPropagation()">
-                {{ colonne.header }}
-            </mat-checkbox>
+                cdkDrag>
+                <mat-icon (click)="$event.stopPropagation()">dialpad</mat-icon>
+                <mat-checkbox 
+                    [(ngModel)]="colonne.selected" 
+                    (change)="onSelectColumnChange()" 
+                    (click)="$event.stopPropagation()">
+                    {{ colonne.header }}
+                </mat-checkbox>
+            </div>
         </div>
     </mat-menu>
 </div>

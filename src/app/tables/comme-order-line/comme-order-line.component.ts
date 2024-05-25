@@ -32,6 +32,13 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { map } from 'rxjs';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { _isNumberValue } from '@angular/cdk/coercion';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  moveItemInArray,
+  DragDropModule,
+} from '@angular/cdk/drag-drop';
 
 // TODO GBE : ajouter:
 // -sous-formulaire. OK
@@ -62,6 +69,9 @@ import { _isNumberValue } from '@angular/cdk/coercion';
     MatCheckboxModule,
     MatPaginatorModule,
     MatMenuModule,
+    DragDropModule,
+    CdkDrag,
+    CdkDropList,
   ],
   templateUrl: './comme-order-line.component.html',
   styleUrl: './comme-order-line.component.sass',
@@ -196,6 +206,22 @@ export class CommeOrderLineComponent
    * event sur le changement de selection de colonne.
    */
   public onSelectColumnChange(): void {
+    this.setDataColumns();
+    this.setDisplayColumns();
+  }
+
+  /**
+   * Gestion du changement d'ordre de colonne via de drag and drop dans le menu de selection.
+   * @param event dragDrop
+   */
+  public selectColumnDrop(
+    event: CdkDragDrop<DisplayColumn[], DisplayColumn[]>
+  ): void {
+    moveItemInArray(
+      this.preDataColumns,
+      event.previousIndex,
+      event.currentIndex
+    );
     this.setDataColumns();
     this.setDisplayColumns();
   }
