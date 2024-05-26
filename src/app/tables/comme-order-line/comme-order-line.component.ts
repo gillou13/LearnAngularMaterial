@@ -51,11 +51,11 @@ import {
 // -trie OK
 // -pagination OK
 // -colonnes fixé des selection et d'action. OK
-// -popine de selection des colonnes. EC
-// -changement d'ordre des colonnes via drag and drop.
+// -popine de selection des colonnes. OK
+// -changement d'ordre des colonnes via drag and drop. OK
 // -Filtre
 //  - simple OK
-//  - avancé
+//  - avancé EC
 
 @Component({
   selector: 'app-comme-order-line',
