@@ -21,7 +21,14 @@
     </mat-menu>
 </div>
 
-<table mat-table [dataSource]="dataSource" multiTemplateDataRows cdkDropListGroup matSort>
+<table 
+    mat-table 
+    [dataSource]="dataSource" 
+    multiTemplateDataRows 
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="selectColumnDrop($event)"
+    matSort>
 
     <!-- définition de la colonne de selection -->
     <ng-container matColumnDef="select" [sticky]="true">
@@ -63,17 +70,14 @@
                 mat-header-cell 
                 *matHeaderCellDef 
                 mat-sort-header
-                cdkDropList 
-                cdkDropListLockAxis="x"
-                cdkDropListOrientation="horizontal"
-                (cdkDropListDropped)="tableColumnDropped($event)"
                 cdkDrag
-                (cdkDragStarted)="tableColumnStarted($event)"
-                [cdkDragData]="col">
+                cdkDragLockAxis="x" 
+                cdkDragBoundary="mat-header-row"
+                >
                 {{col.header}}
             </th>
             <td mat-cell *matCellDef="let fgElement"> {{fgElement.value[col.propName]}} </td>
-        </ng-container>    
+        </ng-container>
     }
 
     <ng-container [matColumnDef]="'action'" [stickyEnd]="true">

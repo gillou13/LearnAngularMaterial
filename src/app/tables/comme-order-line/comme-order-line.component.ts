@@ -219,7 +219,7 @@ export class CommeOrderLineComponent
   public previewIndex: number = 0;
 
   /**
-   * Gestion du changement d'ordre de colonne via de drag and drop dans le menu de selection.
+   * Gestion du changement d'ordre de colonne via de drag and drop dans le menu de selection et par les entêtes de colonne du tableau.
    * @param event dragDrop
    */
   public selectColumnDrop(
@@ -231,14 +231,6 @@ export class CommeOrderLineComponent
       event.currentIndex
     );
     this.setTableColumns();
-  }
-
-  public tableColumnStarted(event: any): void {
-    console.log('tableColumnStarted', event);
-  }
-
-  public tableColumnDropped(event: any): void {
-    console.log('tableColumnDropped', event);
   }
 
   /**
