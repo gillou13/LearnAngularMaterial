@@ -1,142 +1,155 @@
 <div class="bodyContainer">
-<div class="selectColumnButton">
-    <button mat-mini-fab [mat-menu-trigger-for]="menuColumn"><mat-icon>more-horiz</mat-icon></button>
-    <mat-menu #menuColumn="matMenu">
-        <div 
-            class="menu-content" 
-            cdkDropList
-            (cdkDropListDropped)="selectColumnDrop($event)" >
+    <div class="selectColumnButton">
+        <button mat-mini-fab [mat-menu-trigger-for]="menuColumn"><mat-icon>more-horiz</mat-icon></button>
+        <mat-menu #menuColumn="matMenu">
             <div 
-                *ngFor="let colonne of preDataColumns mat-menu-item" 
-                cdkDrag>
-                <mat-icon (click)="$event.stopPropagation()">dialpad</mat-icon>
-                <mat-checkbox 
-                    [(ngModel)]="colonne.selected" 
-                    (change)="onSelectColumnChange()" 
-                    (click)="$event.stopPropagation()">
-                    {{ colonne.header }}
-                </mat-checkbox>
-            </div>
-        </div>
-    </mat-menu>
-</div>
-
-<table 
-    mat-table 
-    [dataSource]="dataSource" 
-    multiTemplateDataRows 
-    cdkDropList
-    cdkDropListOrientation="horizontal"
-    (cdkDropListDropped)="selectColumnDrop($event)"
-    matSort>
-
-    <!-- définition de la colonne de selection -->
-    <ng-container matColumnDef="select" [sticky]="true">
-        <th mat-header-cell *matHeaderCellDef rowspan="2">
-            <mat-checkbox
-                (change)="$event ? toggleAllRows() : null"
-                [checked]="selection.hasValue() && isAllSelected()"
-                [indeterminate]="selection.hasValue() && !isAllSelected()"/>
-        </th>
-        <td mat-cell *matCellDef="let fgElement">
-            <mat-checkbox
-                (click)="$event.stopPropagation()"
-                (change)="$event ? selection.toggle(fgElement) : null"
-                [checked]="selection.isSelected(fgElement)"/>
-        </td>
-    </ng-container>
-    
-
-    <!-- définition de la colonne d'expand -->
-    <ng-container matColumnDef="expand">
-        <!-- pour une colonne vide :
-        <th mat-header-cell *matHeaderCellDef>&nbsp;</th> -->
-        <th mat-header-cell *matHeaderCellDef rowspan="2">
-            <button mat-icon-button (click)="closeAllExpand()">
-                <mat-icon>keyboard_double_arrow_up</mat-icon>
-            </button>
-        </th>
-        <td mat-cell *matCellDef="let fgElement">
-            <button mat-icon-button (click)="toggleExpand(fgElement)">
-                <mat-icon>{{openedSsf.isSelected(fgElement) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
-            </button>
-        </td>
-    </ng-container>
-
-    <!-- définition des colonnes de données. -->
-    @for(col of dataColumns; track col){
-        <ng-container [matColumnDef]="col.propName" >
-            <th 
-                mat-header-cell 
-                *matHeaderCellDef 
-                mat-sort-header
-                cdkDrag
-                cdkDragLockAxis="x" 
-                cdkDragBoundary="mat-header-row"
-                >
-                {{col.header}}
-            </th>
-            <td mat-cell *matCellDef="let fgElement"> {{fgElement.value[col.propName]}} </td>
-        </ng-container>
-    }
-
-    <ng-container [matColumnDef]="'action'" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef rowspan="2">
-            Action
-        </th>
-        <td mat-cell *matCellDef="let fgElement">TODO GBE</td>
-    </ng-container>
-    
-
-    <!-- définition du sous-formulaire. -->
-    <ng-container matColumnDef="expandedDetail">
-        <td mat-cell *matCellDef="let element" [attr.colspan]="displayColumns.length">
-            <div class="element-detail" [@detailExpand]="openedSsf.isSelected(element) ? 'expanded' : 'collapsed'">
-                <div  [formGroup]="element" class="detail-description">
-                    <mat-form-field appearance="outline" class="flexItem">
-                        <mat-label>No.</mat-label>
-                        <input matInput [formControl]="element.get('position')">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="flexItem">
-                        <mat-label>Name</mat-label>
-                        <input matInput [formControl]="element.get('name')">
-                    </mat-form-field>
+                class="menu-content" 
+                cdkDropList
+                (cdkDropListDropped)="selectColumnDrop($event)" >
+                <div 
+                    *ngFor="let colonne of preDataColumns mat-menu-item" 
+                    cdkDrag>
+                    <mat-icon (click)="$event.stopPropagation()">dialpad</mat-icon>
+                    <mat-checkbox 
+                        [(ngModel)]="colonne.selected" 
+                        (change)="onSelectColumnChange()" 
+                        (click)="$event.stopPropagation()">
+                        {{ colonne.header }}
+                    </mat-checkbox>
                 </div>
             </div>
-        </td>
-    </ng-container>
-
-    <!-- Définition des filtres. -->
-    <ng-container matColumnDef="noFilter">
-        <th mat-header-cell *matHeaderCellDef></th>
-    </ng-container>
-    <ng-container *ngFor="let colName of filterColumns" [matColumnDef]="colName">
-        <th mat-header-cell *matHeaderCellDef [formGroup]="fgFilter">
-            <input class="headerElement" matInput type="text" [formControlName]="getFilterControlName(colName)">
-        </th>
-    </ng-container>
-    
-    
-
-    <!-- définition des lignes -->
-    <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
-    <tr mat-header-row *matHeaderRowDef="filterColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayColumns;" class="element-row"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
-
-    <!-- définition quand aucune ligne n'est trouvée. -->
-    <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="displayColumns.length">Pas de donnée trouvé.</td>
-    </tr>
-</table>
-<!-- pagigation du tableau -->
-<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true"/>
-<div class="headerContainer">
-    <div>
-        formulaire de filtre : 
+        </mat-menu>
     </div>
-    <div>
-        {{this.fgFilter.value | json }}
+
+    <table 
+        mat-table 
+        [dataSource]="dataSource" 
+        multiTemplateDataRows 
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="selectColumnDrop($event)"
+        matSort>
+
+        <!-- définition de la colonne de selection -->
+        <ng-container matColumnDef="select" [sticky]="true">
+            <th mat-header-cell *matHeaderCellDef rowspan="2">
+                <mat-checkbox
+                    (change)="$event ? toggleAllRows() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()"/>
+            </th>
+            <td mat-cell *matCellDef="let fgElement">
+                <mat-checkbox
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(fgElement) : null"
+                    [checked]="selection.isSelected(fgElement)"/>
+            </td>
+        </ng-container>
+        
+
+        <!-- définition de la colonne d'expand -->
+        <ng-container matColumnDef="expand">
+            <!-- pour une colonne vide :
+            <th mat-header-cell *matHeaderCellDef>&nbsp;</th> -->
+            <th mat-header-cell *matHeaderCellDef rowspan="2">
+                <button mat-icon-button (click)="closeAllExpand()">
+                    <mat-icon>keyboard_double_arrow_up</mat-icon>
+                </button>
+            </th>
+            <td mat-cell *matCellDef="let fgElement">
+                <button mat-icon-button (click)="toggleExpand(fgElement)">
+                    <mat-icon>{{openedSsf.isSelected(fgElement) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <!-- définition des colonnes de données. -->
+        @for(col of dataColumns; track col){
+            <ng-container [matColumnDef]="col.propName" >
+                <th 
+                    mat-header-cell 
+                    *matHeaderCellDef 
+                    mat-sort-header
+                    cdkDrag
+                    cdkDragLockAxis="x" 
+                    cdkDragBoundary="mat-header-row"
+                    >
+                    {{col.header}}
+                </th>
+                <td mat-cell *matCellDef="let fgElement"> {{fgElement.value[col.propName]}} </td>
+            </ng-container>
+        }
+
+        <ng-container [matColumnDef]="'action'" [stickyEnd]="true">
+            <th mat-header-cell *matHeaderCellDef rowspan="2">
+                Action
+            </th>
+            <td mat-cell *matCellDef="let fgElement">TODO GBE</td>
+        </ng-container>
+        
+
+        <!-- définition du sous-formulaire. -->
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="displayColumns.length">
+                <div class="element-detail" [@detailExpand]="openedSsf.isSelected(element) ? 'expanded' : 'collapsed'">
+                    <div  [formGroup]="element" class="detail-description">
+                        <mat-form-field appearance="outline" class="flexItem">
+                            <mat-label>No.</mat-label>
+                            <input matInput [formControl]="element.get('position')">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="flexItem">
+                            <mat-label>Name</mat-label>
+                            <input matInput [formControl]="element.get('name')">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <!-- Définition des filtres. -->
+        <ng-container matColumnDef="noFilter">
+            <th mat-header-cell *matHeaderCellDef></th>
+        </ng-container>
+        <ng-container *ngFor="let colName of filterColumns" [matColumnDef]="colName">
+            <th mat-header-cell *matHeaderCellDef [formGroup]="fgFilter">
+                <div class="FilterContainer">
+                    <!-- Filtre avancé -->
+                    <input matInput hidden [formControlName]="colName">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>{{ fgFilter.get(colName)?.value | iconToFilterType }}</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        @for (filterType of filterTypeByColonneName[colName]; track $index) {
+                            <button mat-menu-item (click)="fgFilter.get(colName)?.setValue(filterType)">
+                                <mat-icon>{{ filterType | iconToFilterType }}</mat-icon>
+                                <span>{{ filterType | iconToFilterType: true }}</span>
+                            </button>
+                        }
+                    </mat-menu>
+                    <input class="FilterInput" matInput type="text" [formControlName]="getFilterControlName(colName)">
+                </div>
+            </th>
+        </ng-container>
+
+        <!-- définition des lignes -->
+        <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="filterColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumns;" class="element-row"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+
+        <!-- définition quand aucune ligne n'est trouvée. -->
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayColumns.length">Pas de donnée trouvé.</td>
+        </tr>
+    </table>
+    <!-- pagigation du tableau -->
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true"/>
+    <div class="headerContainer">
+        <div>
+            formulaire de filtre : 
+        </div>
+        <div>
+            {{this.fgFilter.value | json }}
+        </div>
     </div>
-</div>
 </div>

@@ -43,6 +43,10 @@ import {
   moveItemInArray,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
+import { FilterOperations } from '../../common/staticTools/filter-operations';
+import { FilterType } from '../../common/enum/filter-type';
+import { IconToFilterTypePipe } from '../../common/pipe/icon-to-filter-type.pipe';
+import { PeriodicElementFilter } from './periodic-element-filter';
 
 // TODO GBE : ajouter:
 // -sous-formulaire. OK
@@ -55,7 +59,7 @@ import {
 // -changement d'ordre des colonnes via drag and drop. OK
 // -Filtre
 //  - simple OK
-//  - avancé EC
+//  - avancé OK
 
 @Component({
   selector: 'app-comme-order-line',
@@ -76,6 +80,7 @@ import {
     DragDropModule,
     CdkDrag,
     CdkDropList,
+    IconToFilterTypePipe,
   ],
   templateUrl: './comme-order-line.component.html',
   styleUrl: './comme-order-line.component.sass',
@@ -97,6 +102,8 @@ export class CommeOrderLineComponent
   protected override createLink(url: string): NavigationLink {
     return new NavigationLink(url, 'OrderLine', true, 'etat', 'icon');
   }
+
+  public readonly suffixFiltre = 'FilterType';
 
   /** Colonnes affichées */
   public preDataColumns: DisplayColumn[];
@@ -185,13 +192,19 @@ export class CommeOrderLineComponent
     this.fgFilter = new FormGroup({});
     this.preDataColumns.forEach((dc) => {
       this.fgFilter.addControl(dc.propName, new FormControl(''));
+      // Type de filtre avec l'opé par défaut.
+      this.fgFilter.addControl(
+        dc.propName + this.suffixFiltre,
+        new FormControl(
+          this.filterTypeByColonneName[dc.propName + this.suffixFiltre][0]
+        )
+      );
     });
 
     // pour chaque changement dans le formulaire on applique le filtre au dataSource :
     this.subscriptions.push(
       this.fgFilter.valueChanges.subscribe((values) => {
         this.dataSource.filter = JSON.stringify(values);
-        // this.table.renderRows();
       })
     );
   }
@@ -202,6 +215,7 @@ export class CommeOrderLineComponent
     this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
 
     // init de la pagination du tableau.
+    // (pour info : a ajouter en cas de changement de la source du matdataSource.)
     this.dataSource.paginator = this.paginator;
   }
 
@@ -251,7 +265,9 @@ export class CommeOrderLineComponent
     ];
 
     // // les filtres
-    this.filterColumns = this.dataColumns.map((x) => x.propName + '_filter');
+    this.filterColumns = this.dataColumns.map(
+      (x) => x.propName + this.suffixFiltre
+    );
   }
 
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -259,12 +275,31 @@ export class CommeOrderLineComponent
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
   /**
+   * Choix possible d'opérateur pour les colonnes.
+   * les noms des props doivent être identiques au noms des colonnes de filtre.
+   */
+  public filterTypeByColonneName = {
+    positionFilterType: [
+      FilterType.numberEqual,
+      FilterType.numberLessOrEqualThan,
+      FilterType.numberMoreOrEqualThan,
+    ],
+    nameFilterType: [FilterType.stringContains],
+    weightFilterType: [
+      FilterType.numberEqual,
+      FilterType.numberLessOrEqualThan,
+      FilterType.numberMoreOrEqualThan,
+    ],
+    symbolFilterType: [FilterType.stringContains],
+  } as any;
+
+  /**
    * Renvoi le libellé du control de fgFilter selon le nom de la colonne indiqué en paramètre.
    * @param colName le nom de la colonne de filtre
    * @returns le nom du control de fgFiltre
    */
   public getFilterControlName(colName: string): string {
-    return colName.replace('_filter', '');
+    return colName.replace(this.suffixFiltre, '');
   }
 
   /**
@@ -277,8 +312,8 @@ export class CommeOrderLineComponent
    */
   private filterPredicateCustom(fgRecord: FormGroup, filter: string): boolean {
     const record = fgRecord.value as PeriodicElement;
-    const formFilterValue = JSON.parse(filter) as PeriodicElement;
-    // console.log('filterPredicateCustom', formFilterValue);
+    const formFilterValue = JSON.parse(filter) as PeriodicElementFilter;
+
     // Tous les props sont vide : on voit tous.
     if (
       !formFilterValue.description &&
@@ -292,26 +327,34 @@ export class CommeOrderLineComponent
     let result = true;
 
     // Selon le nom:
-    result &&= stringContains(formFilterValue.name, record.name);
+    result &&= FilterOperations.applyOperator(
+      record.name,
+      formFilterValue.name,
+      formFilterValue.nameFilterType
+    );
 
     // Selon le Symbole:
-    result &&= stringContains(formFilterValue.symbol, record.symbol);
+    result &&= FilterOperations.applyOperator(
+      record.symbol,
+      formFilterValue.symbol,
+      formFilterValue.symbolFilterType
+    );
 
     // Selon le numéro:
-    if (formFilterValue.position) {
-      result &&= formFilterValue.position == record.position;
-    }
+    result &&= FilterOperations.applyOperator(
+      record.position,
+      formFilterValue.position,
+      formFilterValue.positionFilterType
+    );
+
+    // Selon le poid:
+    result &&= FilterOperations.applyOperator(
+      record.weight,
+      formFilterValue.weight,
+      formFilterValue.weightFilterType
+    );
 
     return result;
-
-    /**
-     * Si template est contenu dans target renvoie true. n'est pas sensible à la case.
-     * @param template utilisé pour la constrution du regex
-     * @param target string testé.
-     */
-    function stringContains(template: string, target: string): boolean {
-      return template === '' || new RegExp(template, 'i').test(target);
-    }
   }
 
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
