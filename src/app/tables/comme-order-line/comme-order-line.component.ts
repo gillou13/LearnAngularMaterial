@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { BaseComponent } from '../../common/component/basecomponent/base.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
@@ -34,7 +40,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DisplayColumn } from '../../common/class/display-column';
 import { SelectionModel } from '@angular/cdk/collections';
 import { map } from 'rxjs';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule, SortDirection } from '@angular/material/sort';
 import { _isNumberValue } from '@angular/cdk/coercion';
 import {
   CdkDrag,
@@ -47,6 +53,7 @@ import { FilterOperations } from '../../common/staticTools/filter-operations';
 import { FilterType } from '../../common/enum/filter-type';
 import { IconToFilterTypePipe } from '../../common/pipe/icon-to-filter-type.pipe';
 import { PeriodicElementFilter } from './periodic-element-filter';
+import { PageStateService } from '../../common/services/pageState/page-state.service';
 
 // TODO GBE : ajouter:
 // -sous-formulaire. OK
@@ -60,6 +67,11 @@ import { PeriodicElementFilter } from './periodic-element-filter';
 // -Filtre
 //  - simple OK
 //  - avancé OK
+// - colonne d'état de la ligne.
+// - Enregistrement de l'état
+//  - de la recherche OK
+//  - pagination. EC
+//  - des données modifiés. (sans tous enregistrer...).
 
 @Component({
   selector: 'app-comme-order-line',
@@ -97,7 +109,7 @@ import { PeriodicElementFilter } from './periodic-element-filter';
 })
 export class CommeOrderLineComponent
   extends BaseComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, OnDestroy
 {
   protected override createLink(url: string): NavigationLink {
     return new NavigationLink(url, 'OrderLine', true, 'etat', 'icon');
@@ -116,6 +128,8 @@ export class CommeOrderLineComponent
 
   /** formulaire parent */
   public form: FormGroup;
+
+  /** tableau de donnée */
   public formArray: FormArray;
 
   /** Source de donné du tableau. */
@@ -137,7 +151,8 @@ export class CommeOrderLineComponent
 
   constructor(
     public periodicElementService: PeriodicElementService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private pageStateService: PageStateService
   ) {
     super();
 
@@ -188,7 +203,38 @@ export class CommeOrderLineComponent
         })
     );
 
-    // init du formulaire de filtre :
+    // si l'état est enregistré on le récupére et l'applique.
+    // Sinon on le créer.
+    if (this.pageStateService.hasStates()) {
+      const states = this.pageStateService.getStates() as CurrentState;
+
+      // le fitre
+      this.fgFilter = states.fgFilter as FormGroup;
+      this.dataSource.filter = JSON.stringify(this.fgFilter.value);
+
+      // le sort (c'est pas gagné...)
+      // if (states.currentSort?.active) {
+      //   this.sort.active = states.currentSort?.active ?? '';
+      //   this.sort.direction = states.currentSort?.direction ?? '';
+      //   // this.sort.sortChange.emit(states.currentSort);
+      // }
+    } else {
+      // init du formulaire de filtre :
+      this.createFgFilter();
+    }
+
+    // pour chaque changement dans le formulaire on applique le filtre au dataSource :
+    this.subscriptions.push(
+      this.fgFilter.valueChanges.subscribe((values) => {
+        this.dataSource.filter = JSON.stringify(values);
+      })
+    );
+  }
+
+  /**
+   * Permet de créer le formulaire de filtre pour le tableau.
+   */
+  private createFgFilter() {
     this.fgFilter = new FormGroup({});
     this.preDataColumns.forEach((dc) => {
       this.fgFilter.addControl(dc.propName, new FormControl(''));
@@ -200,13 +246,6 @@ export class CommeOrderLineComponent
         )
       );
     });
-
-    // pour chaque changement dans le formulaire on applique le filtre au dataSource :
-    this.subscriptions.push(
-      this.fgFilter.valueChanges.subscribe((values) => {
-        this.dataSource.filter = JSON.stringify(values);
-      })
-    );
   }
 
   ngAfterViewInit(): void {
@@ -217,6 +256,23 @@ export class CommeOrderLineComponent
     // init de la pagination du tableau.
     // (pour info : a ajouter en cas de changement de la source du matdataSource.)
     this.dataSource.paginator = this.paginator;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    // Enregistrement de l'état du composant.
+    this.saveCurrentState();
+  }
+
+  /**
+   * Permet d'enregistrer l'état du composant.
+   */
+  private saveCurrentState() {
+    const state = {
+      fgFilter: this.fgFilter,
+      currentSort: { active: this.sort.active, direction: this.sort.direction },
+    } as CurrentState;
+    this.pageStateService.addStates(this.currentLink.url, state);
   }
 
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -430,4 +486,10 @@ export class CommeOrderLineComponent
 
     return _isNumberValue(value) ? Number(value) : value;
   }
+}
+
+class CurrentState {
+  public fgFilter?: FormGroup;
+  public currentSort?: { active: string; direction: SortDirection };
+  public pagination?: string;
 }

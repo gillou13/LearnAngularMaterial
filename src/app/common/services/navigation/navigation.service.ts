@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationLink } from './navigation-link';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { PageStateService } from '../pageState/page-state.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,10 @@ export class NavigationService {
   public getLinks: Observable<NavigationLink[]> =
     this.linksSubject.asObservable();
 
-  public constructor(private router: Router) {}
+  public constructor(
+    private router: Router,
+    private pageStateService: PageStateService
+  ) {}
 
   /**
    * Permet de générer ou trouver le lien correspondant au composant appelant.
@@ -106,6 +110,10 @@ export class NavigationService {
    * Suppression interne du lien.
    */
   private deleteLink(linkIndex: number): void {
+    // on supprimer les states associés au lien
+    this.pageStateService.deleteStates(this.links[linkIndex].url);
+
+    // si le lien est actif, on navigera vers le dernier lien de la liste.
     const isActive = this.links[linkIndex].active;
 
     this.links.splice(linkIndex, 1);
