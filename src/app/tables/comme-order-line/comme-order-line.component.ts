@@ -17,11 +17,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import {
-  MatTable,
-  MatTableDataSource,
-  MatTableModule,
-} from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { CommonModule } from '@angular/common';
 import {
@@ -211,17 +207,12 @@ export class CommeOrderLineComponent
       // le fitre
       this.fgFilter = states.fgFilter as FormGroup;
       this.dataSource.filter = JSON.stringify(this.fgFilter.value);
-
-      // le sort (c'est pas gagné...)
-      // if (states.currentSort?.active) {
-      //   this.sort.active = states.currentSort?.active ?? '';
-      //   this.sort.direction = states.currentSort?.direction ?? '';
-      //   // this.sort.sortChange.emit(states.currentSort);
-      // }
     } else {
       // init du formulaire de filtre :
       this.createFgFilter();
     }
+
+    // this.dataSource.sort = this.sort;
 
     // pour chaque changement dans le formulaire on applique le filtre au dataSource :
     this.subscriptions.push(
@@ -252,6 +243,19 @@ export class CommeOrderLineComponent
     // init du sort et de la fonction de trie pour le trie du dataSource.
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = this.sortingDataAccessor;
+
+    // si l'état est enregistré on récupére le sort et l'applique. (pas réussi)
+    // if (this.pageStateService.hasStates()) {
+    //   const sortState = (this.pageStateService.getStates() as CurrentState)
+    //     .currentSort as Sort;
+    // this.sort.active = sortState.active;
+    // this.sort.direction = sortState.direction;
+    // this.sort.sortChange.emit(sortState);
+    // console.log(sortState);
+    // const sortHeader: MatSortHeader = this.sort.sortables.get(sortState.active) as MatSortHeader;
+    // sortHeader._setAnimationTransitionState({fromState: sortHeader._arrowDirection, toState: 'active'});
+    // this.sort.sortChange.emit(sortHeader);
+    // }
 
     // init de la pagination du tableau.
     // (pour info : a ajouter en cas de changement de la source du matdataSource.)
