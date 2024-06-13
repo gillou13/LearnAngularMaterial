@@ -2,11 +2,12 @@
 <mat-dialog-content *ngIf="data.text">
   <p>{{data.text}}</p>
 </mat-dialog-content>
-<mat-dialog-actions>
+<mat-dialog-actions align="end">
     <!-- test sans MatDialogActions -->
   <!-- <button mat-button (click)="onYesClick()">{{data.yesText}}</button>
   <button mat-button (click)="onNoClick()">{{data.noText}}</button> -->
     <!-- test avec MatDialogActions -->
-    <button mat-button [mat-dialog-close]="true">{{data.yesText}}</button>
-    <button mat-button [mat-dialog-close]="false">{{data.noText}}</button>
+    <button *ngIf="data.yesText != undefined" mat-button [mat-dialog-close]="true">{{data.yesText}}</button>
+    <button *ngIf="data.noText != undefined" mat-button [mat-dialog-close]="false">{{data.noText}}</button>
+    <button *ngIf="data.cancelText != undefined" mat-button (click)="onCancelClick()">{{data.cancelText}}</button>
 </mat-dialog-actions>

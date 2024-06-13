@@ -37,4 +37,8 @@ export class DialogBasicComponent {
   // public onNoClick() {
   //   this.dialogRef.close(false);
   // }
+
+  public onCancelClick() {
+    this.dialogRef.close(undefined);
+  }
 }

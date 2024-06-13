@@ -71,4 +71,18 @@ export class Test1Component extends BaseComponent {
           : 'juste le titre: non.';
       });
   }
+
+  public testDialog5() {
+    this.dialogService
+      .dialogYesNoCancel(
+        'titre du cancel',
+        undefined,
+        undefined,
+        undefined,
+        'cancel'
+      )
+      .subscribe((result: boolean | undefined) => {
+        this.resultDialog = 'cancel ?';
+      });
+  }
 }
