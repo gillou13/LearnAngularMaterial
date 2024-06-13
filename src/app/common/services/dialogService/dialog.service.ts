@@ -6,7 +6,7 @@ import { DialogBasicComponent } from './dialog-basic/dialog-basic.component';
 
 // RAF :
 // - yesNo OK
-// - yesNoCancel
+// - yesNoCancel OK
 // - Ok (avec template html)
 
 @Injectable({
