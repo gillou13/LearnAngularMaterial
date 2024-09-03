@@ -1,3 +1,4 @@
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 
 export class NavigationLink {
@@ -8,7 +9,9 @@ export class NavigationLink {
   public active: boolean;
   public etat: string; // TODO GBE : a typer par la suite selon les états de form réactive.
   public icon: string; // TODO GBE : a enumerer selon l'utilisation.
-  public deleteSubject: Subject<void>;
+
+  // Lien vers le formulaire lié au composant.
+  public formData: AbstractControl | undefined;
 
   constructor(
     /*id: number, */ url: string,
@@ -16,16 +19,12 @@ export class NavigationLink {
     active: boolean = true,
     etat: string = '',
     icon: string = ''
-    // emitClose: boolean = false,
   ) {
     this.url = url;
     this.label = label;
     this.active = active;
     this.etat = etat;
     this.icon = icon;
-    // this.emitClose = emitClose;
-    // this.eventSubject = new Subject<string>();
-    this.deleteSubject = new Subject<void>();
   }
 
   public static copy(dest: NavigationLink, source: NavigationLink): void {

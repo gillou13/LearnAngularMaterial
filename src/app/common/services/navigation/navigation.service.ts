@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NavigationLink } from './navigation-link';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PageStateService } from '../pageState/page-state.service';
+import { DialogService } from '../dialogService/dialog.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,8 @@ export class NavigationService {
 
   public constructor(
     private router: Router,
-    private pageStateService: PageStateService
+    private pageStateService: PageStateService,
+    private dialogService: DialogService
   ) {}
 
   /**
@@ -71,11 +73,49 @@ export class NavigationService {
     // si on ne le trouve pas, il y a un problème...
     // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
     if (linkIndex != -1) {
-      // si l'eventDelete est suivie et que l'on ne force pas le delete.
-      if (this.links[linkIndex].deleteSubject.observed) {
-        this.links[linkIndex].deleteSubject.next();
+      // Vérification de l'état de l'abstractControl liée si existant.
+      if (deletedLink.formData != undefined) {
+        // Si le formulaire n'est pas valide : on retourne dessus ou pas ?
+        if (!deletedLink.formData.valid) {
+          this.dialogService
+            .dialogYesNoCancel(
+              'form invalide',
+              "le formulaire n'est pas valide. voullez-vous finir la saisie avant que fermer ?"
+            )
+            .subscribe((response: boolean | undefined) => {
+              if (response == undefined) {
+                console.log('on annule');
+              } else if (response) {
+                console.log('on retourne sur le formulaire');
+                this.router.navigateByUrl(deletedLink.url);
+              } else {
+                console.log('on ferme quand même');
+                this.deleteLink(linkIndex);
+              }
+            });
+        }
+        // Si le formulaire peu être enregistré directement.
+        else if (deletedLink.formData.dirty) {
+          this.dialogService
+            .dialogYesNo(
+              'Enregister',
+              "Le formulaire n'est pas encore enregisté. Voulez-vous sauvegarder avant de quitter ?"
+            )
+            .subscribe((response: boolean) => {
+              if (response) {
+                // TODO GBE : il faudrai ajouter un service pour l'enregistrement du formulaire...
+                console.log('on enregistre et on quitte.');
+                this.deleteLink(linkIndex);
+              } else {
+                console.log('on quitte seulement.');
+                this.deleteLink(linkIndex);
+              }
+            });
+        } else {
+          this.deleteLink(linkIndex);
+        }
       }
-      // sinon suppression normale.
+      // sinon on ferme simplement.
       else {
         this.deleteLink(linkIndex);
       }
