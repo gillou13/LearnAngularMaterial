@@ -3,6 +3,10 @@ import { NavigationService } from '../../services/navigation/navigation.service'
 import { NavigationLink } from '../../services/navigation/navigation-link';
 import { Subscription } from 'rxjs';
 
+/**
+ * Base de composant.
+ * La fonction createLink doit être définit pour que la page fonctionne.
+ */
 @Component({
   selector: 'app-base',
   standalone: true,

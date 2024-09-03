@@ -10,6 +10,7 @@ import { TableWithSortingComponent } from './tables/table-with-sorting/table-wit
 import { TableFilterV1Component } from './tables/table-filter-v1/table-filter-v1.component';
 import { FormWithControlValueAccessorComponent } from './form/form-with-control-value-accessor/form-with-control-value-accessor.component';
 import { CommeOrderLineComponent } from './tables/comme-order-line/comme-order-line.component';
+import { TrucComponent } from './truc/truc.component';
 
 export const routes: Routes = [
   { path: 'test1', component: Test1Component },
@@ -33,6 +34,10 @@ export const routes: Routes = [
       {
         path: 'customNumber',
         component: FormWithControlValueAccessorComponent,
+      },
+      {
+        path: 'truc',
+        component: TrucComponent,
       },
     ],
   },

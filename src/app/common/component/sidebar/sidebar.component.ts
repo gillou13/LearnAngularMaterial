@@ -26,5 +26,6 @@ export class SidebarComponent {
     { routerLink: '/table/OrderLine', label: 'OrderLine' },
     // les formulaires:
     { routerLink: '/form/customNumber', label: 'form number' },
+    { routerLink: '/form/truc', label: 'form truc' },
   ];
 }
