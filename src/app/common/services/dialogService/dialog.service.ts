@@ -32,9 +32,9 @@ export class DialogService {
   public dialogYesNoCancel(
     title?: string,
     text?: string,
-    yesText?: string,
-    noText?: string,
-    cancelText?: string
+    yesText: string = 'Oui',
+    noText: string = 'Non',
+    cancelText: string = 'Annuler'
   ): Observable<boolean | undefined> {
     const dialogRef = this.matDialog.open(DialogBasicComponent, {
       data: { title, text, yesText, noText, cancelText },
