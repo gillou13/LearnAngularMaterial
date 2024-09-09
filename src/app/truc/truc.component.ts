@@ -18,7 +18,7 @@ import { NavigationStart } from '@angular/router';
 @Component({
   selector: 'app-truc',
   templateUrl: './truc.component.html',
-  styleUrl: './truc.component.css',
+  styleUrl: './truc.component.scss',
   standalone: true,
   imports: [
     MatInputModule,
