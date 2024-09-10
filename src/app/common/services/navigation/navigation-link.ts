@@ -1,5 +1,4 @@
-import { AbstractControl, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { AbstractControl } from '@angular/forms';
 
 export class NavigationLink {
   // public id: number;
@@ -10,8 +9,8 @@ export class NavigationLink {
   public etat: string; // TODO GBE : a typer par la suite selon les états de form réactive.
   public icon: string; // TODO GBE : a enumerer selon l'utilisation.
 
-  // Lien vers le formulaire lié au composant.
-  public formData: AbstractControl | undefined;
+  /** Lien vers le formulaire lié au composant. */
+  public formData?: AbstractControl;
 
   constructor(
     /*id: number, */ url: string,
@@ -27,6 +26,7 @@ export class NavigationLink {
     this.icon = icon;
   }
 
+  /**GBE:  Non utilisé pour le moment. */
   public static copy(dest: NavigationLink, source: NavigationLink): void {
     dest.active = source.active;
     dest.etat = source.etat;
