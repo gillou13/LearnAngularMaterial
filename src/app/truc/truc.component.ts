@@ -19,7 +19,15 @@ import { NavigationStart } from '@angular/router';
 import { FormFrameComponent } from '../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../common/component/form-frame/model/frame-model';
 import { FrameButtonModel } from '../common/component/form-frame/model/frame-button-model';
-import { Observable, of, Subject, switchMap } from 'rxjs';
+import {
+  endWith,
+  finalize,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  switchMap,
+} from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
 
@@ -201,7 +209,7 @@ export class TrucComponent extends BaseComponent {
       this.saveAction
         .pipe(
           switchMap(() => {
-            console.log('action save', this.addressForm.value, this.apiService);
+            // console.log('action save', this.addressForm.value, this.apiService);
             return this.save();
           }),
           // on réinit le formulaire.
@@ -212,9 +220,10 @@ export class TrucComponent extends BaseComponent {
             return of(resultSave);
           })
         )
-        .subscribe((result: boolean) => {
-          console.log('action save fin.', result);
-        })
+        .subscribe()
+      // .subscribe((result: boolean) => {
+      //   console.log('action save fin.', result);
+      // })
     );
 
     // le Close
@@ -222,13 +231,14 @@ export class TrucComponent extends BaseComponent {
       this.closeAction
         .pipe(
           switchMap(() => {
-            console.log('on ferme!');
+            // console.log('on ferme!');
             return this.navigationService.onDeleteLink(this.currentLink);
           })
         )
-        .subscribe((result: boolean) => {
-          console.log("puisque je vous dis qu'on ferme!", result);
-        })
+        .subscribe()
+      // .subscribe((result: boolean) => {
+      //   console.log('action saveClose fin.', result);
+      // })
     );
 
     // le save & close
@@ -240,15 +250,16 @@ export class TrucComponent extends BaseComponent {
           }),
           switchMap((result: boolean) => {
             if (result) {
-              console.log('... on quitte.');
+              // console.log('... on quitte.');
               return this.navigationService.onDeleteLink(this.currentLink);
             }
             return of(false);
           })
         )
-        .subscribe((result: boolean) => {
-          console.log('fin du saveClose', result);
-        })
+        .subscribe()
+      // .subscribe((result: boolean) => {
+      //   console.log('saveClose fin', result);
+      // })
     );
   }
 
@@ -266,20 +277,12 @@ export class TrucComponent extends BaseComponent {
       )
     );
 
-    // Configuration du save :
-    this.frameModel.saveButton = new FrameButtonModel();
-    this.frameModel.saveButton.label = 'Enregistrer';
-    this.frameModel.saveButton.isVisible = true;
-    this.frameModel.saveButton.isAvailable = this.addressForm.valid;
-    // Selon l'état du formulaire :
-    this.subscriptions.push(
-      this.addressForm.statusChanges.subscribe((status: FormControlStatus) => {
-        this.frameModel.saveButton!.isAvailable = status === 'VALID';
-      })
-    );
+    // // Test pour la lecture seul :
+    // this.frameModel.saveVisible = false;
+    // this.addressForm.disable();
 
     // liaison des actions.
-    this.frameModel.saveButton!.action = this.saveAction;
+    this.frameModel.saveAction = this.saveAction;
     this.frameModel.closeAction = this.closeAction;
     this.frameModel.saveCloseAction = this.saveCloseAction;
   }
@@ -292,15 +295,33 @@ export class TrucComponent extends BaseComponent {
    * Si apiService.save == true, on réinit le formulaire.
    */
   public save(): Observable<boolean> {
-    return this.apiService.save(this.addressForm.value as TrucModel).pipe(
+    return of(void 0).pipe(
+      // Gestion du loading.
+      switchMap(() => {
+        this.frameModel.inLoading = true;
+        return of(void 0);
+      }),
+      // appel à l'API.
+      switchMap(() => {
+        return this.apiService.save(this.addressForm.value as TrucModel);
+      }),
       // on réinit le formulaire. si le save est OK.
       switchMap((resultSave: boolean) => {
         if (resultSave === true) {
-          console.log('on réinit le formulaire.');
+          // console.log('on réinit le formulaire.');
           this.addressForm = this.initFormData();
           this.currentLink.formData = this.addressForm;
         }
+        // Pour les tests d'erreur en attendant le snakBar.
+        // else {
+        //   console.log('save en erreur');
+        // }
         return of(resultSave);
+      }),
+      // Gestion du loading (fin).
+      finalize(() => {
+        // console.log('finalize de save');
+        this.frameModel.inLoading = false;
       })
     );
   }

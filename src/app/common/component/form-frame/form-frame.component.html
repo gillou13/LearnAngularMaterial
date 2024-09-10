@@ -1,8 +1,8 @@
 <div class="titleContainer">
-    <h3 *ngIf="frameModel?.title != undefined">{{frameModel?.title}}</h3>
+    <h3 *ngIf="frameModel?.title != undefined">{{frameModel.title}}</h3>
     <ng-container *ngTemplateOutlet="saveButtons"/>
 </div>
-<h4 *ngIf="frameModel?.name != undefined">{{frameModel?.name}}</h4>
+<h4 *ngIf="frameModel?.name != undefined">{{frameModel.name}}</h4>
 <P>Liste des boutons paramètrables.</P>
 <ng-content/>
 <ng-container *ngTemplateOutlet="saveButtons"/>
@@ -10,20 +10,25 @@
 <!-- template de bouton save utilisé en header & footer. -->
 <ng-template #saveButtons>
     <p class="buttonSaveContainer">
+        <!-- template pour le spinner 'global' -->
+        <ng-container *ngIf="frameModel.inLoading">
+            <mat-icon><mat-spinner diameter="20"/></mat-icon>
+        </ng-container>
         <button 
-            *ngIf="frameModel?.saveButton?.isVisible ?? false"
-            (click)="frameModel!.saveButton!.action!.next(undefined)"
-            [disabled]="!frameModel?.saveButton?.isAvailable"
+            *ngIf="frameModel.saveVisible"
+            (click)="frameModel.saveAction!.next(undefined)"
+            [disabled]="!frameModel.actionEnabled || frameModel.inLoading || formData.invalid || formData.pristine"
             mat-raised-button
-            >{{frameModel?.saveButton?.label}}</button>
+            >Save</button>
         <button 
-            *ngIf="frameModel?.saveButton?.isVisible ?? false"
-            [disabled]="!frameModel?.saveButton?.isAvailable"
-            (click)="frameModel!.saveCloseAction!.next(undefined)"
+            *ngIf="frameModel.saveVisible"
+            [disabled]="!frameModel.actionEnabled || frameModel.inLoading || formData.invalid || formData.pristine"
+            (click)="frameModel.saveCloseAction!.next(undefined)"
             mat-raised-button
             >Save & close</button>
         <button 
             (click)="frameModel!.closeAction!.next(undefined)"
+            [disabled]="frameModel.inLoading"
             mat-raised-button
             >close</button>
     </p>

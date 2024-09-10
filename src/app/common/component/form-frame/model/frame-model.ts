@@ -16,14 +16,28 @@ export class FrameModel {
    */
   picture?: string;
 
-  /** Gestion du bouton d'enregistrement. */
-  saveButton?: FrameButtonModel;
+  /** indique si les boutons d'enregistrement peuvent être visible. */
+  saveVisible = true;
+
+  /** indique si les boutons sont disponibles. */
+  actionEnabled = true;
+
+  /** indique qu'un traitement est en cours. */
+  inLoading = false;
+
+  // Actions venant du formulaire:
+
+  /** Action d'enregistrement */
+  saveAction?: Subject<any>;
 
   /** Action de fermeture du formulaire */
-  closeAction?: Subject<any>;
+  closeAction!: Subject<any>;
 
   /** Action d'enregistrement et de fermeture de la page. */
   saveCloseAction?: Subject<any>;
 
+  /**
+   * Liste des actions 'complémentaires'.
+   */
   actions?: FrameButtonModel[];
 }
