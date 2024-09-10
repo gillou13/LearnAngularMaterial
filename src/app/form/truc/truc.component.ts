@@ -11,14 +11,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
-import { BasePageComponent } from '../common/component/base-page/base-page.component';
-import { NavigationLink } from '../common/services/navigation/navigation-link';
-import { FormFrameComponent } from '../common/component/form-frame/form-frame.component';
-import { FrameModel } from '../common/component/form-frame/model/frame-model';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
+import { NavigationLink } from '../../common/services/navigation/navigation-link';
+import { FormFrameComponent } from '../../common/component/form-frame/form-frame.component';
+import { FrameModel } from '../../common/component/form-frame/model/frame-model';
 import { finalize, Observable, of, Subject, switchMap, delay } from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
-import { FrameButtonModel } from '../common/component/form-frame/model/frame-button-model';
+import { FrameButtonModel } from '../../common/component/form-frame/model/frame-button-model';
 
 @Component({
   selector: 'app-truc',
