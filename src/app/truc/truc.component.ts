@@ -5,8 +5,6 @@ import {
   FormBuilder,
   Validators,
   FormGroup,
-  FormControl,
-  FormControlStatus,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,19 +13,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { BaseComponent } from '../common/component/basecomponent/base.component';
 import { NavigationLink } from '../common/services/navigation/navigation-link';
-import { NavigationStart } from '@angular/router';
 import { FormFrameComponent } from '../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../common/component/form-frame/model/frame-model';
-import { FrameButtonModel } from '../common/component/form-frame/model/frame-button-model';
-import {
-  endWith,
-  finalize,
-  Observable,
-  of,
-  startWith,
-  Subject,
-  switchMap,
-} from 'rxjs';
+import { finalize, Observable, of, Subject, switchMap } from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
 

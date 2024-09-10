@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TrucModel } from './model/truc-model';
-import { delay, Observable, of, switchMap } from 'rxjs';
+import { delay, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
