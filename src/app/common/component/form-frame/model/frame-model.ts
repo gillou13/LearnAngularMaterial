@@ -22,5 +22,8 @@ export class FrameModel {
   /** Action de fermeture du formulaire */
   closeAction?: Subject<any>;
 
+  /** Action d'enregistrement et de fermeture de la page. */
+  saveCloseAction?: Subject<any>;
+
   actions?: FrameButtonModel[];
 }

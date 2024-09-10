@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationLink } from './navigation-link';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { PageStateService } from '../pageState/page-state.service';
 import { DialogService } from '../dialogService/dialog.service';
 
@@ -66,64 +66,79 @@ export class NavigationService {
    * Méthode 'soft' pour la suppresssion.
    * Peu déléguer au composant navtabs liée la gestion de la suppression.
    * @param deletedLink Le lien à supprimer.
+   * @returns Observable<boolean> true si le lien est supprimé.
    */
-  public onDeleteLink(deletedLink: NavigationLink): void {
+  public onDeleteLink(deletedLink: NavigationLink): Observable<boolean> {
     let linkIndex = this.getLinkIndex(deletedLink);
 
     // si on ne le trouve pas, il y a un problème...
-    // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
-    if (linkIndex != -1) {
+    if (linkIndex == -1) {
+      // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
+      return of(false);
+    } else {
       // Vérification de l'état de l'abstractControl liée si existant.
-      if (deletedLink.formData != undefined) {
+      if (deletedLink.formData == undefined) {
+        this.deleteLink(linkIndex);
+        return of(true);
+      } else {
         // Si le formulaire n'est pas valide : on retourne dessus ou pas ?
         if (!deletedLink.formData.valid) {
-          this.dialogService
+          return this.dialogService
             .dialogYesNoCancel(
               'form invalide',
               "le formulaire n'est pas valide. voullez-vous finir la saisie avant que fermer ?"
             )
-            .subscribe((response: boolean | undefined) => {
-              if (response == undefined) {
-                console.log('on annule');
-              } else if (response) {
-                console.log('on retourne sur le formulaire');
-                this.router.navigateByUrl(deletedLink.url);
-              } else {
-                console.log('on ferme quand même');
-                this.deleteLink(linkIndex);
-              }
-            });
+            .pipe(
+              switchMap((response: boolean | undefined) => {
+                if (response == undefined) {
+                  // console.log('on annule');
+                  return of();
+                } else if (response) {
+                  // console.log('on retourne sur le formulaire');
+                  this.router.navigateByUrl(deletedLink.url);
+                  console.log('on passe ici ?');
+                  return of();
+                } else {
+                  // console.log('on ferme quand même');
+                  this.deleteLink(linkIndex);
+                  return of(true);
+                }
+              })
+            );
         }
         // Si le formulaire peu être enregistré directement.
         else if (deletedLink.formData.dirty) {
-          this.dialogService
+          return this.dialogService
             .dialogYesNo(
               'Enregister',
               "Le formulaire n'est pas encore enregisté. Voulez-vous sauvegarder avant de quitter ?"
             )
-            .subscribe((response: boolean) => {
-              if (response) {
-                // TODO GBE : il faudrai ajouter un service pour l'enregistrement du formulaire...
-                console.log('on enregistre et on quitte.');
-                this.deleteLink(linkIndex);
-              } else {
-                console.log('on quitte seulement.');
-                this.deleteLink(linkIndex);
-              }
-            });
-        } else {
-          this.deleteLink(linkIndex);
+            .pipe(
+              switchMap((response: boolean) => {
+                if (response) {
+                  // TODO GBE : il faudrai ajouter un service pour l'enregistrement du formulaire...
+                  console.log('on enregistre et on quitte.');
+                  this.deleteLink(linkIndex);
+                  return of(true);
+                } else {
+                  console.log('on quitte seulement.');
+                  this.deleteLink(linkIndex);
+                  return of(true);
+                }
+              })
+            );
         }
-      }
-      // sinon on ferme simplement.
-      else {
-        this.deleteLink(linkIndex);
+        // Si le formulaire n'est pas modifié.
+        else {
+          this.deleteLink(linkIndex);
+          return of(true);
+        }
       }
     }
   }
 
   /**
-   * Méthode 'bute' pour la suppression.
+   * Méthode 'brute' pour la suppression.
    * Utilisé par les composants pour supprimer le lien.
    * @param deletedLink le lien à supprimer.
    */
@@ -170,6 +185,10 @@ export class NavigationService {
    * @returns le dernier éléments de la liste.
    */
   private getLastLink(): NavigationLink {
+    // Si il n'y a plus d'onglet d'ouvert, par défaut on va sur test1.
+    if (this.links.length == 0) {
+      return new NavigationLink('test1');
+    }
     return this.links.slice(-1)[0];
   }
 }

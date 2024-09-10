@@ -19,6 +19,7 @@
         <button 
             *ngIf="frameModel?.saveButton?.isVisible ?? false"
             [disabled]="!frameModel?.saveButton?.isAvailable"
+            (click)="frameModel!.saveCloseAction!.next(undefined)"
             mat-raised-button
             >Save & close</button>
         <button 

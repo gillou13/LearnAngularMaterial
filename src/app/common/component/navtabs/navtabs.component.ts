@@ -47,7 +47,7 @@ export class NavtabsComponent implements OnDestroy {
   }
 
   public onClose(link: NavigationLink): void {
-    this.navigationService.onDeleteLink(link);
+    this.navigationService.onDeleteLink(link).subscribe();
   }
 
   public getSelectedTabIndex(): number {
