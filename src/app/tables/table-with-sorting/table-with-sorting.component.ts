@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BaseComponent } from '../../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 
@@ -13,7 +13,7 @@ import { NavigationLink } from '../../common/services/navigation/navigation-link
   styleUrl: './table-with-sorting.component.sass',
 })
 export class TableWithSortingComponent
-  extends BaseComponent
+  extends BasePageComponent
   implements AfterViewInit
 {
   public displayColumns: string[] = ['position', 'name', 'weight', 'symbol'];

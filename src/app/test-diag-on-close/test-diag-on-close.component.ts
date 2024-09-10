@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { BaseComponent } from '../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../common/component/base-page/base-page.component';
 import { NavigationLink } from '../common/services/navigation/navigation-link';
 import { Router } from '@angular/router';
 import { NavigationService } from '../common/services/navigation/navigation.service';
@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './test-diag-on-close.component.sass',
 })
 export class TestDiagOnCloseComponent
-  extends BaseComponent
+  extends BasePageComponent
   implements OnDestroy
 {
   public withDialog: boolean = true;

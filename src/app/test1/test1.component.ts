@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { BaseComponent } from '../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../common/component/base-page/base-page.component';
 import { NavigationService } from '../common/services/navigation/navigation.service';
 import { Router } from '@angular/router';
 import { NavigationLink } from '../common/services/navigation/navigation-link';
@@ -13,7 +13,7 @@ import { DialogService } from '../common/services/dialogService/dialog.service';
   templateUrl: './test1.component.html',
   styleUrl: './test1.component.sass',
 })
-export class Test1Component extends BaseComponent {
+export class Test1Component extends BasePageComponent {
   public resultDialog: string;
 
   constructor(private dialogService: DialogService) {

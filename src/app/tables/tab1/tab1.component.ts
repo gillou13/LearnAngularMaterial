@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { BaseComponent } from '../../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 
 export interface PeriodicElement {
@@ -30,7 +30,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './tab1.component.html',
   styleUrl: './tab1.component.sass',
 })
-export class Tab1Component extends BaseComponent {
+export class Tab1Component extends BasePageComponent {
   public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   public dataSource = ELEMENT_DATA;
 

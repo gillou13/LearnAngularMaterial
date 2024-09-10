@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { MatTableModule } from '@angular/material/table';
 import { PeriodicElement } from '../../fakes/service/periodic-element';
@@ -37,7 +37,7 @@ interface DisplayColumn {
     ]),
   ],
 })
-export class Expandable1Component extends BaseComponent implements OnInit {
+export class Expandable1Component extends BasePageComponent implements OnInit {
   public datas: PeriodicElement[] = new Array<PeriodicElement>();
   // public tabExpanded: any[] = new Array<any>();
   public displayColumns: DisplayColumn[] = [

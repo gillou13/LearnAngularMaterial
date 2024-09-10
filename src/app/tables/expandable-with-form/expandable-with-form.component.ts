@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { BaseComponent } from '../../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { CommonModule } from '@angular/common';
 import {
@@ -54,7 +54,7 @@ import { MatInputModule } from '@angular/material/input';
   ],
 })
 export class ExpandableWithFormComponent
-  extends BaseComponent
+  extends BasePageComponent
   implements OnInit
 {
   @ViewChild(MatTable) table!: MatTable<any>;

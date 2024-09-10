@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { NavigationService } from '../../common/services/navigation/navigation.service';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { MatTableModule } from '@angular/material/table';
   templateUrl: './basic.component.html',
   styleUrl: './basic.component.sass',
 })
-export class BasicComponent extends BaseComponent {
+export class BasicComponent extends BasePageComponent {
   public displayColumns: string[] = ['position', 'name', 'weight', 'symbol'];
 
   public constructor(public periodicElementService: PeriodicElementService) {

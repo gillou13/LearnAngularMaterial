@@ -8,13 +8,13 @@ import { Subscription } from 'rxjs';
  * La fonction createLink doit être définit pour que la page fonctionne.
  */
 @Component({
-  selector: 'app-base',
+  selector: 'app-base-page',
   standalone: true,
   imports: [],
-  templateUrl: './base.component.html',
-  styleUrl: './base.component.sass',
+  templateUrl: './base-page.component.html',
+  styleUrl: './base-page.component.sass',
 })
-export abstract class BaseComponent implements OnDestroy {
+export abstract class BasePageComponent implements OnDestroy {
   /** le lien courrant est soit récupéré via le service de navigation, soit crée par le composant.
    *
    * Il est possible de la modifier par la suite.

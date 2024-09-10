@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BaseComponent } from '../../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import {
   FormBuilder,
@@ -30,7 +30,7 @@ import { PageStateService } from '../../common/services/pageState/page-state.ser
   ],
 })
 export class FormWithControlValueAccessorComponent
-  extends BaseComponent
+  extends BasePageComponent
   implements OnDestroy
 {
   protected override createLink(url: string): NavigationLink {

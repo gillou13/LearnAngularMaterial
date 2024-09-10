@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
-import { BaseComponent } from '../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../common/component/base-page/base-page.component';
 import { NavigationLink } from '../common/services/navigation/navigation-link';
 import { FormFrameComponent } from '../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../common/component/form-frame/model/frame-model';
@@ -35,7 +35,7 @@ import { FrameButtonModel } from '../common/component/form-frame/model/frame-but
     FormFrameComponent,
   ],
 })
-export class TrucComponent extends BaseComponent {
+export class TrucComponent extends BasePageComponent {
   private apiService: TrucApiService;
 
   constructor() {

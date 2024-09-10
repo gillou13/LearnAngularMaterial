@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { BaseComponent } from '../../common/component/basecomponent/base.component';
+import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
 import {
@@ -104,7 +104,7 @@ import { PageStateService } from '../../common/services/pageState/page-state.ser
   ],
 })
 export class CommeOrderLineComponent
-  extends BaseComponent
+  extends BasePageComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   protected override createLink(url: string): NavigationLink {
