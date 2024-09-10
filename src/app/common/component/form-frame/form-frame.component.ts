@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
  * Composant générique pour la gestion des actions d'un formulaire.
  * TODO GBE :
  * - boutons save & close.
+ * - gestion spinner/enabled des boutons.
  * - Liste des boutons 'par défaut' save, close, copy, print
  * - custom button.
  * - BaseFromComponent (dérivé de BaseComponent avec intégration du cadre)

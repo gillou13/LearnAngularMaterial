@@ -64,7 +64,7 @@ export class NavigationService {
 
   /**
    * Méthode 'soft' pour la suppresssion.
-   * Peu déléguer au composant liée la gestion de la suppression.
+   * Peu déléguer au composant navtabs liée la gestion de la suppression.
    * @param deletedLink Le lien à supprimer.
    */
   public onDeleteLink(deletedLink: NavigationLink): void {

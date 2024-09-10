@@ -19,7 +19,9 @@ import { NavigationStart } from '@angular/router';
 import { FormFrameComponent } from '../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../common/component/form-frame/model/frame-model';
 import { FrameButtonModel } from '../common/component/form-frame/model/frame-button-model';
-import { Subject } from 'rxjs';
+import { of, Subject, switchMap } from 'rxjs';
+import { TrucApiService } from './truc-api.service';
+import { TrucModel } from './model/truc-model';
 
 @Component({
   selector: 'app-truc',
@@ -37,8 +39,13 @@ import { Subject } from 'rxjs';
   ],
 })
 export class TrucComponent extends BaseComponent {
+  private apiService: TrucApiService;
+
   constructor() {
     super();
+
+    //DI :
+    this.apiService = inject(TrucApiService);
 
     // Initialisation du formulaire selon la navigation client
     // TODO GBE : ou les params d'entrés.
@@ -48,14 +55,8 @@ export class TrucComponent extends BaseComponent {
     // MAJ du formulaire dans currentLink.
     this.currentLink.formData = this.addressForm;
 
-    // Init des subjects.
-    this.saveAction = new Subject<any>();
-
-    this.subscriptions.push(
-      this.saveAction.subscribe((value: any) => {
-        console.log('action save', value);
-      })
-    );
+    // Init des actions.
+    this.initActions();
 
     // Initialisation du cadre du formulaire (form-frame).
     this.initFrame();
@@ -148,16 +149,35 @@ export class TrucComponent extends BaseComponent {
    * @returns Le FromGroup du composant.
    */
   private initFormData(): FormGroup {
+    // const form = this.fb.group({
+    //   company: null,
+    //   firstName: [null, Validators.required],
+    //   lastName: [null, Validators.required],
+    //   address: [null, Validators.required],
+    //   address2: null,
+    //   city: [null, Validators.required],
+    //   state: [null, Validators.required],
+    //   postalCode: [
+    //     null,
+    //     Validators.compose([
+    //       Validators.required,
+    //       Validators.minLength(5),
+    //       Validators.maxLength(5),
+    //     ]),
+    //   ],
+    //   shipping: ['free', Validators.required],
+    // });
+    // la flém de tous saisir a chaque fois...
     const form = this.fb.group({
-      company: null,
-      firstName: [null, Validators.required],
-      lastName: [null, Validators.required],
-      address: [null, Validators.required],
+      company: 'Gillou&Co',
+      firstName: ['Gilles', Validators.required],
+      lastName: ['Biguet', Validators.required],
+      address: ['Par ici', Validators.required],
       address2: null,
-      city: [null, Validators.required],
-      state: [null, Validators.required],
+      city: ['Thizy', Validators.required],
+      state: ['Proxima du sentor', Validators.required],
       postalCode: [
-        null,
+        '69240',
         Validators.compose([
           Validators.required,
           Validators.minLength(5),
@@ -168,6 +188,41 @@ export class TrucComponent extends BaseComponent {
     });
 
     return form;
+  }
+
+  /** Initialisation des actions du formulaire. */
+  private initActions() {
+    // Init des subjects.
+    this.saveAction = new Subject<any>();
+    this.closeAction = new Subject<any>();
+
+    // L'enregistrement
+    this.subscriptions.push(
+      this.saveAction
+        .pipe(
+          switchMap(() => {
+            console.log('action save', this.addressForm.value, this.apiService);
+            return this.apiService.save(this.addressForm.value as TrucModel);
+          })
+        )
+        .subscribe((result: boolean) => {
+          console.log('action save fin.', result);
+        })
+    );
+
+    // le Close
+    this.subscriptions.push(
+      this.closeAction
+        .pipe(
+          switchMap(() => {
+            console.log('on ferme!');
+            return of(true);
+          })
+        )
+        .subscribe((result: boolean) => {
+          console.log("puisque je vous dis qu'on ferme!", result);
+        })
+    );
   }
 
   /** Initialisation du cadre du formulaire. */
