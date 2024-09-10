@@ -1,0 +1,19 @@
+.titleContainer {
+    display: flex;
+    flex-direction: row;
+    & > * {
+        width: 50%;
+    }
+}
+
+.buttonSaveContainer {
+    display: flex;
+    // flex-direction: row-reverse;
+    flex-wrap: wrap-reverse;
+    & > * {
+        margin-right: 10px;
+    }
+    & :first-child{
+        margin-left: auto;
+    }
+}

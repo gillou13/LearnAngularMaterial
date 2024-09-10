@@ -1,0 +1,25 @@
+<div class="titleContainer">
+    <h3 *ngIf="frameModel?.title != undefined">{{frameModel?.title}}</h3>
+    <ng-container *ngTemplateOutlet="saveButton"></ng-container>
+</div>
+<h4 *ngIf="frameModel?.name != undefined">{{frameModel?.name}}</h4>
+<P>Liste des boutons paramètrables.</P>
+<ng-content/>
+<ng-container *ngTemplateOutlet="saveButton"></ng-container>
+
+<ng-template #saveButton>
+    <p class="buttonSaveContainer">
+        <button 
+            *ngIf="frameModel?.saveButton?.isVisible ?? false"
+            (click)="frameModel!.saveButton!.action!.next(undefined)"
+            [disabled]="!frameModel?.saveButton?.isAvailable"
+            mat-raised-button
+            >{{frameModel?.saveButton?.label}}</button>
+        <button 
+            *ngIf="frameModel?.saveButton?.isVisible ?? false"
+            [disabled]="!frameModel?.saveButton?.isAvailable"
+            mat-raised-button
+            >Save & close</button>
+        <button mat-raised-button>close</button>
+    </p>
+</ng-template>

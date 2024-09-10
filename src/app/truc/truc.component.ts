@@ -5,6 +5,8 @@ import {
   FormBuilder,
   Validators,
   FormGroup,
+  FormControl,
+  FormControlStatus,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +16,10 @@ import { MatCardModule } from '@angular/material/card';
 import { BaseComponent } from '../common/component/basecomponent/base.component';
 import { NavigationLink } from '../common/services/navigation/navigation-link';
 import { NavigationStart } from '@angular/router';
+import { FormFrameComponent } from '../common/component/form-frame/form-frame.component';
+import { FrameModel } from '../common/component/form-frame/model/frame-model';
+import { FrameButtonModel } from '../common/component/form-frame/model/frame-button-model';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-truc',
@@ -27,16 +33,32 @@ import { NavigationStart } from '@angular/router';
     MatRadioModule,
     MatCardModule,
     ReactiveFormsModule,
+    FormFrameComponent,
   ],
 })
 export class TrucComponent extends BaseComponent {
   constructor() {
     super();
 
+    // Initialisation du formulaire selon la navigation client
+    // TODO GBE : ou les params d'entrés.
     this.addressForm =
       (this.currentLink.formData as FormGroup) ?? this.initFormData();
 
+    // MAJ du formulaire dans currentLink.
     this.currentLink.formData = this.addressForm;
+
+    // Init des subjects.
+    this.saveAction = new Subject<any>();
+
+    this.subscriptions.push(
+      this.saveAction.subscribe((value: any) => {
+        console.log('action save', value);
+      })
+    );
+
+    // Initialisation du cadre du formulaire (form-frame).
+    this.initFrame();
   }
 
   protected override createLink(url: string): NavigationLink {
@@ -46,7 +68,15 @@ export class TrucComponent extends BaseComponent {
 
   private fb = inject(FormBuilder);
 
+  /** Formulaire */
   public addressForm!: FormGroup;
+
+  /** Paramètres du cadre du formulaire (avec les boutons d'action.) */
+  public frameModel!: FrameModel;
+
+  public saveAction!: Subject<any>;
+
+  public closeAction!: Subject<any>;
 
   hasUnitNumber = false;
 
@@ -112,8 +142,13 @@ export class TrucComponent extends BaseComponent {
     { name: 'Wyoming', abbreviation: 'WY' },
   ];
 
+  /**
+   * Initialise le formulaire selon les params d'entrée
+   * TODO GBE : oui c'est a finaliser je sais...
+   * @returns Le FromGroup du composant.
+   */
   private initFormData(): FormGroup {
-    return this.fb.group({
+    const form = this.fb.group({
       company: null,
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
@@ -131,6 +166,42 @@ export class TrucComponent extends BaseComponent {
       ],
       shipping: ['free', Validators.required],
     });
+
+    return form;
+  }
+
+  /** Initialisation du cadre du formulaire. */
+  private initFrame(): void {
+    this.frameModel = new FrameModel();
+    this.frameModel.title = 'Truc';
+    this.frameModel.name = this.addressForm.get('company')?.value;
+    // Pour changer le nom en direct.
+    this.subscriptions.push(
+      this.addressForm.controls['company'].valueChanges.subscribe(
+        (value: string) => {
+          this.frameModel.name = value;
+        }
+      )
+    );
+
+    // Configuration du save :
+    this.frameModel.saveButton = new FrameButtonModel();
+    this.frameModel.saveButton.label = 'Enregistrer';
+    this.frameModel.saveButton.isVisible = true;
+    this.frameModel.saveButton.isAvailable = this.addressForm.valid;
+    // Selon l'état du formulaire :
+    this.subscriptions.push(
+      this.addressForm.statusChanges.subscribe((status: FormControlStatus) => {
+        console.log('test status: ', status);
+        if (status === 'INVALID') {
+          this.frameModel.saveButton!.isAvailable = false;
+        } else if (status === 'VALID') {
+          this.frameModel.saveButton!.isAvailable = true;
+        }
+      })
+    );
+    this.frameModel.saveButton!.action = this.saveAction;
+    this.frameModel.closeAction = this.closeAction;
   }
 
   onSubmit(): void {
