@@ -15,9 +15,10 @@ import { BaseComponent } from '../common/component/basecomponent/base.component'
 import { NavigationLink } from '../common/services/navigation/navigation-link';
 import { FormFrameComponent } from '../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../common/component/form-frame/model/frame-model';
-import { finalize, Observable, of, Subject, switchMap } from 'rxjs';
+import { finalize, Observable, of, Subject, switchMap, delay } from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
+import { FrameButtonModel } from '../common/component/form-frame/model/frame-button-model';
 
 @Component({
   selector: 'app-truc',
@@ -78,6 +79,11 @@ export class TrucComponent extends BaseComponent {
   public closeAction: Subject<any> = new Subject<any>();
   /** Action d'enregistrement et de fermeture de l'onget. */
   public saveCloseAction: Subject<any> = new Subject<any>();
+
+  // Liste des actions complémentaires
+  public copyAction: Subject<any> = new Subject<any>();
+  public printAction: Subject<any> = new Subject<any>();
+  public printReturn: Subject<any> = new Subject<any>();
 
   hasUnitNumber = false;
 
@@ -249,6 +255,34 @@ export class TrucComponent extends BaseComponent {
       //   console.log('saveClose fin', result);
       // })
     );
+
+    // la duplication
+    this.subscriptions.push(
+      this.copyAction
+        .pipe(
+          switchMap(() => {
+            console.log('copie de ', this.addressForm.value);
+            return of(void 0);
+          })
+        )
+        .subscribe()
+    );
+
+    // l'impression
+    this.subscriptions.push(
+      this.printAction
+        .pipe(
+          switchMap(() => {
+            console.log('impression de ', this.addressForm.value);
+            return of(void 0);
+          }),
+          delay(3000)
+        )
+        .subscribe(() => {
+          console.log('print fin');
+          this.printReturn.next(void 0);
+        })
+    );
   }
 
   /** Initialisation du cadre du formulaire. */
@@ -269,10 +303,35 @@ export class TrucComponent extends BaseComponent {
     // this.frameModel.saveVisible = false;
     // this.addressForm.disable();
 
-    // liaison des actions.
+    // liaison des actions save/close.
     this.frameModel.saveAction = this.saveAction;
     this.frameModel.closeAction = this.closeAction;
     this.frameModel.saveCloseAction = this.saveCloseAction;
+
+    // Implémentation des actions complémentaires :
+    let button = new FrameButtonModel();
+    button.label = 'Enregistrer';
+    button.icon = 'save';
+    button.action = this.saveAction;
+    button.order = 10;
+    this.frameModel.actions.push(button);
+
+    button = new FrameButtonModel();
+    button.label = 'dupliquer';
+    button.icon = 'content_copy';
+    // button.isAvailable = false;
+    button.order = 1;
+    button.action = this.copyAction;
+    this.frameModel.actions.push(button);
+
+    button = new FrameButtonModel();
+    button.label = 'imprimer';
+    button.icon = 'print';
+    // button.isAvailable = false;
+    button.order = 2;
+    button.action = this.printAction;
+    button.actionObservable = this.printReturn.asObservable();
+    this.frameModel.actions.push(button);
   }
 
   onSubmit(): void {

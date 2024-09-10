@@ -4,7 +4,7 @@ import { NavigationLink } from '../../services/navigation/navigation-link';
 import { Subscription } from 'rxjs';
 
 /**
- * Base de composant.
+ * Base de composant à destination d'une page.
  * La fonction createLink doit être définit pour que la page fonctionne.
  */
 @Component({

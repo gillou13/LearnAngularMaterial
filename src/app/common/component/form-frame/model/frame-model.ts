@@ -39,5 +39,5 @@ export class FrameModel {
   /**
    * Liste des actions 'complémentaires'.
    */
-  actions?: FrameButtonModel[];
+  actions: FrameButtonModel[] = new Array<FrameButtonModel>();
 }

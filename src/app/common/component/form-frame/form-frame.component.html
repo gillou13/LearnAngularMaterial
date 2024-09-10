@@ -3,7 +3,21 @@
     <ng-container *ngTemplateOutlet="saveButtons"/>
 </div>
 <h4 *ngIf="frameModel?.name != undefined">{{frameModel.name}}</h4>
-<P>Liste des boutons paramètrables.</P>
+<div class="buttonsContainer">
+    @for(action of frameModel.actions; track action){
+        <button 
+            *ngIf="action.isVisible && action.action != undefined"
+            mat-stroked-button 
+            (click)="action.action!.next(undefined)"
+            [disabled]="!action.isAvailable || action.inLoading"
+            [attr.style]="'order: ' + action.order"
+            >
+                <mat-icon *ngIf="action.icon && !action.inLoading">{{ action.icon }}</mat-icon>
+                <mat-icon *ngIf="action.inLoading"><mat-spinner diameter="20"/></mat-icon>
+                {{ action.label }}
+        </button>
+    }
+</div>
 <ng-content/>
 <ng-container *ngTemplateOutlet="saveButtons"/>
 

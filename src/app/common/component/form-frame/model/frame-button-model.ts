@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export class FrameButtonModel {
   /** Texte affiché dans le bouton */
@@ -18,4 +18,10 @@ export class FrameButtonModel {
 
   /** action liée au bouton. (via .next()) */
   action?: Subject<any>;
+
+  /** retour de l'action */
+  actionObservable?: Observable<any>;
+
+  /** Si true:  en traitement */
+  inLoading = false;
 }
