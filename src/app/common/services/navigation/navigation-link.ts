@@ -8,6 +8,8 @@ export class NavigationLink {
   public active: boolean;
   public etat: string; // TODO GBE : a typer par la suite selon les états de form réactive.
   public icon: string; // TODO GBE : a enumerer selon l'utilisation.
+  /** si true, refresh au prochain chargement de la page. */
+  public refreshData: boolean;
 
   /** Lien vers le formulaire lié au composant. */
   public formData?: AbstractControl;
@@ -24,6 +26,7 @@ export class NavigationLink {
     this.active = active;
     this.etat = etat;
     this.icon = icon;
+    this.refreshData = false;
   }
 
   /**GBE:  Non utilisé pour le moment. */

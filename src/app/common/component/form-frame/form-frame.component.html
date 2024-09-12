@@ -3,15 +3,14 @@
     <ng-container *ngTemplateOutlet="saveButtons"/>
 </div>
 <h4 *ngIf="frameModel?.name != undefined">{{frameModel.name}}</h4>
-<div class="buttonsContainer">
+<div class="buttonsContainer" *ngIf="frameModel.actions?.length ?? 0 > 0">
     @for(action of frameModel.actions; track action){
         <button 
             *ngIf="action.isVisible && action.action != undefined"
             mat-stroked-button 
-            (click)="action.action!.next(undefined)"
+            (click)="action.subject!.next(undefined)"
             [disabled]="!action.isAvailable || action.inLoading"
-            [attr.style]="'order: ' + action.order"
-            >
+            [attr.style]="'order: ' + action.order">
                 <mat-icon *ngIf="action.icon && !action.inLoading">{{ action.icon }}</mat-icon>
                 <mat-icon *ngIf="action.inLoading"><mat-spinner diameter="20"/></mat-icon>
                 {{ action.label }}
@@ -25,25 +24,33 @@
 <ng-template #saveButtons>
     <p class="buttonSaveContainer">
         <!-- template pour le spinner 'global' -->
-        <ng-container *ngIf="frameModel.inLoading">
+        <!-- <ng-container *ngIf="frameModel.inLoading">
             <mat-icon><mat-spinner diameter="20"/></mat-icon>
-        </ng-container>
+        </ng-container> -->
         <button 
-            *ngIf="frameModel.saveVisible"
-            (click)="frameModel.saveAction!.next(undefined)"
-            [disabled]="!frameModel.actionEnabled || frameModel.inLoading || formData.invalid || formData.pristine"
-            mat-raised-button
-            >Save</button>
+            *ngIf="frameModel.saveButton?.isVisible ?? false"
+            (click)="frameModel.saveButton?.subject?.next(undefined)"
+            [disabled]="!frameModel.saveButton?.isAvailable || frameModel.saveButton?.inLoading || frameModel.saveCloseButton?.inLoading || formData.invalid || formData.pristine"
+            mat-fab extended>
+            <!-- mat-raised-button -->
+                <ng-container *ngIf="frameModel.saveButton?.inLoading" [ngTemplateOutlet]="spinnerButton"/>
+                Save
+            </button>
         <button 
-            *ngIf="frameModel.saveVisible"
-            [disabled]="!frameModel.actionEnabled || frameModel.inLoading || formData.invalid || formData.pristine"
-            (click)="frameModel.saveCloseAction!.next(undefined)"
-            mat-raised-button
-            >Save & close</button>
+            *ngIf="frameModel.saveCloseButton?.isVisible ?? false"
+            (click)="frameModel.saveCloseButton?.subject?.next(undefined)"
+            [disabled]="!frameModel.saveCloseButton?.isAvailable || frameModel.saveButton?.inLoading || frameModel.saveCloseButton?.inLoading || formData.invalid || formData.pristine"
+            mat-fab extended>
+            <ng-container *ngIf="frameModel.saveCloseButton?.inLoading" [ngTemplateOutlet]="spinnerButton"/>
+            Save & close
+        </button>
         <button 
-            (click)="frameModel!.closeAction!.next(undefined)"
-            [disabled]="frameModel.inLoading"
-            mat-raised-button
-            >close</button>
+            (click)="frameModel.closeButton.subject!.next(undefined)"
+            [disabled]="!frameModel.closeButton.isAvailable || frameModel.saveButton?.inLoading || frameModel.saveCloseButton?.inLoading"
+            mat-raised-button>close</button>
     </p>
+</ng-template>
+
+<ng-template #spinnerButton>
+        <mat-icon><mat-spinner diameter="20"/></mat-icon>
 </ng-template>

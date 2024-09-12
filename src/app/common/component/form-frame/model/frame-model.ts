@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { FrameButtonModel } from './frame-button-model';
+import { FrameActionButtonModel } from './frame-action-button-model';
 
 /**
  * Class pour la gestion du cadre du formulaire.
@@ -16,28 +17,17 @@ export class FrameModel {
    */
   picture?: string;
 
-  /** indique si les boutons d'enregistrement peuvent être visible. */
-  saveVisible = true;
-
-  /** indique si les boutons sont disponibles. */
-  actionEnabled = true;
-
-  /** indique qu'un traitement est en cours. */
-  inLoading = false;
-
-  // Actions venant du formulaire:
-
-  /** Action d'enregistrement */
-  saveAction?: Subject<any>;
-
-  /** Action de fermeture du formulaire */
-  closeAction!: Subject<any>;
-
   /** Action d'enregistrement et de fermeture de la page. */
   saveCloseAction?: Subject<any>;
+
+  saveButton?: FrameButtonModel;
+
+  saveCloseButton?: FrameButtonModel;
+
+  closeButton!: FrameButtonModel;
 
   /**
    * Liste des actions 'complémentaires'.
    */
-  actions: FrameButtonModel[] = new Array<FrameButtonModel>();
+  actions: FrameActionButtonModel[] = new Array<FrameActionButtonModel>();
 }

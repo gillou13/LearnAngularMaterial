@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import {
   ReactiveFormsModule,
@@ -11,14 +11,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
-import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { FormFrameComponent } from '../../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../../common/component/form-frame/model/frame-model';
-import { finalize, Observable, of, Subject, switchMap, delay } from 'rxjs';
+import { Observable, of, switchMap, tap } from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
 import { FrameButtonModel } from '../../common/component/form-frame/model/frame-button-model';
+import { BaseFormComponent } from '../../common/component/base-form/base-form.component';
+import { FrameActionButtonModel } from '../../common/component/form-frame/model/frame-action-button-model';
 
 @Component({
   selector: 'app-truc',
@@ -35,27 +36,18 @@ import { FrameButtonModel } from '../../common/component/form-frame/model/frame-
     FormFrameComponent,
   ],
 })
-export class TrucComponent extends BasePageComponent {
-  private apiService: TrucApiService;
+export class TrucComponent
+  extends BaseFormComponent<FormGroup>
+  implements OnInit
+{
+  // Services
+  private apiService: TrucApiService = inject(TrucApiService);
+  private fb = inject(FormBuilder);
 
-  constructor() {
-    super();
+  override ngOnInit(): void {
+    super.ngOnInit();
 
-    //DI :
-    this.apiService = inject(TrucApiService);
-
-    // Initialisation du formulaire selon la navigation client
-    // TODO GBE : ou les params d'entrés.
-    this.addressForm =
-      (this.currentLink.formData as FormGroup) ?? this.initFormData();
-
-    // MAJ du formulaire dans currentLink.
-    this.currentLink.formData = this.addressForm;
-
-    // Init des actions.
-    this.initActions();
-
-    // Initialisation du cadre du formulaire (form-frame).
+    // Init du cadre :
     this.initFrame();
   }
 
@@ -64,26 +56,11 @@ export class TrucComponent extends BasePageComponent {
     return link;
   }
 
-  private fb = inject(FormBuilder);
-
   /** Formulaire */
-  public addressForm!: FormGroup;
+  public override formData!: FormGroup;
 
   /** Paramètres du cadre du formulaire (avec les boutons d'action.) */
   public frameModel!: FrameModel;
-
-  // Actions liées au formulaire.
-  /** Action d'enregistrement. */
-  public saveAction: Subject<any> = new Subject<any>();
-  /** Action de fermeture de la page. */
-  public closeAction: Subject<any> = new Subject<any>();
-  /** Action d'enregistrement et de fermeture de l'onget. */
-  public saveCloseAction: Subject<any> = new Subject<any>();
-
-  // Liste des actions complémentaires
-  public copyAction: Subject<any> = new Subject<any>();
-  public printAction: Subject<any> = new Subject<any>();
-  public printReturn: Subject<any> = new Subject<any>();
 
   hasUnitNumber = false;
 
@@ -154,7 +131,7 @@ export class TrucComponent extends BasePageComponent {
    * TODO GBE : oui c'est a finaliser je sais...
    * @returns Le FromGroup du composant.
    */
-  private initFormData(): FormGroup {
+  protected override buildFormData(): Observable<FormGroup> {
     // const form = this.fb.group({
     //   company: null,
     //   firstName: [null, Validators.required],
@@ -193,183 +170,177 @@ export class TrucComponent extends BasePageComponent {
       shipping: ['free', Validators.required],
     });
 
-    return form;
+    return of(form);
   }
 
-  /** Initialisation des actions du formulaire. */
-  private initActions() {
-    // L'enregistrement
-    this.subscriptions.push(
-      this.saveAction
-        .pipe(
-          switchMap(() => {
-            // console.log('action save', this.addressForm.value, this.apiService);
-            return this.save();
-          }),
-          // on réinit le formulaire.
-          switchMap((resultSave: boolean) => {
-            if (resultSave === true) {
-              this.addressForm = this.initFormData();
-            }
-            return of(resultSave);
-          })
-        )
-        .subscribe()
-      // .subscribe((result: boolean) => {
-      //   console.log('action save fin.', result);
-      // })
-    );
+  // /** Initialisation des actions du formulaire. */
+  // private initActions() {
+  //   // L'enregistrement
+  //   this.subscriptions.push(
+  //     this.saveAction
+  //       .pipe(
+  //         switchMap(() => {
+  //           // console.log('action save', this.addressForm.value, this.apiService);
+  //           return this.save();
+  //         }),
+  //         // on réinit le formulaire.
+  //         switchMap((resultSave: boolean) => {
+  //           if (resultSave === true) {
+  //             this.addressForm = this.initFormData();
+  //           }
+  //           return of(resultSave);
+  //         })
+  //       )
+  //       .subscribe()
+  //     // .subscribe((result: boolean) => {
+  //     //   console.log('action save fin.', result);
+  //     // })
+  //   );
 
-    // le Close
-    this.subscriptions.push(
-      this.closeAction
-        .pipe(
-          switchMap(() => {
-            // console.log('on ferme!');
-            return this.navigationService.onDeleteLink(this.currentLink);
-          })
-        )
-        .subscribe()
-      // .subscribe((result: boolean) => {
-      //   console.log('action saveClose fin.', result);
-      // })
-    );
+  //   // le Close
+  //   this.subscriptions.push(
+  //     this.closeAction
+  //       .pipe(
+  //         switchMap(() => {
+  //           // console.log('on ferme!');
+  //           return this.navigationService.onDeleteLink(this.currentLink);
+  //         })
+  //       )
+  //       .subscribe()
+  //     // .subscribe((result: boolean) => {
+  //     //   console.log('action saveClose fin.', result);
+  //     // })
+  //   );
 
-    // le save & close
-    this.subscriptions.push(
-      this.saveCloseAction
-        .pipe(
-          switchMap(() => {
-            return this.save();
-          }),
-          switchMap((result: boolean) => {
-            if (result) {
-              // console.log('... on quitte.');
-              return this.navigationService.onDeleteLink(this.currentLink);
-            }
-            return of(false);
-          })
-        )
-        .subscribe()
-      // .subscribe((result: boolean) => {
-      //   console.log('saveClose fin', result);
-      // })
-    );
+  //   // le save & close
+  //   this.subscriptions.push(
+  //     this.saveCloseAction
+  //       .pipe(
+  //         switchMap(() => {
+  //           return this.save();
+  //         }),
+  //         switchMap((result: boolean) => {
+  //           if (result) {
+  //             // console.log('... on quitte.');
+  //             return this.navigationService.onDeleteLink(this.currentLink);
+  //           }
+  //           return of(false);
+  //         })
+  //       )
+  //       .subscribe()
+  //     // .subscribe((result: boolean) => {
+  //     //   console.log('saveClose fin', result);
+  //     // })
+  //   );
 
-    // la duplication
-    this.subscriptions.push(
-      this.copyAction
-        .pipe(
-          switchMap(() => {
-            console.log('copie de ', this.addressForm.value);
-            return of(void 0);
-          })
-        )
-        .subscribe()
-    );
+  //   // la duplication
+  //   this.subscriptions.push(
+  //     this.copyAction
+  //       .pipe(
+  //         switchMap(() => {
+  //           console.log('copie de ', this.addressForm.value);
+  //           return of(void 0);
+  //         })
+  //       )
+  //       .subscribe()
+  //   );
 
-    // l'impression
-    this.subscriptions.push(
-      this.printAction
-        .pipe(
-          switchMap(() => {
-            console.log('impression de ', this.addressForm.value);
-            return of(void 0);
-          }),
-          delay(3000)
-        )
-        .subscribe(() => {
-          console.log('print fin');
-          this.printReturn.next(void 0);
-        })
-    );
-  }
+  //   // l'impression
+  //   this.subscriptions.push(
+  //     this.printAction
+  //       .pipe(
+  //         switchMap(() => {
+  //           console.log('impression de ', this.addressForm.value);
+  //           return of(void 0);
+  //         }),
+  //         delay(3000)
+  //       )
+  //       .subscribe(() => {
+  //         console.log('print fin');
+  //         this.printReturn.next(void 0);
+  //       })
+  //   );
+  // }
 
   /** Initialisation du cadre du formulaire. */
   private initFrame(): void {
     this.frameModel = new FrameModel();
     this.frameModel.title = 'Truc';
-    this.frameModel.name = this.addressForm.get('company')?.value;
+    this.frameModel.name = this.formData.get('company')?.value;
     // Pour changer le nom en direct.
     this.subscriptions.push(
-      this.addressForm.controls['company'].valueChanges.subscribe(
+      this.formData.controls['company'].valueChanges.subscribe(
         (value: string) => {
           this.frameModel.name = value;
         }
       )
     );
 
-    // // Test pour la lecture seul :
-    // this.frameModel.saveVisible = false;
-    // this.addressForm.disable();
-
     // liaison des actions save/close.
-    this.frameModel.saveAction = this.saveAction;
-    this.frameModel.closeAction = this.closeAction;
-    this.frameModel.saveCloseAction = this.saveCloseAction;
+    this.frameModel.saveButton = new FrameButtonModel();
+    // this.frameModel.saveButton.action = this.saveAction;
+    // this.frameModel.saveButton.action = of(void 0).pipe(
+    //   switchMap(() => this.save())
+    // );
+    this.frameModel.saveButton.action = this.save();
 
-    // Implémentation des actions complémentaires :
-    let button = new FrameButtonModel();
-    button.label = 'Enregistrer';
-    button.icon = 'save';
-    button.action = this.saveAction;
-    button.order = 10;
-    this.frameModel.actions.push(button);
+    this.frameModel.closeButton = new FrameButtonModel();
+    this.frameModel.closeButton.action = this.close();
 
-    button = new FrameButtonModel();
+    this.frameModel.saveCloseButton = new FrameButtonModel();
+    this.frameModel.saveCloseButton.action = this.saveClose();
+
+    // // Implémentation des actions complémentaires :
+    let button = new FrameActionButtonModel();
+    // button.label = 'Enregistrer';
+    // button.icon = 'save';
+    // button.action = this.saveAction;
+    // button.order = 10;
+    // this.frameModel.actions.push(button);
+
+    // button = new FrameButtonModel();
     button.label = 'dupliquer';
     button.icon = 'content_copy';
     // button.isAvailable = false;
     button.order = 1;
-    button.action = this.copyAction;
+    button.action = this.copy();
     this.frameModel.actions.push(button);
 
-    button = new FrameButtonModel();
-    button.label = 'imprimer';
-    button.icon = 'print';
-    // button.isAvailable = false;
-    button.order = 2;
-    button.action = this.printAction;
-    button.actionObservable = this.printReturn.asObservable();
-    this.frameModel.actions.push(button);
-  }
-
-  onSubmit(): void {
-    alert('Thanks!');
+    // button = new FrameButtonModel();
+    // button.label = 'imprimer';
+    // button.icon = 'print';
+    // // button.isAvailable = false;
+    // button.order = 2;
+    // button.action = this.printAction;
+    // button.actionObservable = this.printReturn.asObservable();
+    // this.frameModel.actions.push(button);
   }
 
   /** function pour l'enregistrement du formulaire.
    * Si apiService.save == true, on réinit le formulaire.
    */
-  public save(): Observable<boolean> {
+  public override save(): Observable<boolean> {
     return of(void 0).pipe(
-      // Gestion du loading.
-      switchMap(() => {
-        this.frameModel.inLoading = true;
-        return of(void 0);
-      }),
       // appel à l'API.
       switchMap(() => {
-        return this.apiService.save(this.addressForm.value as TrucModel);
+        return this.apiService.save(this.formData.value as TrucModel);
       }),
-      // on réinit le formulaire. si le save est OK.
+      // Si l'enregistrement est OK. on réinit le formulaire.
       switchMap((resultSave: boolean) => {
-        if (resultSave === true) {
-          // console.log('on réinit le formulaire.');
-          this.addressForm = this.initFormData();
-          this.currentLink.formData = this.addressForm;
+        if (resultSave) {
+          return this.buildFormData().pipe(
+            switchMap((formData: FormGroup) => this.setFormData(formData))
+          );
         }
-        // Pour les tests d'erreur en attendant le snakBar.
-        // else {
-        //   console.log('save en erreur');
-        // }
-        return of(resultSave);
-      }),
-      // Gestion du loading (fin).
-      finalize(() => {
-        // console.log('finalize de save');
-        this.frameModel.inLoading = false;
+        return of(false);
       })
     );
+  }
+
+  /**
+   * Création d'une copy de l'élément actuel
+   */
+  public copy(): Observable<boolean> {
+    return of(true).pipe(tap(() => console.log('copie du document')));
   }
 }

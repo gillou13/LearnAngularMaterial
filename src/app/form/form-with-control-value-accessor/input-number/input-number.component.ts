@@ -63,7 +63,7 @@ export class InputNumberComponent
 
   writeValue(val: any): void {
     if (val || val === 0) {
-      console.log('writeValue');
+      // console.log('writeValue');
       this.localControl.setValue(val, {
         emitEvent: false,
         emitModelToViewChange: false,
