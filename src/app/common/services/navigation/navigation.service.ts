@@ -69,72 +69,72 @@ export class NavigationService {
    * @returns Observable<boolean> true si le lien est supprimé.
    */
   public onDeleteLink(deletedLink: NavigationLink): Observable<boolean> {
-    let linkIndex = this.getLinkIndex(deletedLink);
+    return of(void 0).pipe(
+      switchMap(() => {
+        let linkIndex = this.getLinkIndex(deletedLink);
 
-    // si on ne le trouve pas, il y a un problème...
-    if (linkIndex == -1) {
-      // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
-      return of(false);
-    } else {
-      // Vérification de l'état de l'abstractControl liée si existant.
-      if (deletedLink.formData == undefined) {
-        this.deleteLink(linkIndex);
-        return of(true);
-      } else {
-        // Si le formulaire n'est pas valide : on retourne dessus ou pas ?
-        if (!deletedLink.formData.valid) {
-          return this.dialogService
-            .dialogYesNoCancel(
-              'form invalide',
-              "le formulaire n'est pas valide. voullez-vous finir la saisie avant que fermer ?"
-            )
-            .pipe(
-              switchMap((response: boolean | undefined) => {
-                if (response == undefined) {
-                  // console.log('on annule');
-                  return of();
-                } else if (response) {
-                  // console.log('on retourne sur le formulaire');
-                  this.router.navigateByUrl(deletedLink.url);
-                  console.log('on passe ici ?');
-                  return of();
-                } else {
-                  // console.log('on ferme quand même');
-                  this.deleteLink(linkIndex);
-                  return of(true);
-                }
-              })
-            );
+        // si on ne le trouve pas, il y a un problème...
+        if (linkIndex == -1) {
+          // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
+          return of(false);
+        } else {
+          // Vérification de l'état de l'abstractControl liée si existant.
+          if (deletedLink.formData == undefined) {
+            this.deleteLink(linkIndex);
+            return of(true);
+          } else {
+            // Si le formulaire n'est pas valide : on retourne dessus ou pas ?
+            if (!deletedLink.formData.valid) {
+              return this.dialogService
+                .dialogYesNoCancel(
+                  'form invalide',
+                  "le formulaire n'est pas valide. voullez-vous finir la saisie avant que fermer ?"
+                )
+                .pipe(
+                  switchMap((response: boolean | undefined) => {
+                    if (response == undefined) {
+                      return of();
+                    } else if (response) {
+                      this.router.navigateByUrl(deletedLink.url);
+                      return of();
+                    } else {
+                      this.deleteLink(linkIndex);
+                      return of(true);
+                    }
+                  })
+                );
+            }
+            // Si le formulaire peu être enregistré directement.
+            else if (deletedLink.formData.dirty) {
+              return this.dialogService
+                .dialogYesNo(
+                  'Enregister',
+                  "Le formulaire n'est pas encore enregisté. Voulez-vous sauvegarder avant de quitter ?"
+                )
+                .pipe(
+                  switchMap((response: boolean) => {
+                    if (response) {
+                      // TODO GBE : il faudrai ajouter un service pour l'enregistrement du formulaire...
+                      console.log('on enregistre et on quitte.');
+                      this.deleteLink(linkIndex);
+                      return of(true);
+                    } else {
+                      console.log('on quitte seulement.');
+                      this.deleteLink(linkIndex);
+                      return of(true);
+                    }
+                  })
+                );
+            }
+            // Si le formulaire n'est pas modifié.
+            else {
+              this.deleteLink(linkIndex);
+              return of(true);
+            }
+          }
         }
-        // Si le formulaire peu être enregistré directement.
-        else if (deletedLink.formData.dirty) {
-          return this.dialogService
-            .dialogYesNo(
-              'Enregister',
-              "Le formulaire n'est pas encore enregisté. Voulez-vous sauvegarder avant de quitter ?"
-            )
-            .pipe(
-              switchMap((response: boolean) => {
-                if (response) {
-                  // TODO GBE : il faudrai ajouter un service pour l'enregistrement du formulaire...
-                  console.log('on enregistre et on quitte.');
-                  this.deleteLink(linkIndex);
-                  return of(true);
-                } else {
-                  console.log('on quitte seulement.');
-                  this.deleteLink(linkIndex);
-                  return of(true);
-                }
-              })
-            );
-        }
-        // Si le formulaire n'est pas modifié.
-        else {
-          this.deleteLink(linkIndex);
-          return of(true);
-        }
-      }
-    }
+      })
+    );
   }
 
   /**

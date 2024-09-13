@@ -49,9 +49,6 @@ export class TrucComponent
   /** FormBuilder */
   private fb = inject(FormBuilder);
 
-  /** routage */
-  private router = inject(Router);
-
   override ngOnInit(): void {
     super.ngOnInit();
 
@@ -296,18 +293,6 @@ export class TrucComponent
                 queryParams: { copyTo: this.formData.get('id')!.value },
               }
             );
-          });
-      })
-    );
-  }
-
-  public reload(): Observable<boolean> {
-    return of(true).pipe(
-      tap(() => {
-        this.router
-          .navigateByUrl('/', { skipLocationChange: true })
-          .then(() => {
-            this.router.navigateByUrl(this.currentLink.url);
           });
       })
     );

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { BasePageComponent } from '../base-page/base-page.component';
 import { AbstractControl } from '@angular/forms';
-import { iif, Observable, of, switchMap } from 'rxjs';
+import { iif, Observable, of, switchMap, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 /**
  * Base de composant à destination d'un formulaire.
@@ -21,6 +22,9 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
   extends BasePageComponent
   implements OnInit
 {
+  /** routage */
+  protected router = inject(Router);
+
   /** formulaire réactif */
   public formData!: TypeForm;
 
@@ -75,11 +79,7 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
    * @returns True si la page est bien fermé.
    */
   public close(): Observable<boolean> {
-    return of(void 0).pipe(
-      switchMap(() => this.navigationService.onDeleteLink(this.currentLink))
-    );
-    // TODO GBE : trouver pourquoi il est appeler directement sous cette forme :
-    // return this.navigationService.onDeleteLink(this.currentLink);
+    return this.navigationService.onDeleteLink(this.currentLink);
   }
 
   public saveClose(): Observable<boolean> {
@@ -87,6 +87,18 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
       switchMap(() => this.save()),
       switchMap((resultSave: boolean) => {
         return resultSave ? this.close() : of(false);
+      })
+    );
+  }
+
+  public reload(): Observable<boolean> {
+    return of(true).pipe(
+      tap(() => {
+        this.router
+          .navigateByUrl('/', { skipLocationChange: true })
+          .then(() => {
+            this.router.navigateByUrl(this.currentLink.url);
+          });
       })
     );
   }
