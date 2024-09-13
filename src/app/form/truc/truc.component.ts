@@ -5,6 +5,7 @@ import {
   FormBuilder,
   Validators,
   FormGroup,
+  FormControlStatus,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { FormFrameComponent } from '../../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../../common/component/form-frame/model/frame-model';
-import { from, Observable, of, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, Observable, of, switchMap, tap } from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
 import { FrameButtonModel } from '../../common/component/form-frame/model/frame-button-model';
@@ -47,9 +48,6 @@ export class TrucComponent
 
   /** FormBuilder */
   private fb = inject(FormBuilder);
-
-  /** Lecture des routes */
-  private activatedRoute = inject(ActivatedRoute);
 
   /** routage */
   private router = inject(Router);
@@ -225,10 +223,21 @@ export class TrucComponent
     let button = new FrameActionButtonModel();
     button.label = 'dupliquer';
     button.icon = 'content_copy';
-    // button.isAvailable = false;
+    button.isAvailable =
+      this.formData.valid && this.formData.pristine && this.mode !== 'new';
     button.order = 1;
     button.action = this.copy();
     this.frameModel.actions.push(button);
+    // Disponibilité du bouton selon l'état du formulaire
+    this.subscriptions.push(
+      this.formData.statusChanges
+        .pipe(distinctUntilChanged())
+        .subscribe((status: FormControlStatus) => {
+          this.frameModel.actions.find(
+            (button: FrameActionButtonModel) => (button.label = 'dupliquer')
+          )!.isAvailable = status === 'VALID';
+        })
+    );
 
     button = new FrameButtonModel();
     button.label = 'imprimer';
@@ -236,6 +245,13 @@ export class TrucComponent
     // button.isAvailable = false;
     button.order = 2;
     button.action = this.print();
+    this.frameModel.actions.push(button);
+
+    button = new FrameButtonModel();
+    button.label = 'refresh';
+    button.icon = 'refresh';
+    button.order = 0;
+    button.action = this.reload();
     this.frameModel.actions.push(button);
   }
 
@@ -269,19 +285,30 @@ export class TrucComponent
    * Création d'une copy de l'élément actuel
    */
   public copy(): Observable<boolean> {
-    return of(void 0).pipe(
-      switchMap(() => {
-        return from(
-          this.router.navigate(
-            ['form', 'truc', 'new', crypto.randomUUID().toUpperCase()],
-            {
-              queryParams: { copyTo: this.formData.get('id')!.value },
-              // GBE plutôt à passer dans le router ?
-              onSameUrlNavigation: 'reload',
-            }
-          )
-        );
-        // this.router.navigateByUrl(``);
+    return of(true).pipe(
+      tap(() => {
+        this.router
+          .navigateByUrl('/', { skipLocationChange: true })
+          .then(() => {
+            this.router.navigate(
+              ['form', 'truc', 'new', crypto.randomUUID().toUpperCase()],
+              {
+                queryParams: { copyTo: this.formData.get('id')!.value },
+              }
+            );
+          });
+      })
+    );
+  }
+
+  public reload(): Observable<boolean> {
+    return of(true).pipe(
+      tap(() => {
+        this.router
+          .navigateByUrl('/', { skipLocationChange: true })
+          .then(() => {
+            this.router.navigateByUrl(this.currentLink.url);
+          });
       })
     );
   }

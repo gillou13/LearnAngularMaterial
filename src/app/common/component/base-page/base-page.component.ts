@@ -2,6 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { NavigationLink } from '../../services/navigation/navigation-link';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Base de composant à destination d'une page.
@@ -24,6 +25,9 @@ export abstract class BasePageComponent implements OnInit, OnDestroy {
 
   /** Service de navigation */
   protected navigationService = inject(NavigationService);
+
+  /** Lecture des routes */
+  protected activatedRoute = inject(ActivatedRoute);
 
   /** Tableau de subscriptions pour la gestion des observables dans les composants. */
   protected subscriptions: Subscription[] = new Array<Subscription>();
