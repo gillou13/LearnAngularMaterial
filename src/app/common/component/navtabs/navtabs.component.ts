@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { NavigationLink } from '../../services/navigation/navigation-link';
 import { NavigationService } from '../../services/navigation/navigation.service';
@@ -22,6 +22,8 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './navtabs.component.sass',
 })
 export class NavtabsComponent implements OnDestroy {
+  private router = inject(Router);
+
   /**
    * id du lien actuellement activé.
    */
@@ -52,5 +54,9 @@ export class NavtabsComponent implements OnDestroy {
 
   public getSelectedTabIndex(): number {
     return this.links.findIndex((l) => l.active);
+  }
+
+  public redirectToUrl(url: string): void {
+    this.router.navigateByUrl(url);
   }
 }

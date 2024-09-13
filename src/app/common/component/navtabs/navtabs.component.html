@@ -4,8 +4,8 @@
         mat-tab-link 
         [active]="link.active">
         <!-- GBE : travailler sur la zone clickable. -->
-        <div
-          [routerLink]="link.url"
+        <!-- [routerLink]="link.url" -->
+        <div (click)="redirectToUrl(link.url)"
           class="link-content">{{ link.label }}
         </div>
         <button 

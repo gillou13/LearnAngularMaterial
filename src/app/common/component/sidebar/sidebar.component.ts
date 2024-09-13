@@ -26,6 +26,10 @@ export class SidebarComponent {
     { routerLink: '/table/OrderLine', label: 'OrderLine' },
     // les formulaires:
     { routerLink: '/form/customNumber', label: 'form number' },
-    { routerLink: '/form/truc', label: 'form truc' },
+    { routerLink: '/form/truc/new', label: 'form truc new' },
+    {
+      routerLink: `/form/truc/edit/${crypto.randomUUID().toUpperCase()}`,
+      label: 'form truc edit',
+    },
   ];
 }

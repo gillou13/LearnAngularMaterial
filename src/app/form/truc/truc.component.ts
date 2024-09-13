@@ -14,12 +14,13 @@ import { MatCardModule } from '@angular/material/card';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { FormFrameComponent } from '../../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../../common/component/form-frame/model/frame-model';
-import { Observable, of, switchMap, tap } from 'rxjs';
+import { from, Observable, of, switchMap, tap } from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
 import { FrameButtonModel } from '../../common/component/form-frame/model/frame-button-model';
 import { BaseFormComponent } from '../../common/component/base-form/base-form.component';
 import { FrameActionButtonModel } from '../../common/component/form-frame/model/frame-action-button-model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-truc',
@@ -41,8 +42,17 @@ export class TrucComponent
   implements OnInit
 {
   // Services
+  /** ApiService */
   private apiService: TrucApiService = inject(TrucApiService);
+
+  /** FormBuilder */
   private fb = inject(FormBuilder);
+
+  /** Lecture des routes */
+  private activatedRoute = inject(ActivatedRoute);
+
+  /** routage */
+  private router = inject(Router);
 
   override ngOnInit(): void {
     super.ngOnInit();
@@ -61,6 +71,9 @@ export class TrucComponent
 
   /** Paramètres du cadre du formulaire (avec les boutons d'action.) */
   public frameModel!: FrameModel;
+
+  /** Mode d'ouverture du composant (edit|new) */
+  public mode!: string;
 
   hasUnitNumber = false;
 
@@ -151,11 +164,22 @@ export class TrucComponent
     //   shipping: ['free', Validators.required],
     // });
     // la flém de tous saisir a chaque fois...
+
+    // Récupération des informations de route :
+    const routeSnapshot = this.activatedRoute.snapshot;
+    this.mode = routeSnapshot.url[0].path;
+    const id = routeSnapshot.params['id'];
+    const copyTo = routeSnapshot.queryParams['copyTo'] ?? '';
+
     const form = this.fb.group({
+      id: [id, Validators.required],
       company: 'Gillou&Co',
       firstName: ['Gilles', Validators.required],
       lastName: ['Biguet', Validators.required],
-      address: ['Par ici', Validators.required],
+      address: [
+        `par ici. mode: ${this.mode}, id: ${id}, copyTo: ${copyTo}`,
+        Validators.required,
+      ],
       address2: null,
       city: ['Thizy', Validators.required],
       state: ['Proxima du sentor', Validators.required],
@@ -173,95 +197,6 @@ export class TrucComponent
     return of(form);
   }
 
-  // /** Initialisation des actions du formulaire. */
-  // private initActions() {
-  //   // L'enregistrement
-  //   this.subscriptions.push(
-  //     this.saveAction
-  //       .pipe(
-  //         switchMap(() => {
-  //           // console.log('action save', this.addressForm.value, this.apiService);
-  //           return this.save();
-  //         }),
-  //         // on réinit le formulaire.
-  //         switchMap((resultSave: boolean) => {
-  //           if (resultSave === true) {
-  //             this.addressForm = this.initFormData();
-  //           }
-  //           return of(resultSave);
-  //         })
-  //       )
-  //       .subscribe()
-  //     // .subscribe((result: boolean) => {
-  //     //   console.log('action save fin.', result);
-  //     // })
-  //   );
-
-  //   // le Close
-  //   this.subscriptions.push(
-  //     this.closeAction
-  //       .pipe(
-  //         switchMap(() => {
-  //           // console.log('on ferme!');
-  //           return this.navigationService.onDeleteLink(this.currentLink);
-  //         })
-  //       )
-  //       .subscribe()
-  //     // .subscribe((result: boolean) => {
-  //     //   console.log('action saveClose fin.', result);
-  //     // })
-  //   );
-
-  //   // le save & close
-  //   this.subscriptions.push(
-  //     this.saveCloseAction
-  //       .pipe(
-  //         switchMap(() => {
-  //           return this.save();
-  //         }),
-  //         switchMap((result: boolean) => {
-  //           if (result) {
-  //             // console.log('... on quitte.');
-  //             return this.navigationService.onDeleteLink(this.currentLink);
-  //           }
-  //           return of(false);
-  //         })
-  //       )
-  //       .subscribe()
-  //     // .subscribe((result: boolean) => {
-  //     //   console.log('saveClose fin', result);
-  //     // })
-  //   );
-
-  //   // la duplication
-  //   this.subscriptions.push(
-  //     this.copyAction
-  //       .pipe(
-  //         switchMap(() => {
-  //           console.log('copie de ', this.addressForm.value);
-  //           return of(void 0);
-  //         })
-  //       )
-  //       .subscribe()
-  //   );
-
-  //   // l'impression
-  //   this.subscriptions.push(
-  //     this.printAction
-  //       .pipe(
-  //         switchMap(() => {
-  //           console.log('impression de ', this.addressForm.value);
-  //           return of(void 0);
-  //         }),
-  //         delay(3000)
-  //       )
-  //       .subscribe(() => {
-  //         console.log('print fin');
-  //         this.printReturn.next(void 0);
-  //       })
-  //   );
-  // }
-
   /** Initialisation du cadre du formulaire. */
   private initFrame(): void {
     this.frameModel = new FrameModel();
@@ -278,10 +213,6 @@ export class TrucComponent
 
     // liaison des actions save/close.
     this.frameModel.saveButton = new FrameButtonModel();
-    // this.frameModel.saveButton.action = this.saveAction;
-    // this.frameModel.saveButton.action = of(void 0).pipe(
-    //   switchMap(() => this.save())
-    // );
     this.frameModel.saveButton.action = this.save();
 
     this.frameModel.closeButton = new FrameButtonModel();
@@ -290,15 +221,8 @@ export class TrucComponent
     this.frameModel.saveCloseButton = new FrameButtonModel();
     this.frameModel.saveCloseButton.action = this.saveClose();
 
-    // // Implémentation des actions complémentaires :
+    // Implémentation des actions complémentaires :
     let button = new FrameActionButtonModel();
-    // button.label = 'Enregistrer';
-    // button.icon = 'save';
-    // button.action = this.saveAction;
-    // button.order = 10;
-    // this.frameModel.actions.push(button);
-
-    // button = new FrameButtonModel();
     button.label = 'dupliquer';
     button.icon = 'content_copy';
     // button.isAvailable = false;
@@ -306,14 +230,13 @@ export class TrucComponent
     button.action = this.copy();
     this.frameModel.actions.push(button);
 
-    // button = new FrameButtonModel();
-    // button.label = 'imprimer';
-    // button.icon = 'print';
-    // // button.isAvailable = false;
-    // button.order = 2;
-    // button.action = this.printAction;
-    // button.actionObservable = this.printReturn.asObservable();
-    // this.frameModel.actions.push(button);
+    button = new FrameButtonModel();
+    button.label = 'imprimer';
+    button.icon = 'print';
+    // button.isAvailable = false;
+    button.order = 2;
+    button.action = this.print();
+    this.frameModel.actions.push(button);
   }
 
   /** function pour l'enregistrement du formulaire.
@@ -337,10 +260,29 @@ export class TrucComponent
     );
   }
 
+  /** Impression du truc */
+  public print(): Observable<boolean> {
+    return of(true).pipe(tap(() => console.log('impression de truc')));
+  }
+
   /**
    * Création d'une copy de l'élément actuel
    */
   public copy(): Observable<boolean> {
-    return of(true).pipe(tap(() => console.log('copie du document')));
+    return of(void 0).pipe(
+      switchMap(() => {
+        return from(
+          this.router.navigate(
+            ['form', 'truc', 'new', crypto.randomUUID().toUpperCase()],
+            {
+              queryParams: { copyTo: this.formData.get('id')!.value },
+              // GBE plutôt à passer dans le router ?
+              onSameUrlNavigation: 'reload',
+            }
+          )
+        );
+        // this.router.navigateByUrl(``);
+      })
+    );
   }
 }

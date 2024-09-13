@@ -35,11 +35,28 @@ export const routes: Routes = [
         path: 'customNumber',
         component: FormWithControlValueAccessorComponent,
       },
+      // TODO GBE : tester l'eclatement du routage en plusieurs fichier.
+      // https://stackoverflow.com/questions/49866932/multiple-files-to-define-routes
+      // https://stackoverflow.com/questions/69630833/how-to-split-app-routing-module-ts-in-multiple-files-in-angular-2
       {
         path: 'truc',
-        component: TrucComponent,
+        children: [
+          {
+            path: 'new',
+            redirectTo: `new/${crypto.randomUUID().toUpperCase()}`,
+          },
+          {
+            path: 'new/:id',
+            component: TrucComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: TrucComponent,
+          },
+        ],
       },
     ],
   },
   { path: '', redirectTo: '/test1', pathMatch: 'full' },
+  { path: '**', redirectTo: '/test1', pathMatch: 'full' },
 ];
