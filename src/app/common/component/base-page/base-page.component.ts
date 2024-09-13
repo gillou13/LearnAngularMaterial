@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NavigationService } from '../../services/navigation/navigation.service';
 import { NavigationLink } from '../../services/navigation/navigation-link';
 import { Subscription } from 'rxjs';
@@ -15,12 +15,12 @@ import { Subscription } from 'rxjs';
   standalone: true,
   template: '<p>exemple<p>',
 })
-export abstract class BasePageComponent implements OnDestroy {
+export abstract class BasePageComponent implements OnInit, OnDestroy {
   /**
    * Le lien courrant est soit récupéré via le service de navigation, soit crée par le composant.
    * Il est possible de la modifier par la suite.
    */
-  public currentLink: NavigationLink;
+  public currentLink!: NavigationLink;
 
   /** Service de navigation */
   protected navigationService = inject(NavigationService);
@@ -28,7 +28,7 @@ export abstract class BasePageComponent implements OnDestroy {
   /** Tableau de subscriptions pour la gestion des observables dans les composants. */
   protected subscriptions: Subscription[] = new Array<Subscription>();
 
-  constructor() {
+  ngOnInit(): void {
     // Init du lien courrant.
     this.currentLink = this.navigationService.setNewLink(this.createLink);
   }

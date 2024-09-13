@@ -59,7 +59,9 @@ export class Expandable1Component extends BasePageComponent implements OnInit {
     super();
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
+
     this.datas = this.periodicElementService
       .getStandardData()
       .map((x) => Object.assign(x, { expanded: false }));

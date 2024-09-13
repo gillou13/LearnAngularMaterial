@@ -27,9 +27,6 @@ export class TableFilterV1Component
   public filterDictonnary = new Map<string, string>();
 
   public dataSource: MatTableDataSource<PeriodicElement, MatPaginator>;
-  // public dataSource = new MatTableDataSource(
-  //   this.periodicElementService.getStandardData()
-  // );
 
   public constructor(public periodicElementService: PeriodicElementService) {
     super();
@@ -47,7 +44,9 @@ export class TableFilterV1Component
     });
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
+
     // pour chaque changement dans le formulaire on applique le filtre :
     this.subscriptions.push(
       this.fgFilter.valueChanges.subscribe((values) => {

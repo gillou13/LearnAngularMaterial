@@ -176,7 +176,8 @@ export class CommeOrderLineComponent
     this.dataSource.filterPredicate = this.filterPredicateCustom;
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     // init de la source de données.
     this.subscriptions.push(
       this.periodicElementService

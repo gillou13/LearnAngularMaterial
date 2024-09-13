@@ -26,7 +26,9 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
 
   public inLoading = false;
 
-  ngOnInit(): void {
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
     // Init du formulaire.
     this.subscriptions.push(
       // Récupération du formulaire par navigation ou par initFormData().

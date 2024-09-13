@@ -104,7 +104,9 @@ export class ExpandableWithFormComponent
     );
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
+
     // Récupération des données :
     this.subscriptions.push(
       this.personneService
