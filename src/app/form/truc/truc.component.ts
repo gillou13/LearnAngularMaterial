@@ -208,13 +208,13 @@ export class TrucComponent
 
     // liaison des actions save/close.
     this.frameModel.saveButton = new FrameButtonModel();
-    this.frameModel.saveButton.action = this.save();
+    this.frameModel.saveButton.action = this.save.bind(this);
 
     this.frameModel.closeButton = new FrameButtonModel();
-    this.frameModel.closeButton.action = this.close();
+    this.frameModel.closeButton.action = this.close.bind(this);
 
     this.frameModel.saveCloseButton = new FrameButtonModel();
-    this.frameModel.saveCloseButton.action = this.saveClose();
+    this.frameModel.saveCloseButton.action = this.saveClose.bind(this);
 
     // Implémentation des actions complémentaires :
     let button = new FrameActionButtonModel();
@@ -223,8 +223,9 @@ export class TrucComponent
     button.isAvailable =
       this.formData.valid && this.formData.pristine && this.mode !== 'new';
     button.order = 1;
-    button.action = this.copy();
+    button.action = this.copy.bind(this);
     this.frameModel.actions.push(button);
+
     // Disponibilité du bouton selon l'état du formulaire
     this.subscriptions.push(
       this.formData.statusChanges
@@ -241,14 +242,14 @@ export class TrucComponent
     button.icon = 'print';
     // button.isAvailable = false;
     button.order = 2;
-    button.action = this.print();
+    button.action = this.print.bind(this);
     this.frameModel.actions.push(button);
 
     button = new FrameButtonModel();
     button.label = 'refresh';
     button.icon = 'refresh';
     button.order = 0;
-    button.action = this.reload();
+    button.action = this.reload.bind(this);
     this.frameModel.actions.push(button);
   }
 
@@ -256,11 +257,7 @@ export class TrucComponent
    * Si apiService.save == true, on réinit le formulaire.
    */
   public override save(): Observable<boolean> {
-    return of(void 0).pipe(
-      // appel à l'API.
-      switchMap(() => {
-        return this.apiService.save(this.formData.value as TrucModel);
-      }),
+    return this.apiService.save(this.formData.value as TrucModel).pipe(
       // Si l'enregistrement est OK. on réinit le formulaire.
       switchMap((resultSave: boolean) => {
         if (resultSave) {

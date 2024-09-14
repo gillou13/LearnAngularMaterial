@@ -11,7 +11,7 @@ export class FrameButtonModel {
    * action liée au bouton.
    * A fournir par le composant parent.
    */
-  action!: Observable<any>;
+  action!: () => Observable<any>;
 
   /**
    * Traitement interne de l'action.
@@ -28,7 +28,7 @@ export class FrameButtonModel {
       ?.asObservable()
       .pipe(
         tap(() => (this.inLoading = true)),
-        switchMap(() => this.action),
+        switchMap(() => this.action()),
         tap(() => (this.inLoading = false))
       )
       .subscribe();

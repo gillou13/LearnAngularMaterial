@@ -60,10 +60,13 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
    * Lier form au composent.
    */
   protected setFormData(formData: TypeForm): Observable<boolean> {
-    this.formData = formData;
-    this.currentLink.formData = formData;
-    this.currentLink.refreshData = false;
-    return of(true);
+    return of(true).pipe(
+      tap(() => {
+        this.formData = formData;
+        this.currentLink.formData = formData;
+        this.currentLink.refreshData = false;
+      })
+    );
   }
 
   /**
@@ -82,15 +85,21 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
     return this.navigationService.onDeleteLink(this.currentLink);
   }
 
+  /**
+   * Enregistrement & fermeture du formulaire.
+   * @returns True si la page à bien été enregistré puis fermé.
+   */
   public saveClose(): Observable<boolean> {
-    return of(void 0).pipe(
-      switchMap(() => this.save()),
+    return this.save().pipe(
       switchMap((resultSave: boolean) => {
         return resultSave ? this.close() : of(false);
       })
     );
   }
 
+  /**
+   * Rechargement du formulaire.
+   */
   public reload(): Observable<boolean> {
     return of(true).pipe(
       tap(() => {
