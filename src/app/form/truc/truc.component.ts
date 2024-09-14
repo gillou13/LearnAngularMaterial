@@ -15,13 +15,20 @@ import { MatCardModule } from '@angular/material/card';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { FormFrameComponent } from '../../common/component/form-frame/form-frame.component';
 import { FrameModel } from '../../common/component/form-frame/model/frame-model';
-import { distinctUntilChanged, Observable, of, switchMap, tap } from 'rxjs';
+import {
+  delay,
+  distinctUntilChanged,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { TrucApiService } from './truc-api.service';
 import { TrucModel } from './model/truc-model';
 import { FrameButtonModel } from '../../common/component/form-frame/model/frame-button-model';
 import { BaseFormComponent } from '../../common/component/base-form/base-form.component';
 import { FrameActionButtonModel } from '../../common/component/form-frame/model/frame-action-button-model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-truc',
@@ -36,6 +43,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     MatCardModule,
     ReactiveFormsModule,
     FormFrameComponent,
+    MatProgressSpinnerModule,
   ],
 })
 export class TrucComponent
@@ -49,8 +57,8 @@ export class TrucComponent
   /** FormBuilder */
   private fb = inject(FormBuilder);
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  override async ngOnInit(): Promise<void> {
+    await super.ngOnInit();
 
     // Init du cadre :
     this.initFrame();
@@ -189,7 +197,10 @@ export class TrucComponent
       shipping: ['free', Validators.required],
     });
 
-    return of(form);
+    return of(form).pipe(
+      // simulation de la récupération des données.
+      delay(2000)
+    );
   }
 
   /** Initialisation du cadre du formulaire. */

@@ -32,6 +32,9 @@ export abstract class BasePageComponent implements OnInit, OnDestroy {
   /** Tableau de subscriptions pour la gestion des observables dans les composants. */
   protected subscriptions: Subscription[] = new Array<Subscription>();
 
+  /** Pour la gestion du chagrement du formulaire. (à implémenter dans le composant ) */
+  public inLoading = false;
+
   ngOnInit(): void {
     // Init du lien courrant.
     this.currentLink = this.navigationService.setNewLink(this.createLink);

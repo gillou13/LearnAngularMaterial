@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { BasePageComponent } from '../base-page/base-page.component';
 import { AbstractControl } from '@angular/forms';
-import { iif, Observable, of, switchMap, tap } from 'rxjs';
+import { firstValueFrom, iif, Observable, of, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 /**
@@ -28,23 +28,29 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
   /** formulaire réactif */
   public formData!: TypeForm;
 
-  public inLoading = false;
-
-  public override ngOnInit(): void {
+  public override async ngOnInit(): Promise<void> {
     super.ngOnInit();
 
-    // Init du formulaire.
-    this.subscriptions.push(
-      // Récupération du formulaire par navigation ou par initFormData().
-      iif(
-        () =>
-          this.currentLink?.formData !== undefined &&
-          !this.currentLink.refreshData,
-        of(this.currentLink.formData as TypeForm),
-        this.buildFormData()
+    // Init des données & formulaire.
+    await firstValueFrom(
+      of(void 0).pipe(
+        // Gestion du chargement. (début)
+        tap(() => (this.inLoading = true)),
+        // Récupération du formulaire par navigation ou par initFormData().
+        switchMap(() => {
+          return iif(
+            () =>
+              this.currentLink?.formData !== undefined &&
+              !this.currentLink.refreshData,
+            of(this.currentLink.formData as TypeForm),
+            this.buildFormData()
+          );
+        }),
+        // Set du formulaire
+        switchMap((formData: TypeForm) => this.setFormData(formData)),
+        // Gestion du chargement. (fin)
+        tap(() => (this.inLoading = false))
       )
-        .pipe(switchMap((formData: TypeForm) => this.setFormData(formData)))
-        .subscribe()
     );
   }
 
@@ -102,6 +108,11 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
    */
   public reload(): Observable<boolean> {
     return of(true).pipe(
+      // on indique au service de navigation de ne pas récupérer le formulaire enregitré.
+      tap(() => {
+        this.currentLink.refreshData = true;
+      }),
+      // on navigue par deux fois.
       tap(() => {
         this.router
           .navigateByUrl('/', { skipLocationChange: true })

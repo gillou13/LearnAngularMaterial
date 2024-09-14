@@ -1,3 +1,8 @@
+@if(inLoading) {
+  <mat-spinner/>
+}
+@else {
+  
 <app-form-frame [frameModel]="frameModel" [formData]="formData">
   <form [formGroup]="formData" novalidate>
     <mat-card class="shipping-card">
@@ -100,3 +105,4 @@
   </form>
   <p>status: {{formData.status}}, dirty : {{formData.dirty}}, id : {{formData.get('id')?.value}}</p>
 </app-form-frame>
+}
