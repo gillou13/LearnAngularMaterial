@@ -29,5 +29,8 @@ export class FrameModel {
   /**
    * Liste des actions 'complémentaires'.
    */
-  actions: FrameActionButtonModel[] = new Array<FrameActionButtonModel>();
+  actions: Map<string, FrameActionButtonModel> = new Map<
+    string,
+    FrameActionButtonModel
+  >();
 }

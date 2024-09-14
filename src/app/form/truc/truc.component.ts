@@ -224,16 +224,15 @@ export class TrucComponent
       this.formData.valid && this.formData.pristine && this.mode !== 'new';
     button.order = 1;
     button.action = this.copy.bind(this);
-    this.frameModel.actions.push(button);
+    this.frameModel.actions.set(button.label, button);
 
     // Disponibilité du bouton selon l'état du formulaire
     this.subscriptions.push(
       this.formData.statusChanges
         .pipe(distinctUntilChanged())
         .subscribe((status: FormControlStatus) => {
-          this.frameModel.actions.find(
-            (button: FrameActionButtonModel) => (button.label = 'dupliquer')
-          )!.isAvailable = status === 'VALID';
+          this.frameModel.actions.get('dupliquer')!.isAvailable =
+            status === 'VALID';
         })
     );
 
@@ -243,14 +242,14 @@ export class TrucComponent
     // button.isAvailable = false;
     button.order = 2;
     button.action = this.print.bind(this);
-    this.frameModel.actions.push(button);
+    this.frameModel.actions.set(button.label, button);
 
     button = new FrameButtonModel();
     button.label = 'refresh';
     button.icon = 'refresh';
     button.order = 0;
     button.action = this.reload.bind(this);
-    this.frameModel.actions.push(button);
+    this.frameModel.actions.set(button.label, button);
   }
 
   /** function pour l'enregistrement du formulaire.

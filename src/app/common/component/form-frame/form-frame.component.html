@@ -3,8 +3,8 @@
     <ng-container *ngTemplateOutlet="saveButtons"/>
 </div>
 <h4 *ngIf="frameModel?.name != undefined">{{frameModel.name}}</h4>
-<div class="buttonsContainer" *ngIf="frameModel.actions?.length ?? 0 > 0">
-    @for(action of frameModel.actions; track action){
+<div class="buttonsContainer" *ngIf="frameModel.actions.size > 0">
+    @for(action of frameModel.actions.values(); track action){
         <button 
             *ngIf="action.isVisible && action.action != undefined"
             mat-stroked-button 
