@@ -17,13 +17,13 @@ export class FrameModel {
    */
   picture?: string;
 
-  /** Action d'enregistrement et de fermeture de la page. */
-  saveCloseAction?: Subject<any>;
-
+  /** Params du bouton d'enregistrement. */
   saveButton?: FrameButtonModel;
 
+  /** Params du bouton d'enregistrement & fermeture. */
   saveCloseButton?: FrameButtonModel;
 
+  /** Params du bouton de fermeture. */
   closeButton!: FrameButtonModel;
 
   /**

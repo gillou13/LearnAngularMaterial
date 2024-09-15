@@ -76,7 +76,7 @@ export class NavigationService {
       // TODO GBE : ajouter un message/log si problème quand le service de message (snakbar) sera disponible.
       return of(false);
     } else {
-      // Vérification de l'état de l'abstractControl liée si existant.
+      // Vérification de l'état de l'abstractControl liée (si existant).
       if (deletedLink.formData == undefined) {
         this.deleteLink(linkIndex);
         return of(true);
@@ -112,12 +112,18 @@ export class NavigationService {
             .pipe(
               switchMap((response: boolean) => {
                 if (response) {
-                  // TODO GBE : il faudrai ajouter un service pour l'enregistrement du formulaire...
-                  console.log('on enregistre et on quitte.');
-                  this.deleteLink(linkIndex);
-                  return of(true);
+                  // appel a la fonction délégué (du service) pour l'enregistrement.
+                  return deletedLink.saveAction(deletedLink.formData).pipe(
+                    // Si pas de problème à l'enregistrement, on supprime le lien.
+                    switchMap((resultSave: boolean) => {
+                      if (resultSave) {
+                        this.deleteLink(linkIndex);
+                      }
+                      return of(resultSave);
+                    })
+                  );
                 } else {
-                  console.log('on quitte seulement.');
+                  // console.log('on quitte seulement.');
                   this.deleteLink(linkIndex);
                   return of(true);
                 }

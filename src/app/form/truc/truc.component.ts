@@ -66,6 +66,8 @@ export class TrucComponent
 
   protected override createLink(url: string): NavigationLink {
     const link = new NavigationLink(url, 'truc', true, 'etat', 'icon');
+    // set du  save du currentLink
+    link.saveAction = this.apiService.save;
     return link;
   }
 

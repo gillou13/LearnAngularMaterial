@@ -1,4 +1,5 @@
 import { AbstractControl } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 export class NavigationLink {
   // public id: number;
@@ -14,6 +15,11 @@ export class NavigationLink {
   /** Lien vers le formulaire lié au composant. */
   public formData?: AbstractControl;
 
+  /** fonction délégué pour l'enregistrement du formulaire liée.
+   * A implémenter dans le composant. (est obligatoire si formData est indiqué.)
+   */
+  public saveAction!: (form: any) => Observable<boolean>;
+
   constructor(
     /*id: number, */ url: string,
     label: string = '',
@@ -27,13 +33,5 @@ export class NavigationLink {
     this.etat = etat;
     this.icon = icon;
     this.refreshData = false;
-  }
-
-  /**GBE:  Non utilisé pour le moment. */
-  public static copy(dest: NavigationLink, source: NavigationLink): void {
-    dest.active = source.active;
-    dest.etat = source.etat;
-    dest.icon = source.icon;
-    dest.label = source.label;
   }
 }
