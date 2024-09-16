@@ -1,4 +1,4 @@
-import { Observable, of, Subject, Subscription, switchMap, tap } from 'rxjs';
+import { Observable, Subject, Subscription, switchMap, tap } from 'rxjs';
 
 export class FrameButtonModel {
   /** si true le bouton est visible. */
@@ -8,27 +8,21 @@ export class FrameButtonModel {
   isAvailable: boolean = true;
 
   /**
-   * action liée au bouton.
-   * A fournir par le composant parent.
-   */
-  action!: () => Observable<any>;
-
-  /**
    * Traitement interne de l'action.
+   * TODO GBE : j'aurrais pu utiliser des EventEmitter...
    */
   subject: Subject<any> = new Subject<any>();
 
   /** Si true:  en traitement */
   inLoading = false;
 
-  /** Set la subscription pour la gestion du loading */
-  public setLoading(): Subscription {
-    // Gestion du loading.
+  /** Permet de lier une action du composant parent au bouton. avec une gestion du loading. */
+  public setAction(fnAction: () => Observable<any>): Subscription {
     return this.subject
-      ?.asObservable()
+      .asObservable()
       .pipe(
         tap(() => (this.inLoading = true)),
-        switchMap(() => this.action()),
+        switchMap(() => fnAction()),
         tap(() => (this.inLoading = false))
       )
       .subscribe();

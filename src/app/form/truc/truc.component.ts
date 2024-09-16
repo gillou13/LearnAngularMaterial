@@ -187,38 +187,36 @@ export class TrucComponent
     //   shipping: ['free', Validators.required],
     // });
     // la flém de tous saisir a chaque fois...
-
-    // Récupération des informations de route :
-    const routeSnapshot = this.activatedRoute.snapshot;
-    this.mode = routeSnapshot.url[0].path;
-    const id = routeSnapshot.params['id'];
-    const copyTo = routeSnapshot.queryParams['copyTo'] ?? '';
-
-    const form = this.fb.group({
-      id: [id, Validators.required],
-      company: 'Gillou&Co',
-      firstName: ['Gilles', Validators.required],
-      lastName: ['Biguet', Validators.required],
-      address: [
-        `par ici. mode: ${this.mode}, id: ${id}, copyTo: ${copyTo}`,
-        Validators.required,
-      ],
-      address2: null,
-      city: ['Thizy', Validators.required],
-      state: ['Proxima du sentor', Validators.required],
-      postalCode: [
-        '69240',
-        Validators.compose([
-          Validators.required,
-          Validators.minLength(5),
-          Validators.maxLength(5),
-        ]),
-      ],
-      shipping: ['free', Validators.required],
-    });
-
-    return of(form).pipe(
-      // simulation de la récupération des données.
+    return of(void 0).pipe(
+      switchMap(() => {
+        const form = this.fb.group({
+          id: [this.formStatus.urlParams.get('id'), Validators.required],
+          company: 'Gillou&Co',
+          firstName: ['Gilles', Validators.required],
+          lastName: ['Biguet', Validators.required],
+          address: [
+            `par ici. mode: ${
+              this.formStatus.mode
+            }, id: ${this.formStatus.urlParams.get(
+              'id'
+            )}, copyTo: ${this.formStatus.urlParams.get('copyTo')}`,
+            Validators.required,
+          ],
+          address2: null,
+          city: ['Thizy', Validators.required],
+          state: ['Proxima du sentor', Validators.required],
+          postalCode: [
+            '69240',
+            Validators.compose([
+              Validators.required,
+              Validators.minLength(5),
+              Validators.maxLength(5),
+            ]),
+          ],
+          shipping: ['free', Validators.required],
+        });
+        return of(form);
+      }),
       delay(2000)
     );
   }
@@ -227,7 +225,7 @@ export class TrucComponent
   private initFrame(): void {
     this.frameModel = new FrameModel();
     this.frameModel.title = 'Truc';
-    this.frameModel.name = this.formData.get('company')?.value;
+    this.frameModel.name = this.formData.get('company')?.value ?? '';
     // Pour changer le nom en direct.
     this.subscriptions.push(
       this.formData.controls['company'].valueChanges.subscribe(
@@ -239,13 +237,19 @@ export class TrucComponent
 
     // liaison des actions save/close.
     this.frameModel.saveButton = new FrameButtonModel();
-    this.frameModel.saveButton.action = this.save.bind(this);
+    this.subscriptions.push(
+      this.frameModel.saveButton.setAction(this.save.bind(this))
+    );
 
     this.frameModel.closeButton = new FrameButtonModel();
-    this.frameModel.closeButton.action = this.close.bind(this);
+    this.subscriptions.push(
+      this.frameModel.closeButton.setAction(this.close.bind(this))
+    );
 
     this.frameModel.saveCloseButton = new FrameButtonModel();
-    this.frameModel.saveCloseButton.action = this.saveClose.bind(this);
+    this.subscriptions.push(
+      this.frameModel.saveCloseButton.setAction(this.saveClose.bind(this))
+    );
 
     // Implémentation des actions complémentaires :
     let button = new FrameActionButtonModel();
@@ -256,7 +260,7 @@ export class TrucComponent
       this.formData.pristine &&
       this.formStatus.mode !== 'new';
     button.order = 1;
-    button.action = this.copy.bind(this);
+    button.setAction(this.copy.bind(this));
     this.frameModel.actions.set(button.label, button);
 
     // Disponibilité du bouton selon l'état du formulaire
@@ -274,14 +278,14 @@ export class TrucComponent
     button.icon = 'print';
     // button.isAvailable = false;
     button.order = 2;
-    button.action = this.print.bind(this);
+    this.subscriptions.push(button.setAction(this.print.bind(this)));
     this.frameModel.actions.set(button.label, button);
 
     button = new FrameButtonModel();
     button.label = 'refresh';
     button.icon = 'refresh';
     button.order = 0;
-    button.action = this.reload.bind(this);
+    this.subscriptions.push(button.setAction(this.reload.bind(this)));
     this.frameModel.actions.set(button.label, button);
   }
 

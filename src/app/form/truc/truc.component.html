@@ -1,10 +1,5 @@
-@if(inLoading) {
-  <mat-spinner/>
-}
-@else {
-  
-<app-form-frame [frameModel]="frameModel" [formData]="formData">
-  <form [formGroup]="formData" novalidate>
+<app-form-frame [frameModel]="frameModel" [formData]="formData" [isLoading]="inLoading">
+  <form *ngIf="formData" [formGroup]="formData" novalidate>
     <mat-card class="shipping-card">
       <mat-card-header>
         <mat-card-title>Shipping Information</mat-card-title>
@@ -103,6 +98,5 @@
       </mat-card-actions> -->
     </mat-card>
   </form>
-  <p>status: {{formData.status}}, dirty : {{formData.dirty}}, id : {{formData.get('id')?.value}}</p>
+  <p *ngIf="formData" >status: {{formData.status}}, dirty : {{formData.dirty}}, id : {{formData.get('id')?.value}}</p>
 </app-form-frame>
-}
