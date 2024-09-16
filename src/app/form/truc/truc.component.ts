@@ -30,6 +30,8 @@ import { BaseFormComponent } from '../../common/component/base-form/base-form.co
 import { FrameActionButtonModel } from '../../common/component/form-frame/model/frame-action-button-model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Guid } from '../../tools/guid';
+import { CommonModule } from '@angular/common';
+import { FormStatus } from '../../common/component/base-form/models/form-status';
 
 @Component({
   selector: 'app-truc',
@@ -45,6 +47,7 @@ import { Guid } from '../../tools/guid';
     ReactiveFormsModule,
     FormFrameComponent,
     MatProgressSpinnerModule,
+    CommonModule,
   ],
 })
 export class TrucComponent
@@ -78,9 +81,6 @@ export class TrucComponent
 
   /** Paramètres du cadre du formulaire (avec les boutons d'action.) */
   public frameModel!: FrameModel;
-
-  /** Mode d'ouverture du composant (edit|new) */
-  public mode!: string;
 
   hasUnitNumber = false;
 
@@ -146,6 +146,22 @@ export class TrucComponent
     { name: 'Wyoming', abbreviation: 'WY' },
   ];
 
+  protected override InitStatus(): Observable<boolean> {
+    return of(void 0).pipe(
+      switchMap(() => {
+        // Récupération des informations de route :
+        const routeSnapshot = this.activatedRoute.snapshot;
+        this.formStatus = new FormStatus();
+        this.formStatus.mode = routeSnapshot.url[0].path;
+        this.formStatus.urlParams.set('id', routeSnapshot.params['id']);
+        this.formStatus.urlParams.set(
+          'copyTo',
+          routeSnapshot.queryParams['copyTo'] ?? ''
+        );
+        return of(true);
+      })
+    );
+  }
   /**
    * Initialise le formulaire selon les params d'entrée
    * TODO GBE : oui c'est a finaliser je sais...
@@ -236,7 +252,9 @@ export class TrucComponent
     button.label = 'dupliquer';
     button.icon = 'content_copy';
     button.isAvailable =
-      this.formData.valid && this.formData.pristine && this.mode !== 'new';
+      this.formData.valid &&
+      this.formData.pristine &&
+      this.formStatus.mode !== 'new';
     button.order = 1;
     button.action = this.copy.bind(this);
     this.frameModel.actions.set(button.label, button);

@@ -3,6 +3,7 @@ import { BasePageComponent } from '../base-page/base-page.component';
 import { AbstractControl } from '@angular/forms';
 import { firstValueFrom, iif, Observable, of, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { FormStatus } from './models/form-status';
 
 /**
  * Base de composant à destination d'un formulaire.
@@ -28,6 +29,9 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
   /** formulaire réactif */
   public formData!: TypeForm;
 
+  /** état du formulaire */
+  public formStatus!: FormStatus;
+
   public override async ngOnInit(): Promise<void> {
     super.ngOnInit();
 
@@ -36,6 +40,8 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
       of(void 0).pipe(
         // Gestion du chargement. (début)
         tap(() => (this.inLoading = true)),
+        // init de l'état de la page
+        switchMap(() => this.InitStatus()),
         // Récupération du formulaire par navigation ou par initFormData().
         switchMap(() => {
           return iif(
@@ -63,11 +69,18 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
   protected abstract buildFormData(): Observable<TypeForm>;
 
   /**
+   * Doit initialiser les stats du document (FormStatus).
+   * et récupérer les paramètres de l'url.
+   * */
+  protected abstract InitStatus(): Observable<boolean>;
+
+  /**
    * Lier form au composent.
    */
   protected setFormData(formData: TypeForm): Observable<boolean> {
     return of(true).pipe(
       tap(() => {
+        // liaison du formulaire
         this.formData = formData;
         this.currentLink.formData = formData;
         this.currentLink.refreshData = false;
