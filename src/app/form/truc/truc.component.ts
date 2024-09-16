@@ -29,6 +29,7 @@ import { FrameButtonModel } from '../../common/component/form-frame/model/frame-
 import { BaseFormComponent } from '../../common/component/base-form/base-form.component';
 import { FrameActionButtonModel } from '../../common/component/form-frame/model/frame-action-button-model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Guid } from '../../tools/guid';
 
 @Component({
   selector: 'app-truc',
@@ -60,14 +61,15 @@ export class TrucComponent
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
 
+    // set du save du currentLink
+    this.currentLink.saveAction = this.apiService.save;
+
     // Init du cadre :
     this.initFrame();
   }
 
   protected override createLink(url: string): NavigationLink {
     const link = new NavigationLink(url, 'truc', true, 'etat', 'icon');
-    // set du  save du currentLink
-    link.saveAction = this.apiService.save;
     return link;
   }
 
@@ -297,7 +299,7 @@ export class TrucComponent
           .navigateByUrl('/', { skipLocationChange: true })
           .then(() => {
             this.router.navigate(
-              ['form', 'truc', 'new', crypto.randomUUID().toUpperCase()],
+              ['form', 'truc', 'new', Guid.newGuid().toUpperCase()],
               {
                 queryParams: { copyTo: this.formData.get('id')!.value },
               }

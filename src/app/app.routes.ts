@@ -11,6 +11,7 @@ import { TableFilterV1Component } from './tables/table-filter-v1/table-filter-v1
 import { FormWithControlValueAccessorComponent } from './form/form-with-control-value-accessor/form-with-control-value-accessor.component';
 import { CommeOrderLineComponent } from './tables/comme-order-line/comme-order-line.component';
 import { TrucComponent } from './form/truc/truc.component';
+import { Guid } from './tools/guid';
 
 export const routes: Routes = [
   { path: 'test1', component: Test1Component },
@@ -43,7 +44,7 @@ export const routes: Routes = [
         children: [
           {
             path: 'new',
-            redirectTo: `new/${crypto.randomUUID().toUpperCase()}`,
+            redirectTo: `new/${Guid.newGuid().toUpperCase()}`,
           },
           {
             path: 'new/:id',

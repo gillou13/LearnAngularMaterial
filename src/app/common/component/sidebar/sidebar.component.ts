@@ -3,6 +3,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Guid } from '../../../tools/guid';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,7 +29,7 @@ export class SidebarComponent {
     { routerLink: '/form/customNumber', label: 'form number' },
     { routerLink: '/form/truc/new', label: 'form truc new' },
     {
-      routerLink: `/form/truc/edit/${crypto.randomUUID().toUpperCase()}`,
+      routerLink: `/form/truc/edit/${Guid.newGuid().toUpperCase()}`,
       label: 'form truc edit',
     },
   ];
