@@ -1,11 +1,12 @@
+import { signal, Signal } from '@angular/core';
 import { Observable, Subject, Subscription, switchMap, tap } from 'rxjs';
 
 export class FrameButtonModel {
   /** si true le bouton est visible. */
-  isVisible: boolean = true;
+  isVisible: Signal<boolean> = signal(true);
 
   /** si true le bouton est disponible. */
-  isAvailable: boolean = true;
+  isAvailable: Signal<boolean> = signal(true);
 
   /**
    * Traitement interne de l'action.

@@ -1,5 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
-
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -61,8 +68,23 @@ export class TrucComponent
   /** FormBuilder */
   private fb = inject(FormBuilder);
 
+  /** signal pour le changement du formData. */
+  public formDataChange: WritableSignal<FormControlStatus> = signal('VALID');
+
+  /** signal pour la disponibilité de l'impression. */
+  public printIsAvailable: Signal<boolean> = computed(() => {
+    return this.formDataChange() === 'VALID';
+  });
+
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
+
+    /** set du signal de changement de formData (toSignal pas encore dispo en prod...) */
+    this.subscriptions.push(
+      this.formData.statusChanges.subscribe((status: FormControlStatus) => {
+        this.formDataChange.set(status);
+      })
+    );
 
     // set du save du currentLink
     this.currentLink.saveAction = this.apiService.save;
@@ -255,36 +277,38 @@ export class TrucComponent
     let button = new FrameActionButtonModel();
     button.label = 'dupliquer';
     button.icon = 'content_copy';
-    button.isAvailable =
-      this.formData.valid &&
-      this.formData.pristine &&
-      this.formStatus.mode !== 'new';
     button.order = 1;
+    button.isAvailable = computed(() => {
+      // on utilise formDataChange juste pour lancer le calcul.
+      this.formDataChange();
+      return (
+        this.formData.valid &&
+        this.formData.pristine &&
+        this.formStatus.mode !== 'new'
+      );
+    });
     button.setAction(this.copy.bind(this));
     this.frameModel.actions.set(button.label, button);
 
-    // Disponibilité du bouton selon l'état du formulaire
-    this.subscriptions.push(
-      this.formData.statusChanges
-        .pipe(distinctUntilChanged())
-        .subscribe((status: FormControlStatus) => {
-          this.frameModel.actions.get('dupliquer')!.isAvailable =
-            status === 'VALID';
-        })
-    );
-
-    button = new FrameButtonModel();
+    button = new FrameActionButtonModel();
     button.label = 'imprimer';
     button.icon = 'print';
-    // button.isAvailable = false;
     button.order = 2;
+    // button.isAvailable = signal(false);
+    button.isAvailable = this.printIsAvailable;
     this.subscriptions.push(button.setAction(this.print.bind(this)));
     this.frameModel.actions.set(button.label, button);
 
-    button = new FrameButtonModel();
+    button = new FrameActionButtonModel();
     button.label = 'refresh';
     button.icon = 'refresh';
     button.order = 0;
+    button.isAvailable = computed(() => {
+      const result =
+        this.formDataChange() === 'VALID' &&
+        this.formData.get('shipping')?.value === 'free';
+      return result;
+    });
     this.subscriptions.push(button.setAction(this.reload.bind(this)));
     this.frameModel.actions.set(button.label, button);
   }

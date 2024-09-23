@@ -13,7 +13,7 @@
             *ngIf="action.isVisible"
             mat-stroked-button 
             (click)="action.subject.next(true)"
-            [disabled]="!action.isAvailable || action.inLoading"
+            [disabled]="!action.isAvailable() || action.inLoading"
             [attr.style]="'order: ' + action.order">
                 <mat-icon *ngIf="action.icon && !action.inLoading">{{ action.icon }}</mat-icon>
                 <mat-icon *ngIf="action.inLoading"><mat-spinner diameter="20"/></mat-icon>
@@ -34,7 +34,7 @@
         <button 
             *ngIf="frameModel!.saveButton?.isVisible ?? false"
             (click)="frameModel!.saveButton!.subject.next(true)"
-            [disabled]="!frameModel!.saveButton?.isAvailable || frameModel!.saveButton?.inLoading || frameModel!.saveCloseButton?.inLoading || formData!.invalid || formData!.pristine"
+            [disabled]="!frameModel!.saveButton!.isAvailable() || frameModel!.saveButton?.inLoading || frameModel!.saveCloseButton?.inLoading || formData!.invalid || formData!.pristine"
             mat-fab extended>
             <!-- mat-raised-button -->
                 <ng-container *ngIf="frameModel?.saveButton?.inLoading" [ngTemplateOutlet]="spinnerButton"/>
@@ -43,14 +43,14 @@
         <button 
             *ngIf="frameModel!.saveCloseButton?.isVisible ?? false"
             (click)="frameModel!.saveCloseButton!.subject.next(true)"
-            [disabled]="!frameModel!.saveCloseButton?.isAvailable || frameModel?.saveButton?.inLoading || frameModel?.saveCloseButton?.inLoading || formData!.invalid || formData!.pristine"
+            [disabled]="!frameModel!.saveCloseButton!.isAvailable() || frameModel?.saveButton?.inLoading || frameModel?.saveCloseButton?.inLoading || formData!.invalid || formData!.pristine"
             mat-fab extended>
             <ng-container *ngIf="frameModel!.saveCloseButton?.inLoading" [ngTemplateOutlet]="spinnerButton"/>
             Save & close
         </button>
         <button 
             (click)="frameModel!.closeButton.subject.next(true)"
-            [disabled]="!frameModel!.closeButton.isAvailable || frameModel!.saveButton?.inLoading || frameModel!.saveCloseButton?.inLoading"
+            [disabled]="!frameModel!.closeButton!.isAvailable() || frameModel!.saveButton?.inLoading || frameModel!.saveCloseButton?.inLoading"
             mat-raised-button>close</button>
     </p>
 </ng-template>
