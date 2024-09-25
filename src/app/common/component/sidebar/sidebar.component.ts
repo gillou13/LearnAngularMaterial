@@ -32,5 +32,6 @@ export class SidebarComponent {
       routerLink: `/form/truc/edit/${Guid.newGuid().toUpperCase()}`,
       label: 'form truc edit',
     },
+    { routerLink: '/jeu/CalculeVitesse', label: 'Jeu table multi 1' },
   ];
 }

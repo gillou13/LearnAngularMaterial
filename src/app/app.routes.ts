@@ -69,6 +69,18 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'jeu',
+    children: [
+      {
+        path: 'CalculeVitesse',
+        loadComponent: () =>
+          import('./games/table-multi/table-multi.component').then(
+            (m) => m.TableMultiComponent
+          ),
+      },
+    ],
+  },
   { path: '', redirectTo: '/test1', pathMatch: 'full' },
   { path: '**', redirectTo: '/test1', pathMatch: 'full' },
 ];
