@@ -33,5 +33,6 @@ export class SidebarComponent {
       label: 'form truc edit',
     },
     { routerLink: '/jeu/CalculeVitesse', label: 'Jeu table multi 1' },
+    { routerLink: '/jeu/DivisionVitesse', label: 'Jeu table Division' },
   ];
 }

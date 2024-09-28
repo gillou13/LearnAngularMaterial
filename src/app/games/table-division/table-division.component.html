@@ -1,12 +1,13 @@
-<h1>jeu de calcule mentale rapide.</h1>
-<p>A toi de jouer Arthur.</p>
+<h1>jeu de division rapide.</h1>
+<p>A toi de jouer Arthur. (encor une fois)</p>
 <mat-accordion>
     <!-- Les régles -->
     <mat-expansion-panel [disabled]="inGame">
         <mat-expansion-panel-header>
             <mat-panel-title>Régles</mat-panel-title>
         </mat-expansion-panel-header>
-        <p>Le but du jeu est de réaliser le plus de calcul en un temps donnée.</p>
+        <p>Le but du jeu est de réaliser le plus de division en un temps donnée.<br/>
+        (comprend seulement les tables de multiplications)</p>
     </mat-expansion-panel>
     <!-- Les Paramètres -->
     <mat-expansion-panel [disabled]="inGame">
@@ -31,7 +32,7 @@
         </mat-expansion-panel-header>
         <h4>temps restant: {{ compteur }} </h4>
         <button [disabled]="inGame" (click)="lancer()">Lancer la partie</button>
-        <p>{{number1}} x {{number2}} = <input #inputResult matInput type="number" [(ngModel)]="result" (keyup.enter)="propal()" disabled/></p>
+        <p>{{number1}} / {{number2}} = <input #inputResult matInput type="number" [(ngModel)]="result" (keyup.enter)="propal()" disabled/></p>
         <p>{{nbJustes}} réponses justes. {{nbErreurs}} réponses fausses.</p>
     </mat-expansion-panel>
     <!-- Historique des résultats  -->

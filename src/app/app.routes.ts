@@ -79,6 +79,13 @@ export const routes: Routes = [
             (m) => m.TableMultiComponent
           ),
       },
+      {
+        path: 'DivisionVitesse',
+        loadComponent: () =>
+          import('./games/table-division/table-division.component').then(
+            (m) => m.TableDivisionComponent
+          ),
+      },
     ],
   },
   { path: '', redirectTo: '/test1', pathMatch: 'full' },
