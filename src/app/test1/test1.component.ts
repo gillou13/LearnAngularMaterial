@@ -16,6 +16,8 @@ import { DialogService } from '../common/services/dialogService/dialog.service';
 export class Test1Component extends BasePageComponent {
   public resultDialog: string;
 
+  public TestAscenceur: boolean = false;
+
   constructor(private dialogService: DialogService) {
     super();
     this.resultDialog = '';
