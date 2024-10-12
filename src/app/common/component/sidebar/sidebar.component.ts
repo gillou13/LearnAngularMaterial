@@ -32,6 +32,7 @@ export class SidebarComponent {
       routerLink: `/form/truc/edit/${Guid.newGuid().toUpperCase()}`,
       label: 'form truc edit',
     },
+    { routerLink: '/form/testngselect', label: 'Test ngSelect' },
     { routerLink: '/jeu/CalculeVitesse', label: 'Jeu table multi 1' },
     { routerLink: '/jeu/DivisionVitesse', label: 'Jeu table Division' },
   ];
