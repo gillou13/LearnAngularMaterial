@@ -67,6 +67,13 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+        path: 'testngselect',
+        loadComponent: () =>
+          import('./form/test-select/test-select.component').then(
+            (m) => m.TestSelectComponent
+          ),
+      },
     ],
   },
   {

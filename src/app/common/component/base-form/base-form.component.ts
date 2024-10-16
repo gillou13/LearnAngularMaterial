@@ -54,6 +54,8 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
         }),
         // Set du formulaire
         switchMap((formData: TypeForm) => this.setFormData(formData)),
+        // action à la fin du chargement.
+        tap(() => this.endOnInit()),
         // Gestion du chargement. (fin)
         tap(() => (this.inLoading = false))
       )
@@ -87,6 +89,11 @@ export abstract class BaseFormComponent<TypeForm extends AbstractControl>
       })
     );
   }
+
+  /**
+   * Fonction executé à la fin du OnInit
+   */
+  protected endOnInit(): void {}
 
   /**
    * Doit contenir la logique d'enregistrement du formulaire

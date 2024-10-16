@@ -1,0 +1,116 @@
+<p>test-select works!</p>
+<form *ngIf="formData" [formGroup]="formData">
+    <div class="row">
+        <div class="col">
+            <ng-select formControlName="value1" [items]="cars" bindLabel="name" bindValue="id"/>
+        </div>
+        <div class="col">
+            <ng-select formControlName="value2">
+                <ng-option *ngFor="let car of cars" [value]="car.id">{{car.name}}</ng-option>
+            </ng-select>
+        </div>
+        <!-- <mat-form-field class="full-width">
+            <ng-select matInput formControlName="value1" [items]="cars" bindLabel="name" bindValue="id"/>
+        </mat-form-field> -->
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>state simple</label>
+            <ng-select formControlName="stateSimple" [items]="this.states$ | async" bindLabel="name" bindValue="abbreviation"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>state typeahead</label>
+            <ng-select 
+                formControlName="stateTypeahead" 
+                [items]="this.typeaheadOptions$ | async" 
+                bindLabel="name" 
+                bindValue="abbreviation"
+                [typeahead]="typeaheadInput$"
+                [minTermLength]="2"
+                typeToSearchText="aller fait ta recherche"
+                [loading]="typeaheadLoading"
+                />
+        </div>
+        <div class="col">
+            <label>state typeahead avec valeur.</label>
+            <ng-select 
+                formControlName="stateTypeaheadWithValue" 
+                [items]="this.typeaheadWithValueOptions$ | async"
+                bindLabel="name" 
+                bindValue="abbreviation"
+                [typeahead]="typeaheadWithValueInput$"
+                [minTermLength]="2"
+                typeToSearchText="aller fait ta recherche"
+                [loading]="typeaheadWithValueLoading"
+                />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>state virtual scroll</label>
+            <ng-select
+                formControlName="stateVirtualScroll"
+                [items]="virtualScrollOptions"
+                [loading]="virtualScrollLoading"
+                bindLabel="name" 
+                bindValue="abbreviation"
+                [virtualScroll]="true"
+                (scrollToEnd)="vsOnScrollToEnd()"
+                />
+        </div>
+        <div class="col">
+            <label>state virtual scroll with value</label>
+            <ng-select
+                formControlName="stateVirtualScrollWithValue"
+                [items]="virtualScrollWithValueOptions"
+                [loading]="virtualScrollWithValueLoading"
+                bindLabel="name" 
+                bindValue="abbreviation"
+                [virtualScroll]="true"
+                (scrollToEnd)="vsOnScrollWithValueToEnd()"
+                />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>state typeahead, virtualScroll & with value</label>
+            <ng-select
+                formControlName="stateComplex"
+                [items]="stateComplexOptions$ | async"
+                [loading]="stateComplexLoading()"
+                bindLabel="name"
+                bindValue="abbreviation"
+                [typeahead]="stateComplexInputSubject$"
+                [minTermLength]="2"
+                typeToSearchText="toto"
+                (change)="onStateComplexChange($event)"
+                (scrollToEnd)="onStateComplexScrollToEnd()"
+                (open)="onStateComplexOpen()"
+                [trackByFn]="trackByFn">
+                <!-- 
+                [virtualScroll]="true"<ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <span>{{item.name}}</span>
+                </ng-template> -->
+            </ng-select>
+                <!-- 
+                (scroll)="onStateComplexScroll($event)" -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{this.formData.value | json }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <br/>
+            {{this.stateComplexOptions$ | async | json }}
+            <br/>
+            <br/>
+            {{this.stateComplexBuffer | json}}
+        </div>
+    </div>
+</form>
+
