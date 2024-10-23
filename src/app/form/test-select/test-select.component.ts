@@ -32,6 +32,7 @@ import { Guid } from '../../tools/guid';
 import { FormFrameComponent } from '../../common/component/form-frame/form-frame.component';
 import { MatInputModule } from '@angular/material/input';
 import { StateApiFakeService } from '../../common/services/fakeApi/state.service';
+import { TestIdDirective } from '../../common/directives/test-id.directive';
 
 @Component({
   selector: 'app-test-select',
@@ -42,6 +43,7 @@ import { StateApiFakeService } from '../../common/services/fakeApi/state.service
     MatInputModule,
     NgSelectModule,
     FormFrameComponent,
+    TestIdDirective,
   ],
   templateUrl: './test-select.component.html',
   styleUrl: './test-select.component.scss',

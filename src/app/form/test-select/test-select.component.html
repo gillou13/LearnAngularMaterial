@@ -13,10 +13,10 @@
             <ng-select matInput formControlName="value1" [items]="cars" bindLabel="name" bindValue="id"/>
         </mat-form-field> -->
     </div>
-    <div class="row">
+    <div class="row" [appTestId]="'truc'">
         <div class="col">
             <label>state simple</label>
-            <ng-select formControlName="stateSimple" [items]="this.states$ | async" bindLabel="name" bindValue="abbreviation"/>
+            <ng-select [appTestId]="'stateSimple'" formControlName="stateSimple" [items]="this.states$ | async" bindLabel="name" bindValue="abbreviation"/>
         </div>
     </div>
     <div class="row">
