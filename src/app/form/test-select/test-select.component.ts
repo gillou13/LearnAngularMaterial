@@ -22,7 +22,6 @@ import {
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 import { FormStatus } from '../../common/component/base-form/models/form-status';
 import { Guid } from '../../tools/guid';
-import { FormFrameComponent } from '../../common/component/form-frame/form-frame.component';
 import { MatInputModule } from '@angular/material/input';
 import { StateApiFakeService } from '../../common/services/fakeApi/state.service';
 import { TestIdDirective } from '../../common/directives/test-id.directive';
@@ -35,7 +34,6 @@ import { TestIdDirective } from '../../common/directives/test-id.directive';
     ReactiveFormsModule,
     MatInputModule,
     NgSelectModule,
-    FormFrameComponent,
     TestIdDirective,
   ],
   templateUrl: './test-select.component.html',

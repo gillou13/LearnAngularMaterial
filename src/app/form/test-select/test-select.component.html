@@ -1,4 +1,3 @@
-<p>test-select works!</p>
 <form *ngIf="formData" [formGroup]="formData">
     <div class="row">
         <div class="col">
@@ -9,9 +8,6 @@
                 <ng-option *ngFor="let car of cars" [value]="car.id">{{car.name}}</ng-option>
             </ng-select>
         </div>
-        <!-- <mat-form-field class="full-width">
-            <ng-select matInput formControlName="value1" [items]="cars" bindLabel="name" bindValue="id"/>
-        </mat-form-field> -->
     </div>
     <div class="row" [appTestId]="'truc'">
         <div class="col">
