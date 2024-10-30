@@ -78,24 +78,25 @@
             <label>state typeahead, virtualScroll & with value</label>
             <ng-select
                 formControlName="stateComplex"
-                [items]="stateComplexOptions$ | async"
+                [items]="stateComplexOptionsObservable$ | async"
                 [loading]="stateComplexLoading()"
                 bindLabel="name"
                 bindValue="abbreviation"
-                [typeahead]="stateComplexInputSubject$"
-                [minTermLength]="2"
-                typeToSearchText="toto"
                 (change)="onStateComplexChange($event)"
                 (scrollToEnd)="onStateComplexScrollToEnd()"
                 (open)="onStateComplexOpen()"
-                [trackByFn]="trackByFn">
-                <!-- 
-                [virtualScroll]="true"<ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                    <span>{{item.name}}</span>
-                </ng-template> -->
+                (close)="onStateComplexClose()"
+                [trackByFn]="trackByFn"
+                [virtualScroll]="true"
+                [searchable]="false">
+                    <ng-template ng-header-tmp>
+                        <input 
+                            class="inputSearch" 
+                            type="text" 
+                            (keydown)="onInputSearchKeydown($event)" 
+                            (input)="onStateComplexSearchChange($event)"/>
+                    </ng-template>
             </ng-select>
-                <!-- 
-                (scroll)="onStateComplexScroll($event)" -->
         </div>
     </div>
     <div class="row">
@@ -105,9 +106,9 @@
     </div>
     <div class="row">
         <div class="col">
-            <br/>
-            {{this.stateComplexOptions$ | async | json }}
-            <br/>
+            <!-- <br/>
+            {{this.stateComplexOptionsObservable$ | async | json }}
+            <br/> -->
             <br/>
             {{this.stateComplexBuffer | json}}
         </div>

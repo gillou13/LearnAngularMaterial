@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  computed,
-  inject,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BaseFormComponent } from '../../common/component/base-form/base-form.component';
 import {
@@ -17,9 +11,8 @@ import {
 import {
   catchError,
   concat,
+  debounceTime,
   distinctUntilChanged,
-  EMPTY,
-  iif,
   Observable,
   of,
   Subject,
@@ -87,32 +80,25 @@ export class TestSelectComponent extends BaseFormComponent<FormGroup> {
   }
 
   // stateComplex
-  public stateComplexOptions$: Observable<any[]> | undefined;
+  public stateComplexOptionsSubject$ = new Subject<boolean>(); // True pour appeler le rechargement.
+  public stateComplexOptionsObservable$: Observable<any[]> | undefined;
   public stateComplexBuffer: any[] = [];
   public stateComplexCurrentValue: any | undefined;
   public stateComplexSearch: string = '';
-  // Utilisation des signaux pour géréer la double attente.
-  public stateComplexLoadingSearch: WritableSignal<boolean> =
-    signal<boolean>(false);
-  public stateComplexLoadingOnScroll: WritableSignal<boolean> =
-    signal<boolean>(false);
-  public stateComplexLoading = computed<boolean>(
-    () => this.stateComplexLoadingOnScroll() || this.stateComplexLoadingSearch()
-  );
+  public stateComplexLoading: WritableSignal<boolean> = signal<boolean>(false);
   public stateComplexInputSubject$ = new Subject<string>();
-  public stateComplexScrollSubject$ = new Subject<void>();
   public stateComplexNbPage = 0;
 
   public trackByFn(obj: any): string {
     return obj.abbreviation;
   }
 
-  // public onStateComplexScroll(event: any): void {
-  //   // console.log(event);
-  // }
-
+  // Quand on attein la fin de la liste on recharge un bout de liste.
   public onStateComplexScrollToEnd(): void {
-    this.stateComplexScrollSubject$.next(void 0);
+    // Mais pourquoi c'est exec a l'ouverture ?!!
+    if (!this.stateComplexLoading()) {
+      this.stateComplexOptionsSubject$.next(true);
+    }
   }
 
   /**
@@ -120,17 +106,29 @@ export class TestSelectComponent extends BaseFormComponent<FormGroup> {
    * @param event La valeur selectionné
    */
   public onStateComplexChange(event: any): void {
-    console.log('current value : ', event);
-    this.stateComplexCurrentValue = event;
+    if (event.hasOwnProperty('name') && event.hasOwnProperty('abbreviation')) {
+      console.log('current value : ', typeof event, event);
+      this.stateComplexCurrentValue = event;
+    } else {
+      console.log('not current value ?...', event);
+    }
   }
 
   /**
-   * A la 1ère ouverture, si le buffer est vide on ajoute les 1ères options.
+   * A la 1ère ouverture, on raz la liste.
    */
   public onStateComplexOpen(): void {
-    if (this.stateComplexBuffer.length === 0) {
-      this.stateComplexScrollSubject$.next(void 0);
-    }
+    this.stateComplexOptionsSubject$.next(true);
+  }
+
+  /**
+   * A la fermeture, on vide le buffer.
+   */
+  public onStateComplexClose(): void {
+    this.stateComplexSearch = '';
+    this.stateComplexBuffer = [];
+    this.stateComplexNbPage = 0;
+    this.stateComplexOptionsSubject$.next(false);
   }
 
   protected override buildFormData(): Observable<FormGroup<any>> {
@@ -270,43 +268,47 @@ export class TestSelectComponent extends BaseFormComponent<FormGroup> {
     );
 
     // Liste pour stateComplex
-    // concaténation des Observable pouvant être appelé.
-    this.stateComplexOptions$ = concat(
-      // 1) valeur par défaut
-      this.stateService.getById(this.formData.get('stateComplex')!.value).pipe(
-        tap((value: any) => {
-          this.stateComplexCurrentValue = value;
-        })
-      ),
-      // 2) sur event de fin de liste
-      this.stateComplexScrollSubject$.pipe(
-        // Si en cours de chargement on ne fait rien.
-        switchMap(() =>
-          this.stateComplexLoadingOnScroll() ? of() : of(void 0)
-        ),
-        // distinctUntilChanged(),
-        tap(() => this.stateComplexLoadingOnScroll.set(true)),
-        switchMap(() => this.addNewValues()),
-        tap(() => this.stateComplexLoadingOnScroll.set(false))
-      ),
-      // 3) à la recherche de l'utilisateur
-      this.stateComplexInputSubject$.pipe(
-        distinctUntilChanged(),
-        tap(() => this.stateComplexLoadingSearch.set(true)),
-        // On réinit le buffer
-        tap((search: string) => {
-          this.stateComplexSearch = search;
-          this.stateComplexBuffer = [];
-          this.stateComplexNbPage = 0;
-        }),
-        switchMap(() => this.addNewValues()),
-        tap(() => this.stateComplexLoadingSearch.set(false))
-      )
-    ).pipe(
+    // - pour la valeur actuel
+    this.subscriptions.push(
+      this.stateService
+        .getById(this.formData.get('stateComplex')!.value)
+        .pipe(
+          tap((value: any) => {
+            this.stateComplexCurrentValue = value;
+          }),
+          tap(() => {
+            console.log('valeur par défaut');
+            this.stateComplexOptionsSubject$.next(false);
+          })
+        )
+        .subscribe()
+    );
+
+    // - selon la recherche utilisateur et la liste affiché.
+    this.stateComplexOptionsObservable$ = this.stateComplexOptionsSubject$.pipe(
+      tap(() => this.stateComplexLoading.set(true)),
+      // recherche des nouvelles valeurs a afficher.
+      switchMap((loadNewValue: boolean) => {
+        if (!loadNewValue) {
+          return of([]);
+        }
+        return this.stateService.getWithPaging(
+          this.stateComplexSearch,
+          10,
+          this.stateComplexNbPage
+        );
+      }),
+      // ajout des nouvelles valeurs dans le buffer
+      switchMap((values: any[]) => {
+        if (values !== undefined && values.length > 0) {
+          this.stateComplexBuffer.push(...values);
+          this.stateComplexNbPage++;
+        }
+        return of(void 0);
+      }),
       // à chaque fois, on renvoi le buffer.
       switchMap(() => {
         // si la valeur actuel n'est pas dans le buffer on l'ajout en 1ère position.
-        console.log('stateComplexOptions', this.stateComplexBuffer.length);
         if (
           this.stateComplexCurrentValue !== undefined &&
           !this.stateComplexBuffer.some(
@@ -321,28 +323,37 @@ export class TestSelectComponent extends BaseFormComponent<FormGroup> {
         }
         // si on indique directement le buffer le ng-select par en cacahuète...
         return of([...this.stateComplexBuffer]);
-      })
+      }),
+      tap(() => this.stateComplexLoading.set(false))
+    );
+
+    // - pour la recherche utilisateur (on attent 0,5s que l'utilisateur arret de faire le singe...)
+    this.subscriptions.push(
+      this.stateComplexInputSubject$
+        .pipe(
+          debounceTime(500), // on attent 0,5.
+          distinctUntilChanged(), // ne rien faire si pas de changement.
+          tap((search: string) => {
+            this.stateComplexSearch = search;
+            this.stateComplexBuffer = [];
+            this.stateComplexNbPage = 0;
+            this.stateComplexOptionsSubject$.next(true);
+          })
+        )
+        .subscribe()
     );
   }
 
-  private addNewValues(): Observable<void> {
-    return of(void 0).pipe(
-      switchMap(() =>
-        this.stateService.getWithPaging(
-          this.stateComplexSearch,
-          10,
-          this.stateComplexNbPage
-        )
-      ),
-      // ajout des nouvelles valeurs dans le buffer
-      switchMap((values: any[]) => {
-        if (values !== undefined && values.length > 0) {
-          this.stateComplexBuffer.push(...values);
-          this.stateComplexNbPage++;
-        }
-        return of(void 0);
-      })
-    );
+  // pour chaque valeur indiqué par l'utilisateur
+  public onStateComplexSearchChange(event?: any) {
+    this.stateComplexInputSubject$.next(event.target?.value ?? '');
+  }
+
+  // on stop la propagation du 'supprimer' sinon le ng-select supprime la valeur actuellement indiqué.
+  public onInputSearchKeydown(event?: any) {
+    if (event.key == 'Backspace') {
+      event.stopPropagation();
+    }
   }
 
   protected override InitStatus(): Observable<boolean> {
