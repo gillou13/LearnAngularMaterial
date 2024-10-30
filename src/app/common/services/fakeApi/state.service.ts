@@ -135,13 +135,13 @@ export class StateApiFakeService {
       // prise en compte de la recherche.
       switchMap(() => this.search(search)),
       // prise en compte de la pagination.
-      switchMap(() => {
+      switchMap((searchResult: any[]) => {
         const start = skip * take;
         let end = start + take;
         if (end > this.states.length) {
           end = this.states.length;
         }
-        const result = this.states.slice(start, end);
+        const result = searchResult.slice(start, end);
         return of(result);
       }),
       delay(500)
