@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BasePageComponent } from '../common/component/base-page/base-page.component';
 import { NavigationLink } from '../common/services/navigation/navigation-link';
 import { Router } from '@angular/router';
@@ -22,17 +22,17 @@ import { Subscription } from 'rxjs';
 })
 export class TestDiagOnCloseComponent
   extends BasePageComponent
-  implements OnDestroy
+  implements OnDestroy, OnInit
 {
   public withDialog: boolean = true;
 
-  public formData: FormControl<string | null>;
+  public formData!: FormControl<string | null>;
 
-  constructor() {
-    super();
+  public override ngOnInit(): void {
+    super.ngOnInit();
 
     // Récupération du formulaire si existant :
-    if (this.currentLink.formData != undefined) {
+    if (this.currentLink?.formData != undefined) {
       this.formData = this.currentLink.formData as FormControl<string | null>;
     }
     // Sinon construction 'normale'

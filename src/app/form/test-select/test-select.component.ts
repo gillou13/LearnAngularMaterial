@@ -104,7 +104,11 @@ export class TestSelectComponent extends BaseFormComponent<FormGroup> {
    * @param event La valeur selectionné
    */
   public onStateComplexChange(event: any): void {
-    if (event.hasOwnProperty('name') && event.hasOwnProperty('abbreviation')) {
+    if (
+      event !== undefined &&
+      event.hasOwnProperty('name') &&
+      event.hasOwnProperty('abbreviation')
+    ) {
       console.log('current value : ', typeof event, event);
       this.stateComplexCurrentValue = event;
     } else {
