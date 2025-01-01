@@ -5,7 +5,7 @@ import { delay, Observable, of, switchMap, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class StateApiFakeService {
-  private states = [
+  public states = [
     { name: 'Alabama', abbreviation: 'AL' },
     { name: 'Alaska', abbreviation: 'AK' },
     { name: 'American Samoa', abbreviation: 'AS' },

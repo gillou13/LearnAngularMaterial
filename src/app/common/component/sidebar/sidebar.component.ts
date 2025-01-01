@@ -33,6 +33,7 @@ export class SidebarComponent {
       label: 'form truc edit',
     },
     { routerLink: '/form/testngselect', label: 'Test ngSelect' },
+    { routerLink: '/form/testAMSelect', label: 'Test angular material Select' },
     { routerLink: '/jeu/CalculeVitesse', label: 'Jeu table multi 1' },
     { routerLink: '/jeu/DivisionVitesse', label: 'Jeu table Division' },
   ];

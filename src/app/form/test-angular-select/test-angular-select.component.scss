@@ -1,0 +1,31 @@
+@use '@angular/material' as mat;
+
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  flex: 1;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.col:last-child {
+  margin-right: 0;
+}
+
+.selectedOption {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    :last-child {
+        font-size: smaller;
+        height: auto;
+    }
+}

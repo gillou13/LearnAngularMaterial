@@ -74,6 +74,13 @@ export const routes: Routes = [
             (m) => m.TestSelectComponent
           ),
       },
+      {
+        path: 'testAMSelect',
+        loadComponent: () =>
+          import(
+            './form/test-angular-select/test-angular-select.component'
+          ).then((m) => m.TestAngularSelectComponent),
+      },
     ],
   },
   {
