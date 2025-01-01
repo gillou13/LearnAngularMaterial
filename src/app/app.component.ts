@@ -18,16 +18,15 @@ class tabLink {
 }
 
 @Component({
-    selector: 'app-root',
-    imports: [
-        CommonModule,
-        RouterOutlet,
-        RouterLink,
-        HeadbarComponent,
-        SidebarComponent,
-        NavtabsComponent,
-    ],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.sass'
+  selector: 'app-root',
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    HeadbarComponent,
+    SidebarComponent,
+    NavtabsComponent,
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.sass',
 })
 export class AppComponent {}
