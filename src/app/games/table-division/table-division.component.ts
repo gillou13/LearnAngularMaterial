@@ -9,18 +9,17 @@ import { BasePageComponent } from '../../common/component/base-page/base-page.co
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 
 @Component({
-  selector: 'app-table-division',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
-  templateUrl: './table-division.component.html',
-  styleUrl: './table-division.component.sass',
+    selector: 'app-table-division',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatInputModule,
+    ],
+    templateUrl: './table-division.component.html',
+    styleUrl: './table-division.component.sass'
 })
 export class TableDivisionComponent extends BasePageComponent {
   @ViewChild('inputResult') inputResult!: ElementRef;

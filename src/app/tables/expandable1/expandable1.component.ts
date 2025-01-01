@@ -21,21 +21,17 @@ interface DisplayColumn {
 }
 
 @Component({
-  selector: 'app-expandable1',
-  standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
-  templateUrl: './expandable1.component.html',
-  styleUrl: './expandable1.component.sass',
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
-  ],
+    selector: 'app-expandable1',
+    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+    templateUrl: './expandable1.component.html',
+    styleUrl: './expandable1.component.sass',
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ]
 })
 export class Expandable1Component extends BasePageComponent implements OnInit {
   public datas: PeriodicElement[] = new Array<PeriodicElement>();

@@ -6,11 +6,10 @@ import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { MatTableModule } from '@angular/material/table';
 
 @Component({
-  selector: 'app-basic2',
-  standalone: true,
-  imports: [MatTableModule],
-  templateUrl: './basic2.component.html',
-  styleUrl: './basic2.component.sass',
+    selector: 'app-basic2',
+    imports: [MatTableModule],
+    templateUrl: './basic2.component.html',
+    styleUrl: './basic2.component.sass'
 })
 export class Basic2Component extends BasePageComponent implements OnInit {
   private periodicElementService = inject(PeriodicElementService);

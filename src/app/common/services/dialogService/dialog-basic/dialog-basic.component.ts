@@ -11,18 +11,17 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-dialog-basic',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatButtonModule,
-  ],
-  templateUrl: './dialog-basic.component.html',
-  styleUrl: './dialog-basic.component.sass',
+    selector: 'app-dialog-basic',
+    imports: [
+        CommonModule,
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatButtonModule,
+    ],
+    templateUrl: './dialog-basic.component.html',
+    styleUrl: './dialog-basic.component.sass'
 })
 export class DialogBasicComponent {
   constructor(

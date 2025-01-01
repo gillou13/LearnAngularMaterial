@@ -7,11 +7,10 @@ import { CommonModule } from '@angular/common';
 import { PageStateService } from '../../services/pageState/page-state.service';
 
 @Component({
-  selector: 'app-headbar',
-  standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule],
-  templateUrl: './headbar.component.html',
-  styleUrl: './headbar.component.sass',
+    selector: 'app-headbar',
+    imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule],
+    templateUrl: './headbar.component.html',
+    styleUrl: './headbar.component.sass'
 })
 export class HeadbarComponent {
   constructor(private pageStateService: PageStateService) {}

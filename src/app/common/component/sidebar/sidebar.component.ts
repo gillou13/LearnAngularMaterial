@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
 import { Guid } from '../../../tools/guid';
 
 @Component({
-  selector: 'app-sidebar',
-  standalone: true,
-  imports: [MatSidenavModule, MatListModule, RouterLink, CommonModule],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.sass',
+    selector: 'app-sidebar',
+    imports: [MatSidenavModule, MatListModule, RouterLink, CommonModule],
+    templateUrl: './sidebar.component.html',
+    styleUrl: './sidebar.component.sass'
 })
 export class SidebarComponent {
   public links = [

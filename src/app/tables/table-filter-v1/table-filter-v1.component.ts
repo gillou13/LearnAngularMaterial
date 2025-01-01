@@ -10,11 +10,10 @@ import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
-  selector: 'app-table-filter-v1',
-  standalone: true,
-  imports: [MatTableModule, CommonModule, ReactiveFormsModule, MatInputModule],
-  templateUrl: './table-filter-v1.component.html',
-  styleUrl: './table-filter-v1.component.sass',
+    selector: 'app-table-filter-v1',
+    imports: [MatTableModule, CommonModule, ReactiveFormsModule, MatInputModule],
+    templateUrl: './table-filter-v1.component.html',
+    styleUrl: './table-filter-v1.component.sass'
 })
 export class TableFilterV1Component
   extends BasePageComponent

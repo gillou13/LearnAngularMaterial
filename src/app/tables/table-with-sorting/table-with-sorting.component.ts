@@ -6,11 +6,10 @@ import { PeriodicElementService } from '../../fakes/service/periodic-element.ser
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
 
 @Component({
-  selector: 'app-table-with-sorting',
-  standalone: true,
-  imports: [MatTableModule, MatSortModule],
-  templateUrl: './table-with-sorting.component.html',
-  styleUrl: './table-with-sorting.component.sass',
+    selector: 'app-table-with-sorting',
+    imports: [MatTableModule, MatSortModule],
+    templateUrl: './table-with-sorting.component.html',
+    styleUrl: './table-with-sorting.component.sass'
 })
 export class TableWithSortingComponent
   extends BasePageComponent

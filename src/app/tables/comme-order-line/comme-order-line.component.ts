@@ -70,38 +70,34 @@ import { PageStateService } from '../../common/services/pageState/page-state.ser
 //  - des données modifiés. (sans tous enregistrer...).
 
 @Component({
-  selector: 'app-comme-order-line',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatTableModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatPaginatorModule,
-    MatMenuModule,
-    DragDropModule,
-    CdkDrag,
-    CdkDropList,
-    IconToFilterTypePipe,
-  ],
-  templateUrl: './comme-order-line.component.html',
-  styleUrl: './comme-order-line.component.sass',
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
-  ],
+    selector: 'app-comme-order-line',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatTableModule,
+        MatSortModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatButtonModule,
+        MatInputModule,
+        MatCheckboxModule,
+        MatPaginatorModule,
+        MatMenuModule,
+        DragDropModule,
+        CdkDrag,
+        CdkDropList,
+        IconToFilterTypePipe,
+    ],
+    templateUrl: './comme-order-line.component.html',
+    styleUrl: './comme-order-line.component.sass',
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ]
 })
 export class CommeOrderLineComponent
   extends BasePageComponent

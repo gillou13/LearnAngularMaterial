@@ -17,16 +17,15 @@ import { Subscription } from 'rxjs';
  * -
  */
 @Component({
-  selector: 'app-form-frame',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-  ],
-  templateUrl: './form-frame.component.html',
-  styleUrl: './form-frame.component.scss',
+    selector: 'app-form-frame',
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+    ],
+    templateUrl: './form-frame.component.html',
+    styleUrl: './form-frame.component.scss'
 })
 export class FormFrameComponent {
   @Input() frameModel?: FrameModel;

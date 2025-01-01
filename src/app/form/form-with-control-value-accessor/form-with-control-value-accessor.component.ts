@@ -16,18 +16,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { PageStateService } from '../../common/services/pageState/page-state.service';
 
 @Component({
-  selector: 'app-form-with-control-value-accessor',
-  standalone: true,
-  templateUrl: './form-with-control-value-accessor.component.html',
-  styleUrl: './form-with-control-value-accessor.component.sass',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FormControlPipe,
-    InputNumberComponent,
-    MatButtonModule,
-  ],
+    selector: 'app-form-with-control-value-accessor',
+    templateUrl: './form-with-control-value-accessor.component.html',
+    styleUrl: './form-with-control-value-accessor.component.sass',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FormControlPipe,
+        InputNumberComponent,
+        MatButtonModule,
+    ]
 })
 export class FormWithControlValueAccessorComponent
   extends BasePageComponent

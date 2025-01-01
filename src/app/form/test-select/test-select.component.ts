@@ -27,17 +27,16 @@ import { StateApiFakeService } from '../../common/services/fakeApi/state.service
 import { TestIdDirective } from '../../common/directives/test-id.directive';
 
 @Component({
-  selector: 'app-test-select',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    NgSelectModule,
-    TestIdDirective,
-  ],
-  templateUrl: './test-select.component.html',
-  styleUrl: './test-select.component.scss',
+    selector: 'app-test-select',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        NgSelectModule,
+        TestIdDirective,
+    ],
+    templateUrl: './test-select.component.html',
+    styleUrl: './test-select.component.scss'
 })
 export class TestSelectComponent extends BaseFormComponent<FormGroup> {
   private readonly fb = inject(FormBuilder);

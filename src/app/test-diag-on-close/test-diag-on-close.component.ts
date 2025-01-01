@@ -14,11 +14,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-test-diag-on-close',
-  standalone: true,
-  imports: [CommonModule, FormsModule, MatRadioModule, ReactiveFormsModule],
-  templateUrl: './test-diag-on-close.component.html',
-  styleUrl: './test-diag-on-close.component.sass',
+    selector: 'app-test-diag-on-close',
+    imports: [CommonModule, FormsModule, MatRadioModule, ReactiveFormsModule],
+    templateUrl: './test-diag-on-close.component.html',
+    styleUrl: './test-diag-on-close.component.sass'
 })
 export class TestDiagOnCloseComponent
   extends BasePageComponent

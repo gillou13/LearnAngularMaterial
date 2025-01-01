@@ -20,20 +20,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
-  selector: 'app-test-angular-select',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatAutocompleteModule,
-  ],
-  templateUrl: './test-angular-select.component.html',
-  styleUrl: './test-angular-select.component.scss',
+    selector: 'app-test-angular-select',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatSelectModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatAutocompleteModule,
+    ],
+    templateUrl: './test-angular-select.component.html',
+    styleUrl: './test-angular-select.component.scss'
 })
 export class TestAngularSelectComponent
   extends BaseFormComponent<FormGroup>

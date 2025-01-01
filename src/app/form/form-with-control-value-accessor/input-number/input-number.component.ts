@@ -21,18 +21,17 @@ import {
 import { map, Subscription, takeUntil, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-input-number',
-  standalone: true,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputNumberComponent),
-      multi: true,
-    },
-  ],
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './input-number.component.html',
-  styleUrl: './input-number.component.sass',
+    selector: 'app-input-number',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => InputNumberComponent),
+            multi: true,
+        },
+    ],
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './input-number.component.html',
+    styleUrl: './input-number.component.sass'
 })
 export class InputNumberComponent
   implements ControlValueAccessor, OnInit, OnDestroy

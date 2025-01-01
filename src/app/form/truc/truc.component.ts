@@ -41,21 +41,20 @@ import { CommonModule } from '@angular/common';
 import { FormStatus } from '../../common/component/base-form/models/form-status';
 
 @Component({
-  selector: 'app-truc',
-  templateUrl: './truc.component.html',
-  styleUrl: './truc.component.scss',
-  standalone: true,
-  imports: [
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatCardModule,
-    ReactiveFormsModule,
-    FormFrameComponent,
-    MatProgressSpinnerModule,
-    CommonModule,
-  ],
+    selector: 'app-truc',
+    templateUrl: './truc.component.html',
+    styleUrl: './truc.component.scss',
+    imports: [
+        MatInputModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatCardModule,
+        ReactiveFormsModule,
+        FormFrameComponent,
+        MatProgressSpinnerModule,
+        CommonModule,
+    ]
 })
 export class TrucComponent
   extends BaseFormComponent<FormGroup>

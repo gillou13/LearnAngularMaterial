@@ -19,18 +19,17 @@ import { CommonModule } from '@angular/common';
  * - interface : 2 chiffres + un champs de réponse (entrée pour valider une réponse)
  */
 @Component({
-  selector: 'app-table-multi',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
-  templateUrl: './table-multi.component.html',
-  styleUrl: './table-multi.component.sass',
+    selector: 'app-table-multi',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatInputModule,
+    ],
+    templateUrl: './table-multi.component.html',
+    styleUrl: './table-multi.component.sass'
 })
 export class TableMultiComponent extends BasePageComponent {
   @ViewChild('inputResult') inputResult!: ElementRef;

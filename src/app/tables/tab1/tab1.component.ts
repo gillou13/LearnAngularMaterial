@@ -24,11 +24,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 @Component({
-  selector: 'app-tab1',
-  standalone: true,
-  imports: [MatTableModule],
-  templateUrl: './tab1.component.html',
-  styleUrl: './tab1.component.sass',
+    selector: 'app-tab1',
+    imports: [MatTableModule],
+    templateUrl: './tab1.component.html',
+    styleUrl: './tab1.component.sass'
 })
 export class Tab1Component extends BasePageComponent {
   public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];

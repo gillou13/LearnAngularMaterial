@@ -7,11 +7,10 @@ import { PeriodicElementService } from '../../fakes/service/periodic-element.ser
 import { MatTableModule } from '@angular/material/table';
 
 @Component({
-  selector: 'app-basic',
-  standalone: true,
-  imports: [MatTableModule],
-  templateUrl: './basic.component.html',
-  styleUrl: './basic.component.sass',
+    selector: 'app-basic',
+    imports: [MatTableModule],
+    templateUrl: './basic.component.html',
+    styleUrl: './basic.component.sass'
 })
 export class BasicComponent extends BasePageComponent {
   public displayColumns: string[] = ['position', 'name', 'weight', 'symbol'];

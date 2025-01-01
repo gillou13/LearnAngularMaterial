@@ -7,11 +7,10 @@ import { NavigationLink } from '../common/services/navigation/navigation-link';
 import { DialogService } from '../common/services/dialogService/dialog.service';
 
 @Component({
-  selector: 'app-test1',
-  standalone: true,
-  imports: [MatSlideToggleModule],
-  templateUrl: './test1.component.html',
-  styleUrl: './test1.component.sass',
+    selector: 'app-test1',
+    imports: [MatSlideToggleModule],
+    templateUrl: './test1.component.html',
+    styleUrl: './test1.component.sass'
 })
 export class Test1Component extends BasePageComponent {
   public resultDialog: string;

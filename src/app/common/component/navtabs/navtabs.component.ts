@@ -9,17 +9,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-navtabs',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    MatTabsModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
-  templateUrl: './navtabs.component.html',
-  styleUrl: './navtabs.component.sass',
+    selector: 'app-navtabs',
+    imports: [
+        CommonModule,
+        RouterLink,
+        MatTabsModule,
+        MatButtonModule,
+        MatIconModule,
+    ],
+    templateUrl: './navtabs.component.html',
+    styleUrl: './navtabs.component.sass'
 })
 export class NavtabsComponent implements OnDestroy {
   private router = inject(Router);
