@@ -27,16 +27,16 @@ import { StateApiFakeService } from '../../common/services/fakeApi/state.service
 import { TestIdDirective } from '../../common/directives/test-id.directive';
 
 @Component({
-    selector: 'app-test-select',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        NgSelectModule,
-        TestIdDirective,
-    ],
-    templateUrl: './test-select.component.html',
-    styleUrl: './test-select.component.scss'
+  selector: 'app-test-select',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    NgSelectModule,
+    TestIdDirective,
+  ],
+  templateUrl: './test-select.component.html',
+  styleUrl: './test-select.component.scss'
 })
 export class TestSelectComponent extends BaseFormComponent<FormGroup> {
   private readonly fb = inject(FormBuilder);
@@ -78,7 +78,7 @@ export class TestSelectComponent extends BaseFormComponent<FormGroup> {
 
   // stateComplex
   public stateComplexOptionsSubject$ = new Subject<boolean>(); // True pour appeler le rechargement.
-  public stateComplexOptionsObservable$: Observable<any[]> | undefined;
+  public stateComplexOptionsObservable$: Observable<any[]> = of([]);
   public stateComplexBuffer: any[] = [];
   public stateComplexCurrentValue: any | undefined;
   public stateComplexSearch: string = '';
