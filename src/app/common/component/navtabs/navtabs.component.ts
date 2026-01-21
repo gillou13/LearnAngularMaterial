@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, OnDestroy } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-navtabs',
-  imports: [CommonModule, MatTabsModule, MatButtonModule, MatIconModule],
+  imports: [MatTabsModule, MatButtonModule, MatIconModule],
   templateUrl: './navtabs.component.html',
   styleUrl: './navtabs.component.sass',
 })

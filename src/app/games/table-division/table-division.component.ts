@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,13 +11,12 @@ import { NavigationLink } from '../../common/services/navigation/navigation-link
 @Component({
     selector: 'app-table-division',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatButtonModule,
-        MatExpansionModule,
-        MatFormFieldModule,
-        MatInputModule,
-    ],
+    FormsModule,
+    MatButtonModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule
+],
     templateUrl: './table-division.component.html',
     styleUrl: './table-division.component.sass'
 })

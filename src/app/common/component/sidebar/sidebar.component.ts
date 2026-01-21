@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { Guid } from '../../../tools/guid';
 
 @Component({
     selector: 'app-sidebar',
-    imports: [MatSidenavModule, MatListModule, RouterLink, CommonModule],
+    imports: [MatSidenavModule, MatListModule, RouterLink],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.sass'
 })

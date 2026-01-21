@@ -3,7 +3,7 @@ import { BasePageComponent } from '../common/component/base-page/base-page.compo
 import { NavigationLink } from '../common/services/navigation/navigation-link';
 import { Router } from '@angular/router';
 import { NavigationService } from '../common/services/navigation/navigation.service';
-import { CommonModule } from '@angular/common';
+
 import {
   FormControl,
   FormsModule,
@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-test-diag-on-close',
-    imports: [CommonModule, FormsModule, MatRadioModule, ReactiveFormsModule],
+    imports: [FormsModule, MatRadioModule, ReactiveFormsModule],
     templateUrl: './test-diag-on-close.component.html',
     styleUrl: './test-diag-on-close.component.sass'
 })

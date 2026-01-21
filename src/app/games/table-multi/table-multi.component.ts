@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+
 
 /**
  * but : réaliser un jeu qui calcule le nombre le calcul mentale juste en un temps données.
@@ -21,13 +21,12 @@ import { CommonModule } from '@angular/common';
 @Component({
     selector: 'app-table-multi',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatButtonModule,
-        MatExpansionModule,
-        MatFormFieldModule,
-        MatInputModule,
-    ],
+    FormsModule,
+    MatButtonModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule
+],
     templateUrl: './table-multi.component.html',
     styleUrl: './table-multi.component.sass'
 })

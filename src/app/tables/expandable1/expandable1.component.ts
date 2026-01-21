@@ -6,7 +6,7 @@ import { PeriodicElement } from '../../fakes/service/periodic-element';
 import { PeriodicElementService } from '../../fakes/service/periodic-element.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
+
 import {
   animate,
   state,
@@ -22,7 +22,7 @@ interface DisplayColumn {
 
 @Component({
     selector: 'app-expandable1',
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+    imports: [MatTableModule, MatButtonModule, MatIconModule],
     templateUrl: './expandable1.component.html',
     styleUrl: './expandable1.component.sass',
     animations: [

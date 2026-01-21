@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   forwardRef,
@@ -29,7 +29,7 @@ import { map, Subscription, takeUntil, tap } from 'rxjs';
             multi: true,
         },
     ],
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [ReactiveFormsModule],
     templateUrl: './input-number.component.html',
     styleUrl: './input-number.component.sass'
 })

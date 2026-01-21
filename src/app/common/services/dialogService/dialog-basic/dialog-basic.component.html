@@ -1,13 +1,23 @@
-<h2 *ngIf="data.title" mat-dialog-title>{{data.title}}</h2>
-<mat-dialog-content *ngIf="data.text">
-  <p>{{data.text}}</p>
-</mat-dialog-content>
+@if (data.title) {
+  <h2 mat-dialog-title>{{data.title}}</h2>
+}
+@if (data.text) {
+  <mat-dialog-content>
+    <p>{{data.text}}</p>
+  </mat-dialog-content>
+}
 <mat-dialog-actions align="end">
-    <!-- test sans MatDialogActions -->
+  <!-- test sans MatDialogActions -->
   <!-- <button mat-button (click)="onYesClick()">{{data.yesText}}</button>
   <button mat-button (click)="onNoClick()">{{data.noText}}</button> -->
-    <!-- test avec MatDialogActions -->
-    <button *ngIf="data.yesText != undefined" mat-button [mat-dialog-close]="true">{{data.yesText}}</button>
-    <button *ngIf="data.noText != undefined" mat-button [mat-dialog-close]="false">{{data.noText}}</button>
-    <button *ngIf="data.cancelText != undefined" mat-button (click)="onCancelClick()">{{data.cancelText}}</button>
+  <!-- test avec MatDialogActions -->
+  @if (data.yesText != undefined) {
+    <button mat-button [mat-dialog-close]="true">{{data.yesText}}</button>
+  }
+  @if (data.noText != undefined) {
+    <button mat-button [mat-dialog-close]="false">{{data.noText}}</button>
+  }
+  @if (data.cancelText != undefined) {
+    <button mat-button (click)="onCancelClick()">{{data.cancelText}}</button>
+  }
 </mat-dialog-actions>

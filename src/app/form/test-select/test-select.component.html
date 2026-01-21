@@ -1,113 +1,117 @@
-<form *ngIf="formData" [formGroup]="formData">
+@if (formData) {
+  <form [formGroup]="formData">
     <div class="row">
-        <div class="col">
-            <ng-select formControlName="value1" [items]="cars" bindLabel="name" bindValue="id"/>
-        </div>
-        <div class="col">
-            <ng-select formControlName="value2">
-                <ng-option *ngFor="let car of cars" [value]="car.id">{{car.name}}</ng-option>
-            </ng-select>
-        </div>
+      <div class="col">
+        <ng-select formControlName="value1" [items]="cars" bindLabel="name" bindValue="id"/>
+      </div>
+      <div class="col">
+        <ng-select formControlName="value2">
+          @for (car of cars; track car) {
+            <ng-option [value]="car.id">{{car.name}}</ng-option>
+          }
+        </ng-select>
+      </div>
     </div>
     <div class="row" [appTestId]="'truc'">
-        <div class="col">
-            <label>state simple</label>
-            <ng-select [appTestId]="'stateSimple'" formControlName="stateSimple" [items]="this.states$ | async" bindLabel="name" bindValue="abbreviation"/>
-        </div>
+      <div class="col">
+        <label>state simple</label>
+        <ng-select [appTestId]="'stateSimple'" formControlName="stateSimple" [items]="this.states$ | async" bindLabel="name" bindValue="abbreviation"/>
+      </div>
     </div>
     <div class="row">
-        <div class="col">
-            <label>state typeahead</label>
-            <ng-select 
-                formControlName="stateTypeahead" 
-                [items]="this.typeaheadOptions$ | async" 
-                bindLabel="name" 
-                bindValue="abbreviation"
-                [typeahead]="typeaheadInput$"
-                [minTermLength]="2"
-                typeToSearchText="aller fait ta recherche"
-                [loading]="typeaheadLoading"
-                />
+      <div class="col">
+        <label>state typeahead</label>
+        <ng-select
+          formControlName="stateTypeahead"
+          [items]="this.typeaheadOptions$ | async"
+          bindLabel="name"
+          bindValue="abbreviation"
+          [typeahead]="typeaheadInput$"
+          [minTermLength]="2"
+          typeToSearchText="aller fait ta recherche"
+          [loading]="typeaheadLoading"
+          />
         </div>
         <div class="col">
-            <label>state typeahead avec valeur.</label>
-            <ng-select 
-                formControlName="stateTypeaheadWithValue" 
-                [items]="this.typeaheadWithValueOptions$ | async"
-                bindLabel="name" 
-                bindValue="abbreviation"
-                [typeahead]="typeaheadWithValueInput$"
-                [minTermLength]="2"
-                typeToSearchText="aller fait ta recherche"
-                [loading]="typeaheadWithValueLoading"
-                />
+          <label>state typeahead avec valeur.</label>
+          <ng-select
+            formControlName="stateTypeaheadWithValue"
+            [items]="this.typeaheadWithValueOptions$ | async"
+            bindLabel="name"
+            bindValue="abbreviation"
+            [typeahead]="typeaheadWithValueInput$"
+            [minTermLength]="2"
+            typeToSearchText="aller fait ta recherche"
+            [loading]="typeaheadWithValueLoading"
+            />
+          </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col">
+        <div class="row">
+          <div class="col">
             <label>state virtual scroll</label>
             <ng-select
-                formControlName="stateVirtualScroll"
-                [items]="virtualScrollOptions"
-                [loading]="virtualScrollLoading"
-                bindLabel="name" 
-                bindValue="abbreviation"
-                [virtualScroll]="true"
-                (scrollToEnd)="vsOnScrollToEnd()"
-                />
-        </div>
-        <div class="col">
-            <label>state virtual scroll with value</label>
-            <ng-select
+              formControlName="stateVirtualScroll"
+              [items]="virtualScrollOptions"
+              [loading]="virtualScrollLoading"
+              bindLabel="name"
+              bindValue="abbreviation"
+              [virtualScroll]="true"
+              (scrollToEnd)="vsOnScrollToEnd()"
+              />
+            </div>
+            <div class="col">
+              <label>state virtual scroll with value</label>
+              <ng-select
                 formControlName="stateVirtualScrollWithValue"
                 [items]="virtualScrollWithValueOptions"
                 [loading]="virtualScrollWithValueLoading"
-                bindLabel="name" 
+                bindLabel="name"
                 bindValue="abbreviation"
                 [virtualScroll]="true"
                 (scrollToEnd)="vsOnScrollWithValueToEnd()"
                 />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label>state typeahead, virtualScroll & with value</label>
-            <ng-select
-                formControlName="stateComplex"
-                [items]="stateComplexOptionsObservable$ | async"
-                [loading]="stateComplexLoading()"
-                bindLabel="name"
-                bindValue="abbreviation"
-                (change)="onStateComplexChange($event)"
-                (scrollToEnd)="onStateComplexScrollToEnd()"
-                (open)="onStateComplexOpen()"
-                (close)="onStateComplexClose()"
-                [trackByFn]="trackByFn"
-                [virtualScroll]="true"
-                [searchable]="false">
-                    <ng-template ng-header-tmp>
-                        <input 
-                            class="inputSearch" 
-                            type="text" 
-                            (keydown)="onInputSearchKeydown($event)" 
-                            (input)="onStateComplexSearchChange($event)"/>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label>state typeahead, virtualScroll & with value</label>
+                <ng-select
+                  formControlName="stateComplex"
+                  [items]="stateComplexOptionsObservable$ | async"
+                  [loading]="stateComplexLoading()"
+                  bindLabel="name"
+                  bindValue="abbreviation"
+                  (change)="onStateComplexChange($event)"
+                  (scrollToEnd)="onStateComplexScrollToEnd()"
+                  (open)="onStateComplexOpen()"
+                  (close)="onStateComplexClose()"
+                  [trackByFn]="trackByFn"
+                  [virtualScroll]="true"
+                  [searchable]="false">
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="inputSearch"
+                      type="text"
+                      (keydown)="onInputSearchKeydown($event)"
+                      (input)="onStateComplexSearchChange($event)"/>
                     </ng-template>
-            </ng-select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            {{this.formData.value | json }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <!-- <br/>
-            {{this.stateComplexOptionsObservable$ | async | json }}
-            <br/> -->
-            <br/>
-            <pre>{{this.stateComplexBuffer | json}}</pre>
-        </div>
-    </div>
-</form>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  {{this.formData.value | json }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <!-- <br/>
+                  {{this.stateComplexOptionsObservable$ | async | json }}
+                  <br/> -->
+                  <br/>
+                  <pre>{{this.stateComplexBuffer | json}}</pre>
+                </div>
+              </div>
+            </form>
+          }
 

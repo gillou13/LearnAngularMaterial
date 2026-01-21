@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { HeadbarComponent } from './common/component/headbar/headbar.component';
 import { SidebarComponent } from './common/component/sidebar/sidebar.component';
-import { CommonModule } from '@angular/common';
+
 import { NavtabsComponent } from './common/component/navtabs/navtabs.component';
 
 class tabLink {
@@ -20,12 +20,11 @@ class tabLink {
 @Component({
   selector: 'app-root',
   imports: [
-    CommonModule,
     RouterOutlet,
     HeadbarComponent,
     SidebarComponent,
-    NavtabsComponent,
-  ],
+    NavtabsComponent
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.sass',
 })

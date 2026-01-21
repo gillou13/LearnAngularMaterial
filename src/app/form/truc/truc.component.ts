@@ -37,7 +37,7 @@ import { BaseFormComponent } from '../../common/component/base-form/base-form.co
 import { FrameActionButtonModel } from '../../common/component/form-frame/model/frame-action-button-model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Guid } from '../../tools/guid';
-import { CommonModule } from '@angular/common';
+
 import { FormStatus } from '../../common/component/base-form/models/form-status';
 
 @Component({
@@ -45,16 +45,15 @@ import { FormStatus } from '../../common/component/base-form/models/form-status'
     templateUrl: './truc.component.html',
     styleUrl: './truc.component.scss',
     imports: [
-        MatInputModule,
-        MatButtonModule,
-        MatSelectModule,
-        MatRadioModule,
-        MatCardModule,
-        ReactiveFormsModule,
-        FormFrameComponent,
-        MatProgressSpinnerModule,
-        CommonModule,
-    ]
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    FormFrameComponent,
+    MatProgressSpinnerModule
+]
 })
 export class TrucComponent
   extends BaseFormComponent<FormGroup>

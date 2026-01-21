@@ -1,46 +1,48 @@
 <h1>jeu de division rapide.</h1>
 <p>A toi de jouer Arthur. (encor une fois)</p>
 <mat-accordion>
-    <!-- Les régles -->
-    <mat-expansion-panel [disabled]="inGame">
-        <mat-expansion-panel-header>
-            <mat-panel-title>Régles</mat-panel-title>
-        </mat-expansion-panel-header>
-        <p>Le but du jeu est de réaliser le plus de division en un temps donnée.<br/>
-        (comprend seulement les tables de multiplications)</p>
-    </mat-expansion-panel>
-    <!-- Les Paramètres -->
-    <mat-expansion-panel [disabled]="inGame">
-        <mat-expansion-panel-header>
-            <mat-panel-title>Paramètres</mat-panel-title>
-        </mat-expansion-panel-header>
-            <!-- Temps -->
-            <mat-form-field appearance="outline">
-                <mat-label>Temps (en seconds)</mat-label>
-                <input matInput type="number" min="1" [(ngModel)]="paramTime"/>
-            </mat-form-field>
-            <!-- max -->
-            <mat-form-field appearance="outline">
-                <mat-label>Nombre max</mat-label>
-                <input matInput type="number" min="1" [(ngModel)]="paramMax"/>
-            </mat-form-field>
-    </mat-expansion-panel>
-    <!-- Le jeu  -->
-    <mat-expansion-panel [disabled]="inGame" [expanded]="true">
-        <mat-expansion-panel-header>
-            <mat-panel-title>Le jeu </mat-panel-title>
-        </mat-expansion-panel-header>
-        <h4>temps restant: {{ compteur }} </h4>
-        <button [disabled]="inGame" (click)="lancer()">Lancer la partie</button>
-        <p>{{number1}} / {{number2}} = <input #inputResult matInput type="number" [(ngModel)]="result" (keyup.enter)="propal()" disabled/></p>
-        <p>{{nbJustes}} réponses justes. {{nbErreurs}} réponses fausses.</p>
-    </mat-expansion-panel>
-    <!-- Historique des résultats  -->
-    <mat-expansion-panel [disabled]="inGame">
-        <mat-expansion-panel-header>
-            <mat-panel-title>Scores</mat-panel-title>
-        </mat-expansion-panel-header>
-        <h4>Liste des résultats précédants: </h4>
-        <p *ngFor="let item of scores">{{item}}</p>
-    </mat-expansion-panel>
+  <!-- Les régles -->
+  <mat-expansion-panel [disabled]="inGame">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Régles</mat-panel-title>
+    </mat-expansion-panel-header>
+    <p>Le but du jeu est de réaliser le plus de division en un temps donnée.<br/>
+    (comprend seulement les tables de multiplications)</p>
+  </mat-expansion-panel>
+  <!-- Les Paramètres -->
+  <mat-expansion-panel [disabled]="inGame">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Paramètres</mat-panel-title>
+    </mat-expansion-panel-header>
+    <!-- Temps -->
+    <mat-form-field appearance="outline">
+      <mat-label>Temps (en seconds)</mat-label>
+      <input matInput type="number" min="1" [(ngModel)]="paramTime"/>
+    </mat-form-field>
+    <!-- max -->
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre max</mat-label>
+      <input matInput type="number" min="1" [(ngModel)]="paramMax"/>
+    </mat-form-field>
+  </mat-expansion-panel>
+  <!-- Le jeu  -->
+  <mat-expansion-panel [disabled]="inGame" [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Le jeu </mat-panel-title>
+    </mat-expansion-panel-header>
+    <h4>temps restant: {{ compteur }} </h4>
+    <button [disabled]="inGame" (click)="lancer()">Lancer la partie</button>
+    <p>{{number1}} / {{number2}} = <input #inputResult matInput type="number" [(ngModel)]="result" (keyup.enter)="propal()" disabled/></p>
+    <p>{{nbJustes}} réponses justes. {{nbErreurs}} réponses fausses.</p>
+  </mat-expansion-panel>
+  <!-- Historique des résultats  -->
+  <mat-expansion-panel [disabled]="inGame">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Scores</mat-panel-title>
+    </mat-expansion-panel-header>
+    <h4>Liste des résultats précédants: </h4>
+    @for (item of scores; track item) {
+      <p>{{item}}</p>
+    }
+  </mat-expansion-panel>
 </mat-accordion>

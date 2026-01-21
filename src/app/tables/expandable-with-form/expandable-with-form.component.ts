@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BasePageComponent } from '../../common/component/base-page/base-page.component';
 import { NavigationLink } from '../../common/services/navigation/navigation-link';
-import { CommonModule } from '@angular/common';
+
 import {
   AbstractControl,
   FormArray,
@@ -31,14 +31,13 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
     selector: 'app-expandable-with-form',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatTableModule,
-        MatButtonModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatInputModule,
-    ],
+    ReactiveFormsModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule
+],
     templateUrl: './expandable-with-form.component.html',
     styleUrl: './expandable-with-form.component.sass',
     animations: [

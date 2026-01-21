@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -13,13 +13,12 @@ import {
 @Component({
     selector: 'app-dialog-basic',
     imports: [
-        CommonModule,
-        MatDialogTitle,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogClose,
-        MatButtonModule,
-    ],
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButtonModule
+],
     templateUrl: './dialog-basic.component.html',
     styleUrl: './dialog-basic.component.sass'
 })

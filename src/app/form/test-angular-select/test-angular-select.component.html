@@ -1,76 +1,78 @@
-<form *ngIf="formData" [formGroup]="formData">
+@if (formData) {
+  <form [formGroup]="formData">
     <div class="row">
-        <div class="col">
-            <!-- <label>simple</label> -->
-            <mat-form-field appearance="outline">
-                <mat-label>simple</mat-label>
-                <mat-select formControlName="simple" >
-                    @for (state of states; track $index) {
-                        <mat-option [value]="state.abbreviation">{{state.name}}</mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="col">
-            <!-- <label>simpleWithoutVal</label> -->
-            <mat-form-field appearance="outline">
-                <mat-label>simpleWithoutVal</mat-label>
-                <mat-select formControlName="simpleWithoutVal" >
-                    <mat-select-trigger class="selectedOption">
-                        <span>{{formData.get('simpleWithoutVal')?.value?.name}}</span>
-                        <span></span>
-                        <span><mat-icon (click)="simpleDeleteOption($event, 'simpleWithoutVal')">close</mat-icon></span>
-                    </mat-select-trigger>
-                    @for (state of states; track $index) {
-                        <mat-option [value]="state">{{state.name}}</mat-option>
-                    }
-                </mat-select>
-                <!-- <mat-icon *ngIf="formData.get('simpleWihoutVal')?.value === undefined" matSuffix (click)="simpleDeleteOption($event, 'simpleWithoutVal')">close</mat-icon> -->
-            </mat-form-field>
-        </div>
+      <div class="col">
+        <!-- <label>simple</label> -->
+        <mat-form-field appearance="outline">
+          <mat-label>simple</mat-label>
+          <mat-select formControlName="simple" >
+            @for (state of states; track $index) {
+              <mat-option [value]="state.abbreviation">{{state.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <!-- <label>simpleWithoutVal</label> -->
+        <mat-form-field appearance="outline">
+          <mat-label>simpleWithoutVal</mat-label>
+          <mat-select formControlName="simpleWithoutVal" >
+            <mat-select-trigger class="selectedOption">
+              <span>{{formData.get('simpleWithoutVal')?.value?.name}}</span>
+              <span></span>
+              <span><mat-icon (click)="simpleDeleteOption($event, 'simpleWithoutVal')">close</mat-icon></span>
+            </mat-select-trigger>
+            @for (state of states; track $index) {
+              <mat-option [value]="state">{{state.name}}</mat-option>
+            }
+          </mat-select>
+          <!-- <mat-icon *ngIf="formData.get('simpleWihoutVal')?.value === undefined" matSuffix (click)="simpleDeleteOption($event, 'simpleWithoutVal')">close</mat-icon> -->
+        </mat-form-field>
+      </div>
     </div>
     <div class="row">
-        <div class="col">
-            <mat-form-field appearance="outline">
-                <mat-label appearance="outline">autocomplete (simple input)</mat-label>
-                <input 
-                    matInput 
-                    type="text" 
-                    formControlName="cpl"
-                    [matAutocomplete]="auto1" />
-                <mat-autocomplete #auto1 [displayWith]="displayFn">
-                    @for (state of states; track $index) {
-                        <mat-option [value]="state">{{state.name}}</mat-option>
-                    }
-                </mat-autocomplete>
-            </mat-form-field>
+      <div class="col">
+        <mat-form-field appearance="outline">
+          <mat-label appearance="outline">autocomplete (simple input)</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="cpl"
+            [matAutocomplete]="auto1" />
+            <mat-autocomplete #auto1 [displayWith]="displayFn">
+              @for (state of states; track $index) {
+                <mat-option [value]="state">{{state.name}}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
         </div>
         <div class="col">
-            <mat-form-field appearance="outline">
-                <mat-label>autocomplete (double input)</mat-label>
-                <input 
-                    matInput
-                    type="text"
-                    [matAutocomplete]="auto2"
-                    [formControl]="search" />
-                <input 
-                    matInput 
-                    style="display: none;"
-                    formControlName="cpl2"
-                    />
+          <mat-form-field appearance="outline">
+            <mat-label>autocomplete (double input)</mat-label>
+            <input
+              matInput
+              type="text"
+              [matAutocomplete]="auto2"
+              [formControl]="search" />
+              <input
+                matInput
+                style="display: none;"
+                formControlName="cpl2"
+                />
                 <mat-autocomplete #auto2 [displayWith]="displayFn" (closed)="autocompleteClosed()">
-                    @for (state of states; track $index) {
-                        <mat-option [value]="state">{{state.name}}</mat-option>
-                    }
+                  @for (state of states; track $index) {
+                    <mat-option [value]="state">{{state.name}}</mat-option>
+                  }
                 </mat-autocomplete>
-            </mat-form-field>
+              </mat-form-field>
+            </div>
+          </div>
+          <!-- TODO GBE : continuer les tester pour obtenir un 'select avec autocomplete'... -->
+        </form>
+      }
+      <div class="row">
+        <div class="col">
+          <pre>FormData: <br/> {{this.formData.value | json }}</pre>
         </div>
-    </div>
-    <!-- TODO GBE : continuer les tester pour obtenir un 'select avec autocomplete'... -->
-</form>
-<div class="row">
-    <div class="col">
-        <pre>FormData: <br/> {{this.formData.value | json }}</pre>
-    </div>
-</div>
+      </div>
 

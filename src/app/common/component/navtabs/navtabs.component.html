@@ -1,21 +1,23 @@
 <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-      <div 
-        *ngFor="let link of links"
-        mat-tab-link 
-        [active]="link.active">
-        <!-- GBE : travailler sur la zone clickable. -->
-        <!-- [routerLink]="link.url" -->
-        <div (click)="redirectToUrl(link.url)"
-          class="link-content">{{ link.label }}
-        </div>
-        <button 
-          *ngIf="links.length > 1"
+  @for (link of links; track link) {
+    <div
+      mat-tab-link
+      [active]="link.active">
+      <!-- GBE : travailler sur la zone clickable. -->
+      <!-- [routerLink]="link.url" -->
+      <div (click)="redirectToUrl(link.url)"
+        class="link-content">{{ link.label }}
+      </div>
+      @if (links.length > 1) {
+        <button
           mat-icon-button
           (click)="onClose(link)">
           <mat-icon>close</mat-icon>
         </button>
-      </div>
-  </nav>
-  <mat-tab-nav-panel #tabPanel>
-    <ng-content/>
-  </mat-tab-nav-panel>
+      }
+    </div>
+  }
+</nav>
+<mat-tab-nav-panel #tabPanel>
+  <ng-content/>
+</mat-tab-nav-panel>
